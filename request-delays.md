@@ -12,7 +12,7 @@ kubectl apply -f deploy/v3
 scripts/loop-query.sh
 ```
 
-![Canary Traffic in Kiali](images/request-delays.png)
+![Canary Traffic in Kiali](images/kiali-request-delays.png)
 
 
 # Cleanup
