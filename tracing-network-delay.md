@@ -14,7 +14,7 @@ scripts/loop-query.sh
 kubectl apply -f deploy/virtual-service-age-delay.yaml
 ```
 
-![Network delay in in Jaeger][images/jaeger-network-delay.png]
+![Network delay in in Jaeger](images/jaeger-network-delay.png)
 
 
 # Cleanup

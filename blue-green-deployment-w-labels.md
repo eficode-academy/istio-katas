@@ -25,7 +25,7 @@ Next, open Kiali and inspect the service topology as shown below. Note the
 shown. Also, note that the traffic routed to `name-v1` and `name-v2` are
 approximately equally distributed. 
 
-![Canary Traffic in Kiali][images/kiali-blue-green-w-labels-1-anno.png]
+![Canary Traffic in Kiali](images/kiali-blue-green-w-labels-1-anno.png)
 
 The load balancing we are seeing are ordinary Kubernetes service load balancing.
 
@@ -49,7 +49,7 @@ If we observe the result in Kiali, we see that all our traffic is now routed to
 `x-test` header. We also see, that Kiali indicates that routing is being
 affected by a `VirtualService`:
 
-![Canary Traffic in Kiali][images/kiali-blue-green-w-labels-2-anno.png]
+![Canary Traffic in Kiali](images/kiali-blue-green-w-labels-2-anno.png)
 
 In another shell, run the following to continously query the sentence service
 version `name-v2`:
@@ -61,7 +61,7 @@ scripts/loop-query.sh 'x-test: use-v2'
 With this we now observe in Kiali, that traffic is equally distributed between
 the two versions:
 
-![Canary Traffic in Kiali][images/kiali-blue-green-w-labels-3-anno.png]
+![Canary Traffic in Kiali](images/kiali-blue-green-w-labels-3-anno.png)
 
 
 # Cleanup
