@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name
+spec:
+  hosts:
+  - name
+  gateways:
+  - mesh
+  http:
+  - match:
+    - headers:
+        x-test:
+          exact: use-v2
+    route:
+    - destination:
+        host: name-v2
+  - route:
+    - destination:
+        host: name-v1
