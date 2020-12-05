@@ -20,7 +20,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: sentences:v1
+      - image: michaelvl/sentences:v1
         name: name
         env:
         - name: "SENTENCE_MODE"
