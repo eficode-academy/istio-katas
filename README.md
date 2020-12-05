@@ -9,7 +9,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [Blue/green Deployments Using Kubernetes Labels](blue-green-deployment-w-labels.md)
 - [Canary Deployments](canary-deployment.md)
 - [Network Delay Investigations](request-delays.md)
-- [Network Delay Investigations with Jaeger](jaeger-network-delay.md)
+- [Network Delay Investigations with Jaeger](tracing-network-delay.md)
 
 ## Deployment Patterns
 
