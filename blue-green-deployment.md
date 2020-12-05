@@ -23,7 +23,7 @@ service/name-v1      ClusterIP   10.107.209.9     <none>        5000/TCP        
 service/sentences    NodePort    10.110.120.194   <none>        5000:32005/TCP   2m17s
 ```
 
-In another shell, run the following to continously query the sentence service
+In another shell, run the following to continuously query the sentence service
 and observe the effect of deployment changes:
 
 ```sh

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: age
+    version: v1
+  name: age
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: age
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: age
+        version: v1
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: age
+        env:
+        - name: "SENTENCE_MODE"
+          value: "age"
+        - name: "SENTENCE_RANDOM_SVC_URL"
+          value: "http://random:5000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: age
+    version: v1
+  name: age
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: sentences
+    mode: age
+    version: v1
+  type: ClusterIP
+

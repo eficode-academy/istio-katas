@@ -13,7 +13,7 @@ kubectl apply -f deploy/v1
 kubectl apply -f deploy/v2
 ```
 
-In another shell, run the following to continously query the sentence service
+In another shell, run the following to continuously query the sentence service
 and observe the effect of deployment changes:
 
 ```sh
@@ -51,7 +51,7 @@ affected by a `VirtualService`:
 
 ![Canary Traffic in Kiali](images/kiali-blue-green-w-labels-2-anno.png)
 
-In another shell, run the following to continously query the sentence service
+In another shell, run the following to continuously query the sentence service
 version `name-v2`:
 
 ```sh

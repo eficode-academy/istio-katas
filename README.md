@@ -8,7 +8,8 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [Blue/green Deployments](blue-green-deployment.md)
 - [Blue/green Deployments Using Kubernetes Labels](blue-green-deployment-w-labels.md)
 - [Canary Deployments](canary-deployment.md)
-- [Network Delay Investigations](request-delays.md)
+- [Network Delay Investigations - Simple](request-delays.md)
+- [Network Delay Investigations - Larger Application Graph](request-delays-larger-graph.md)
 - [Network Delay Investigations with Jaeger](tracing-network-delay.md)
 
 ## Deployment Patterns
@@ -28,11 +29,11 @@ Exercises will cover the following deployment patterns:
 Typically, blue/green and canary deployments are used in succession. First
 blue/green deployments are used to validate a new version in a production
 environment such that other production-dependencies can be included in the
-tests. When deliberate testing using blue/green deployments and have proved the
+tests. When deliberate testing using blue/green deployments have proved the
 software to be OK, a larger group of users are exposed to the new version using
 canary deployments.
 
-Another type of deployments are:
+Another deployments pattern is:
 
 - A/B testing. With this type of deployment, a certain percentage of end-users
   are exposed to a test version. This is typically used to test out different

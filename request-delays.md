@@ -14,7 +14,7 @@ kubectl apply -f deploy/v2
 kubectl apply -f deploy/v3
 ```
 
-In another shell, run the following to continously query the sentence service
+In another shell, run the following to continuously query the sentence service
 and observe the effect of deployment changes:
 
 ```sh

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: random
+    version: v1
+  name: random
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: random
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: random
+        version: v1
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: random
+        env:
+        - name: "SENTENCE_MODE"
+          value: "random"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: random
+    version: v1
+  name: random
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: sentences
+    mode: random
+    version: v1
+  type: ClusterIP
+

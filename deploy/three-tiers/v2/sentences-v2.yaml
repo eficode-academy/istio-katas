@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: sentence
+    version: v2
+  name: sentences-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: sentence
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: sentence
+        version: v2
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: sentences
+        env:
+        - name: "SENTENCE_MODE"
+          value: "sentence"
+        - name: "SENTENCE_AUTH_BUG_PROBABILITY"
+          value: "0.2"
