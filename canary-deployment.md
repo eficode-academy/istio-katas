@@ -50,6 +50,8 @@ version. Deployment tools like Spinnaker and ArgoRollout supports such logic.
 
 # Cleanup
 
+```sh
 kubectl delete -f deploy/v1
 kubectl delete -f deploy/v2
 kubectl delete -f deploy/virtual-service-canary.yaml
+```

@@ -66,6 +66,8 @@ the two versions:
 
 # Cleanup
 
+```sh
 kubectl delete -f deploy/v1
 kubectl delete -f deploy/v2
 kubectl delete -f deploy/virtual-service-label-based.yaml
+```

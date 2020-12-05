@@ -19,5 +19,7 @@ kubectl apply -f deploy/virtual-service-age-delay.yaml
 
 # Cleanup
 
+```sh
 kubectl delete -f deploy/v1
 kubectl delete -f deploy/virtual-service-age-delay.yaml
+```
