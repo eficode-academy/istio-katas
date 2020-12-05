@@ -28,15 +28,25 @@ and observe the effect of deployment changes:
 scripts/loop-query.sh
 ```
 
+Currently we observe ordinary Kubernetes service load balancing, i.e. we see
+both `v1` and `v2` results.
 
+Apply the following Istio
+[VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service/)
+to specify that 10% of the traffic should go to `v2`:
 
 ```sh
 kubectl apply -f deploy/virtual-service-canary.yaml
 ```
 
-![Canary Traffic in Kiali][images/kiali-canary.png]
+Open Kiali, and observe that traffic is routed as expected. Note that the
+'display' setting has been set to show 'request percentage':
 
+![Canary Traffic in Kiali](images/kiali-canary-anno.png)
 
+Canary deployments are often combined with logic that combine metrics monitoring
+and a gradually increase in the percentage of traffic routed to the test
+version. Deployment tools like Spinnaker and ArgoRollout supports such logic.
 
 # Cleanup
 
