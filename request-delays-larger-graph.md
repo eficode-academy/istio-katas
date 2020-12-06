@@ -31,13 +31,27 @@ scripts/loop-query.sh
 
 ![No delays with v1](images/kiali-three-tiers-1.png)
 
+Next, deploy `v2` of the `sentences` service:
+
 ```sh
 kubectl apply -f deploy/three-tiers/v2/
 ```
 
+This version has a (simulated) bug, that cause large delays on the combined
+service as we can see from the following Kiala application graph.
+
 ![Delays with v2](images/kiali-three-tiers-2.png)
 
-![Traces in Jaeger](images/jaeger-three-tiers-1.png)
+Now the SRE team for the `random` service is being paged, and they might find it
+difficult to understand what have changed. Remember, the `sentences` service
+might be developed by another team. How can the SRE team for `random` figure out
+that they need to contact the responsible for `sentences` version `v2`?
+
+If we search for traces in Jaeger where the trace time is high and inspect the
+trace, we will find that the top-level service is indeed `sentences` version
+`v2`:
+
+![Traces in Jaeger](images/jaeger-three-tiers-1-anno.png)
 
 # Cleanup
 
