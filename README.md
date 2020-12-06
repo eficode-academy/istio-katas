@@ -23,8 +23,8 @@ Exercises will cover the following deployment patterns:
 
 - Canary. This pattern have multiple versions deployed for test and both/all
   versions are in active use. The version to use are determined on each request
-  based on **statistics**, e.g. '1% of traffic should go to the test
-  version'. Typically its end-users that are being exposed to this.
+  based on **statistics**, e.g. *1% of traffic should go to the test
+  version*. Typically its end-users that are being exposed to this.
 
 Typically, blue/green and canary deployments are used in succession. First
 blue/green deployments are used to validate a new version in a production
