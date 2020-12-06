@@ -48,10 +48,20 @@ Canary deployments are often combined with logic that combine metrics monitoring
 and a gradually increase in the percentage of traffic routed to the test
 version. Deployment tools like Spinnaker and ArgoRollout supports such logic.
 
+When we are confident, that `name-v2` is solid, we can promote it to be the
+primary version:
+
+```sh
+kubectl apply -f deploy/virtual-service-canary-promote.yaml
+```
+
+Again, this promotion step would normally be handled automatically by an
+continous deployment agent, but we can also do it manually as we did here.
+
 # Cleanup
 
 ```sh
 kubectl delete -f deploy/v1
 kubectl delete -f deploy/v2
-kubectl delete -f deploy/virtual-service-canary.yaml
+kubectl delete -f deploy/virtual-service-canary-promote.yaml
 ```
