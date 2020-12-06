@@ -1,12 +1,17 @@
 # Blue/green deployments
 
-First, deploy version `v1`:
+This exercise will show how to implement blue/green deployments using Kubernetes
+services to identify different versions. In exercise [Blue/green deployments
+with Kubernetes Labels](blue-green-deployment-w-labels.md) we will extend this
+to use Kubernetes labels for identifying different versions.
+
+First, deploy version `v1` of the test application:
 
 ```sh
 kubectl apply -f deploy/v1
 ```
 
-This created three deployments with associated services. After deployment you shouid see:
+This created three deployments with associated services. After deployment you should see:
 
 ```sh
 kubectl get po,svc
@@ -22,6 +27,9 @@ service/name         ClusterIP   10.97.114.150    <none>        5000/TCP        
 service/name-v1      ClusterIP   10.107.209.9     <none>        5000/TCP         2m18s
 service/sentences    NodePort    10.110.120.194   <none>        5000:32005/TCP   2m17s
 ```
+
+Note that there are two services for `name` - a version specific one `name-v1`
+and one non-versioned `name` (referencing all versions of `name`).
 
 In another shell, run the following to continuously query the sentence service
 and observe the effect of deployment changes:
@@ -43,21 +51,28 @@ kubectl apply -f deploy/v2
 
 ## Header Based Routing
 
+What we currently is observing is ordinary Kubernetes load balancing between
+PODs behind the `name` service.
+
 Next we will configure our Istio service mesh to route traffic to the two
 different version through the Kubernetes services `name-v1` and `name-v2`. Since
 our aim is blue/green deployment, we want to be able to deliberately choose
 which version of `name` we use, however, since we only access the `name` service
-indirectly through `sentences` we need some way of communicating this
-information. We does this through [HTTP headers](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields).
+indirectly through the `sentences` service we need some way of communicating
+this information. We do this through [HTTP
+headers](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields).
 
 In particular we will use the header `x-test` to indicate our version
 preference. Use the following command to continuously run a query against the
-sentence service with this header set to the value of `use-v2`:
+sentence service with the `x-test` HTTP header set to the value of `use-v2`:
 
 
 ```sh
 scripts/loop-query.sh 'x-test: use-v2'
 ```
+
+Since we haven't yet changed the routing, both query commands return results
+from both `name-v1` and `name-v2`.
 
 To configure routing in the Istio service mesh based on the `x-test` header
 apply the following Istio `VirtualService` resource:
@@ -76,8 +91,8 @@ This exercise showed how a Istio
 [VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service/)
 could be used to modify routing from a host `name` to alternative hosts
 `name-v1` and `name-v2` with the hosts being represented by Kubernetes
-services. This is however, not limited to Kubernetes services and this approach
-could be used for other service types, including services external to
+services. Istio routing however, not limited to Kubernetes services and this
+approach could be used for other service types, including services external to
 Kubernetes.
 
 # Cleanup
