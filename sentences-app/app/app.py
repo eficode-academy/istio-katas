@@ -63,7 +63,7 @@ def get_random_age():
     return str(get_random_int(min_age, max_age))
 
 def get_random_name():
-    nidx = get_random_int(0, len(names))
+    nidx = get_random_int(0, len(names)-1)
     return names[nidx]
         
 def do_random_delay():
