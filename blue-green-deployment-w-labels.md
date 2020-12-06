@@ -3,10 +3,10 @@
 Exercise [Blue/green deployments](blue-green-deployment.md) showed how to
 implement alternative service routing using Kubernetes service to define
 different version. In Kubernetes labels are often used to define different
-versions. In this exercise we will show how to use do routing with Istio and
+versions. In this exercise we will show how to do version routing with Istio and
 Kubernetes labels.
 
-First, deploy version `v1` and `v2`:
+First, deploy version `v1` and `v2` of the test application:
 
 ```sh
 kubectl apply -f deploy/v1
@@ -45,7 +45,7 @@ kubectl apply -f deploy/virtual-service-label-based.yaml
 ```
 
 If we observe the result in Kiali, we see that all our traffic is now routed to
-`name-v1` because the `query-loop.sh` command we are using us not adding an
+`name-v1` because the `query-loop.sh` command we are using is not adding an
 `x-test` header. We also see, that Kiali indicates that routing is being
 affected by a `VirtualService`:
 
@@ -58,8 +58,8 @@ version `name-v2`:
 scripts/loop-query.sh 'x-test: use-v2'
 ```
 
-With this we now observe in Kiali, that traffic is equally distributed between
-the two versions:
+With this we now observe in Kiali, that traffic is approximately evenly
+distributed between the two versions:
 
 ![Canary Traffic in Kiali](images/kiali-blue-green-w-labels-3-anno.png)
 
