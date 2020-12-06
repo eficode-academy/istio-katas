@@ -116,8 +116,9 @@ def get_sentence():
         do_random_delay()
         hdrs = get_fwd_headers()
         # Simulate authentication and possibly bug
-        if float(random.randint(0,100))/100.0 < authentication_bug_probability:
-            logging.warning('Simulating authentication bug - adding wrong header')
+        p = float(random.randint(0,100))/100.0
+        if p < authentication_bug_probability:
+            logging.warning('Simulating authentication bug (p={}) - adding wrong header'.format(p))
             hdrs['Authorization'] = auth_z_bug_value
         else:
             hdrs['Authorization'] = 'something-valid'
