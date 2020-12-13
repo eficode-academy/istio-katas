@@ -8,10 +8,10 @@ spec:
     loadBalancer:
       localityLbSetting:
         distribute:
-         - from: eu-central-1/zone-b/*
+         - from: eu-central-1/zone-a/*
            to:
-             eu-central-1/zone-b/*: 90
-             eu-central-1/zone-a/*: 10
+             eu-central-1/zone-a/*: 90
+             eu-central-1/zone-b/*: 10
     connectionPool:
       tcp:
         maxConnections: 100
