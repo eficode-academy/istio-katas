@@ -11,6 +11,10 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [Network Delay Investigations - Simple](request-delays.md)
 - [Network Delay Investigations - Larger Application Graph](request-delays-larger-graph.md)
 - [Network Delay Investigations with Jaeger](tracing-network-delay.md)
+- Getting Traffic into the Mesh
+- Getting Traffic out of the Mesh
+- Controlling Load Balancing
+- [Locality/Topology Aware Load Balancing and Failover](locality-aware-load-balancing.md)
 
 ## Deployment Patterns
 

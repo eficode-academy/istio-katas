@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: multitool
+spec:
+  host: multitool
+  trafficPolicy:
+    loadBalancer:
+      localityLbSetting:
+        distribute:
+         - from: eu-central-1/zone-b/*
+           to:
+             eu-central-1/zone-b/*: 90
+             eu-central-1/zone-a/*: 10
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http2MaxRequests: 100
+        maxRequestsPerConnection: 10
+    outlierDetection:
+      consecutiveErrors: 7
+      interval: 30s
+      baseEjectionTime: 30s
