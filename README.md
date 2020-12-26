@@ -15,6 +15,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - Getting Traffic out of the Mesh
 - Controlling Load Balancing
 - [Locality/Topology Aware Load Balancing and Failover](locality-aware-load-balancing.md)
+- [WIP:Metrics](metrics.md)
 
 ## Deployment Patterns
 
