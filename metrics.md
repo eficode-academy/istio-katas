@@ -97,6 +97,38 @@ Annotations:  prometheus.io/path: /stats/prometheus
 
 i.e. the metrics scrape endpoint has been moved from the application to the sidecar.
 
+### Fetch Istio Metrics
+
+> The following illustrate how to fetch the merged metrics using the command
+> line. If you have Prometheus or e.g. Grafana deployed, you could also use one of
+> those to do the queries shown here.
+
+First, list PODs to get their cluster IP:
+
+```sh
+kubectl get pods -o wide
+```
+
+Next, deploy a test tool (if you prefer, you can use any other tool that have `curl` and `grep`):
+
+```sh
+kubectl create deploy multitool --image praqma/network-multitool
+kubectl exec -it <multitool container> -- bash
+```
+
+Inside the test tool, run `curl` against the metrics scrape endpoint defined by
+the POD annotations:
+
+```sh
+curl <POD IP>:15020/stats/prometheus | grep requests_total
+```
+
+Note, that we both see a `sentence_requests_total` metric and an
+`istio_requests_total` metric and they should show the same numeric value. The
+Istio metric contain additional labels for e.g. source and destination of
+requests. This is the information that Kiali use to dynamically build an
+application graph.
+
 
 
 
