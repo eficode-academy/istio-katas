@@ -16,7 +16,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [WIP: Multiple Teams and Separation of Duties](multi-teams.md)
 - Controlling Load Balancing
 - [Locality/Topology Aware Load Balancing and Failover](locality-aware-load-balancing.md)
-- [WIP:Metrics](metrics.md)
+- [A Tour of the Istio Metrics](metrics.md)
 
 ## Deployment Patterns
 
