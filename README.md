@@ -10,7 +10,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [Canary Deployments](canary-deployment.md)
 - [Network Delay Investigations - Simple](request-delays.md)
 - [Network Delay Investigations - Larger Application Graph](request-delays-larger-graph.md)
-- [Network Delay Investigations with Jaeger](tracing-network-delay.md)
+- [WIP: Network Delay Investigations with Jaeger](tracing-network-delay.md)
 - [Getting Traffic into the Mesh with Ingress Gateways](getting-traffic-into-mesh.md)
 - [WIP: Getting Traffic out of the Mesh](getting-traffic-out-of-mesh.md)
 - [WIP: Multiple Teams and Separation of Duties](multi-teams.md)
