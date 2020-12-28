@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: sentences
+spec:
+  hosts:
+  - "sentences.example.com"
+  gateways:
+  - sentences
+  http:
+  - route:
+    - destination:
+        host: sentences
