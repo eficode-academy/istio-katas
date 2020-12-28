@@ -116,12 +116,12 @@ through the ingress gateway.
 
 > Note that this scripts assumes your Istio ingress gateway are exposed with a LoadBalancer service and labelled with `app=istio-ingressgateway`. If this is not the case, you might want to adjust the script.
 
-With queries running against the sentences application, we can see them flowing
-through the ingress gateway in Kiali:
-
 ```sh
 scripts/loop-query-loadbalancer-ep.sh
 ```
+
+With queries running against the sentences application, we can see them flowing
+through the ingress gateway in Kiali:
 
 ![Traffic through ingress gateway](images/kiali-ingress-gw.png)
 
