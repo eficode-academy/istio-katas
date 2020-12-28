@@ -1,4 +1,4 @@
-# Getting Traffic into the Mesh
+# Getting Traffic into the Mesh with Ingress Gateways
 
 The previous exercises used a Kubernetes node-port service to get traffic to the
 sentences application. This approach means that external requests enters the
