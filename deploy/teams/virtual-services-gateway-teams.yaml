@@ -1,0 +1,84 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: sentences
+  namespace: $SENTENCES_INGRESSGATEWAY_NS
+spec:
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: sentences-tls-secret
+    hosts:
+    - "sentences.example.com"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: sentences-root
+  namespace: $SENTENCES_INGRESSGATEWAY_NS
+spec:
+  hosts:
+  - "sentences.example.com"
+  gateways:
+  - $SENTENCES_INGRESSGATEWAY_NS/sentences
+  http:
+  - match:
+    - uri:
+        prefix: "/age"
+    rewrite:
+      uri: "/"
+    delegate:
+       name: age
+       namespace: $SENTENCES_AGE_NS
+  - match:
+    - uri:
+        prefix: "/name"
+    rewrite:
+      uri: "/"
+    delegate:
+        name: name
+        namespace: $SENTENCES_NAME_NS
+  - route:
+    delegate:
+       name: sentences
+       namespace: $SENTENCES_NS
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: sentences
+  namespace: $SENTENCES_NS
+spec:
+  http:
+  - route:
+    - destination:
+        host: sentences.$SENTENCES_NS.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: age
+  namespace: $SENTENCES_AGE_NS
+spec:
+  http:
+  - route:
+    - destination:
+        host: age.$SENTENCES_AGE_NS.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: name
+  namespace: $SENTENCES_NAME_NS
+spec:
+  http:
+  - route:
+    - destination:
+        host: name.$SENTENCES_NAME_NS.svc.cluster.local

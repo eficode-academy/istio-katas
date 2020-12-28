@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: sentence
+  name: sentences
+  namespace: $SENTENCES_NS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: sentence
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: sentence
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: sentences
+        env:
+        - name: "SENTENCE_MODE"
+          value: "sentence"
+        - name: "SENTENCE_AGE_SVC_URL"
+          value: "http://age.$SENTENCES_AGE_NS.svc.cluster.local:5000"
+        - name: "SENTENCE_NAME_SVC_URL"
+          value: "http://name.$SENTENCES_NAME_NS.svc.cluster.local:5000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: sentence
+  name: sentences
+  namespace: $SENTENCES_NS
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: sentences
+    mode: sentence
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: age
+  name: age
+  namespace: $SENTENCES_AGE_NS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: age
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: age
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: age
+        env:
+        - name: "SENTENCE_MODE"
+          value: "age"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: age
+  name: age
+  namespace: $SENTENCES_AGE_NS
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: sentences
+    mode: age
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: name
+  name: name
+  namespace: $SENTENCES_NAME_NS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: name
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: name
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: name
+        env:
+        - name: "SENTENCE_MODE"
+          value: "name"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: name
+  name: name
+  namespace: $SENTENCES_NAME_NS
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: sentences
+    mode: name
+  type: ClusterIP
