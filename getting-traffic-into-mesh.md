@@ -127,12 +127,12 @@ through the ingress gateway in Kiali:
 
 ## A Note on 'Unknown' Traffic
 
-In the view above from Kiali, we see some TCP traffic originating from an 'unknown' source. Such traffic is typically caused by:
+In the view above from Kiali above, we see TCP traffic originating from an 'unknown' source. Such traffic is typically caused by:
 
 - Traffic originating from PODs outside the mesh, i.e. without an Istio sidecar.
-- Traffic that Istio is not or cannot be detect to be HTTP/HTTPS.
+- Traffic that Istio is not or cannot detect to be HTTP/HTTPS.
 
-In the latter case, we can specify in our Kubernetes service what the protocol on top of TCP is. See [Istio protocol selection](https://istio.io/latest/docs/ops/configuration/traffic-management/protocol-selection)
+In the latter situation, we can specify the application protocol for each of our ports in our Kubernetes service using the [appProtocol field](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#serviceport-v1-core). See also [Istio protocol selection](https://istio.io/latest/docs/ops/configuration/traffic-management/protocol-selection).
 
 For the sentences service, we could modify `deploy/v1/sentences.yaml` by adding
 `appProtocol: http` as shown in the excerpt below.
