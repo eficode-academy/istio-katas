@@ -49,7 +49,7 @@ To configure ingress through a gateway we need to define two resources:
 
 The gateway definition found in `deploy/mesh-in/gateway.yaml` looks like this:
 
-``
+```
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
