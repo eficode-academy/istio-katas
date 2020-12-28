@@ -50,4 +50,26 @@ Another deployments pattern is:
 
 ## Test Application
 
-TBD.
+The test application implements a simple 'sentences' builder, which can build
+sentences from the following simple algorithm:
+
+```
+age = random(0,100)
+name = random(['Peter','Ray','Egon'])
+return name + ' is ' + age + 'years'
+```
+
+i.e. it returns sentences of the form: 'Peter is 42 years'.
+
+The application is made up of three services, one which can be queried for the
+random age, one which can be queried for a random name and a frontend, which
+calls the two other through HTTP requests and formats the final sentences. This
+is deployed to Kubernetes using three Deployments - typically with names like
+`age`, `name` and `sentences`.
+
+The Python source for the application can be found
+[here](sentences-app/app/app.py). Note that the application is a 'test'
+application and thus configurable for different test purposes.  Much of the
+configuration is through environment variables. The most important environment
+variable is `SENTENCE_MODE` which define whether the application is running in
+`age`, `name` or `sentences` mode.
