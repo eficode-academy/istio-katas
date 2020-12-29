@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: sentence
+  name: sentences
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: sentence
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: sentence
+      annotations:
+        sidecar.istio.io/inject: 'false'
+        prometheus.istio.io/merge-metrics: 'false'
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8000'
+        prometheus.io/path: '/metrics'
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: sentences
+        env:
+        - name: "SENTENCE_MODE"
+          value: "sentence"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: sentence
+  name: sentences
+spec:
+  ports:
+  - name: api
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+  - name: metrics
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: sentences
+    mode: sentence
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: age
+  name: age
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: age
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: age
+      annotations:
+        sidecar.istio.io/inject: 'false'
+        prometheus.istio.io/merge-metrics: 'false'
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8000'
+        prometheus.io/path: '/metrics'
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: age
+        env:
+        - name: "SENTENCE_MODE"
+          value: "age"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: age
+  name: age
+spec:
+  ports:
+  - name: api
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+  - name: metrics
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: sentences
+    mode: age
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: name
+  name: name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: name
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: name
+      annotations:
+        sidecar.istio.io/inject: 'false'
+        prometheus.istio.io/merge-metrics: 'false'
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8000'
+        prometheus.io/path: '/metrics'
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: name
+        env:
+        - name: "SENTENCE_MODE"
+          value: "name"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: name
+  name: name
+spec:
+  ports:
+  - name: api
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+  - name: metrics
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: sentences
+    mode: name
+  type: NodePort
