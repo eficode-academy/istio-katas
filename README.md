@@ -13,7 +13,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [WIP: Network Delay Investigations with Jaeger](tracing-network-delay.md)
 - [Getting Traffic into the Mesh with Ingress Gateways](getting-traffic-into-mesh.md)
 - [WIP: Getting Traffic out of the Mesh](getting-traffic-out-of-mesh.md)
-- [WIP: Multiple Teams and Separation of Duties](multi-teams.md)
+- [Multiple Teams and Separation of Duties](multi-teams.md)
 - Controlling Load Balancing
 - [Locality/Topology Aware Load Balancing and Failover](locality-aware-load-balancing.md)
 - [A Tour of the Istio Metrics](metrics.md)

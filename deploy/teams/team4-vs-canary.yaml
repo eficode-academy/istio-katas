@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: name
+  namespace: $SENTENCES_NAME_NS
+  labels:
+    app.kubernetes.io/part-of: sentences
+spec:
+  host: name
+  subsets:
+  - name: name-v1
+    labels:
+      version: v1
+  - name: name-v2
+    labels:
+      version: v2
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name
+  namespace: $SENTENCES_NAME_NS
+  labels:
+    app.kubernetes.io/part-of: sentences
+spec:
+  http:
+  - route:
+    - destination:
+        host: name.$SENTENCES_NAME_NS.svc.cluster.local
+        subset: name-v2
+      weight: 10
+    - destination:
+        host: name.$SENTENCES_NAME_NS.svc.cluster.local
+        subset: name-v1
+      weight: 90

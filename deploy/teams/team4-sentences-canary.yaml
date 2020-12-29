@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences-name
+    mode: name
+    app.kubernetes.io/part-of: sentences
+    version: v2
+  name: name-v2
+  namespace: $SENTENCES_NAME_NS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences-name
+      mode: name
+      app.kubernetes.io/part-of: sentences
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: sentences-name
+        mode: name
+        app.kubernetes.io/part-of: sentences
+        version: v2
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: name
+        env:
+        - name: "SENTENCE_MODE"
+          value: "name"
+        - name: "SENTENCE_NAMES"
+          value: "Athos (v2),Porthos (v2),Aramis (v2),d'Artagnan (v2)"

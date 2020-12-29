@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: name
+  namespace: $SENTENCES_NAME_NS
+  labels:
+    app.kubernetes.io/part-of: sentences
+spec:
+  http:
+  - route:
+    - destination:
+        host: name.$SENTENCES_NAME_NS.svc.cluster.local

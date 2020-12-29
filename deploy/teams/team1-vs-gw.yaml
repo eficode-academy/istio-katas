@@ -3,6 +3,8 @@ kind: Gateway
 metadata:
   name: sentences
   namespace: $SENTENCES_INGRESSGATEWAY_NS
+  labels:
+    app.kubernetes.io/part-of: sentences
 spec:
   selector:
     app: istio-ingressgateway
@@ -23,6 +25,8 @@ kind: VirtualService
 metadata:
   name: sentences-root
   namespace: $SENTENCES_INGRESSGATEWAY_NS
+  labels:
+    app.kubernetes.io/part-of: sentences
 spec:
   hosts:
   - "sentences.example.com"
@@ -49,36 +53,3 @@ spec:
     delegate:
        name: sentences
        namespace: $SENTENCES_NS
----
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: sentences
-  namespace: $SENTENCES_NS
-spec:
-  http:
-  - route:
-    - destination:
-        host: sentences.$SENTENCES_NS.svc.cluster.local
----
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: age
-  namespace: $SENTENCES_AGE_NS
-spec:
-  http:
-  - route:
-    - destination:
-        host: age.$SENTENCES_AGE_NS.svc.cluster.local
----
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: name
-  namespace: $SENTENCES_NAME_NS
-spec:
-  http:
-  - route:
-    - destination:
-        host: name.$SENTENCES_NAME_NS.svc.cluster.local

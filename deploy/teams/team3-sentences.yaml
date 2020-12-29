@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences-age
+    mode: age
+    app.kubernetes.io/part-of: sentences
+  name: age
+  namespace: $SENTENCES_AGE_NS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences-age
+      mode: age
+      app.kubernetes.io/part-of: sentences
+  template:
+    metadata:
+      labels:
+        app: sentences-age
+        mode: age
+        app.kubernetes.io/part-of: sentences
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: age
+        env:
+        - name: "SENTENCE_MODE"
+          value: "age"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences-age
+    mode: age
+    app.kubernetes.io/part-of: sentences
+  name: age
+  namespace: $SENTENCES_AGE_NS
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+    appProtocol: http
+  selector:
+    app: sentences-age
+    mode: age
+    app.kubernetes.io/part-of: sentences
+  type: ClusterIP

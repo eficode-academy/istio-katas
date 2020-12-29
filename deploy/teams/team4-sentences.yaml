@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences-name
+    mode: name
+    app.kubernetes.io/part-of: sentences
+    version: v1
+  name: name
+  namespace: $SENTENCES_NAME_NS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences-name
+      mode: name
+      app.kubernetes.io/part-of: sentences
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: sentences-name
+        mode: name
+        app.kubernetes.io/part-of: sentences
+        version: v1
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: name
+        env:
+        - name: "SENTENCE_MODE"
+          value: "name"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences-name
+    mode: name
+    app.kubernetes.io/part-of: sentences
+  name: name
+  namespace: $SENTENCES_NAME_NS
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+    appProtocol: http
+  selector:
+    app: sentences-name
+    mode: name
+    app.kubernetes.io/part-of: sentences
+  type: ClusterIP

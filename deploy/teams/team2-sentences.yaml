@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences-frontend
+    mode: sentence
+    app.kubernetes.io/part-of: sentences
+  name: sentences
+  namespace: $SENTENCES_NS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences-frontend
+      mode: sentence
+      app.kubernetes.io/part-of: sentences
+  template:
+    metadata:
+      labels:
+        app: sentences-frontend
+        mode: sentence
+        app.kubernetes.io/part-of: sentences
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: sentences
+        env:
+        - name: "SENTENCE_MODE"
+          value: "sentence"
+        - name: "SENTENCE_AGE_SVC_URL"
+          value: "http://age.$SENTENCES_AGE_NS.svc.cluster.local:5000"
+        - name: "SENTENCE_NAME_SVC_URL"
+          value: "http://name.$SENTENCES_NAME_NS.svc.cluster.local:5000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences-frontend
+    mode: sentence
+    app.kubernetes.io/part-of: sentences
+  name: sentences
+  namespace: $SENTENCES_NS
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+    appProtocol: http
+  selector:
+    app: sentences-frontend
+    mode: sentence
+    app.kubernetes.io/part-of: sentences
+  type: ClusterIP
