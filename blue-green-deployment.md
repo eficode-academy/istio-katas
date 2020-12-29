@@ -11,9 +11,16 @@ First, deploy version `v1` of the test application:
 kubectl apply -f deploy/v1
 ```
 
-This created three deployments with associated services. After deployment you should see:
+This created three deployments with associated services. After deployment list
+PODs and services with:
 
 ```sh
+kubectl get po,svc
+```
+
+We should see something like the following:
+
+```
 kubectl get po,svc
 NAME                             READY   STATUS    RESTARTS   AGE
 pod/age-79475c5566-5677k         2/2     Running   0          2m18s
@@ -22,7 +29,6 @@ pod/sentences-7d9cc5c899-sms7j   2/2     Running   0          2m17s
 
 NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
 service/age          ClusterIP   10.106.5.47      <none>        5000/TCP         2m18s
-service/kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP          39m
 service/name         ClusterIP   10.97.114.150    <none>        5000/TCP         2m18s
 service/name-v1      ClusterIP   10.107.209.9     <none>        5000/TCP         2m18s
 service/sentences    NodePort    10.110.120.194   <none>        5000:32005/TCP   2m17s
