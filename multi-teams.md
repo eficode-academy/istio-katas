@@ -269,7 +269,21 @@ Hint: We haven't fully implemented what is shown in the top illustration.
 
 Hint 2: Look at purple circle (2) in the top illustration.
 
-Hint 3: `cat deploy/teams/team4-vs-canary-2.yaml | envsubst | kubectl apply -f -`
+Hint 3: Look in Kiali to see how traffic flows.
+
+Hint 4: `cat deploy/teams/team4-vs-canary-2.yaml | envsubst | kubectl apply -f -`
+
+## A Final Note on Labels
+
+The three components of the sentences application have different values of the
+`app` label, and since Istio/Kiali use this to separate *workloads*, we can see
+the three services are circled in Kiali. We can double-click on a workload in
+Kiali to focus on it and leave out other services.
+
+![Kiali with separate workloads and canary](images/kiali-teams-canary.png)
+
+Besides the `app` label, Istio/Kiali also use the `version` label ti identify
+different workload versions.
 
 # Cleanup
 
