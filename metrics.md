@@ -157,7 +157,8 @@ metrics.
 
 The labels `source_workload`, `destination_workload`, `source_version` etc. is
 the primary information Kiali use to dynamically build application graphs and
-versioned graphs.
+versioned graphs. See this link for more information on how [Kiali use
+Prometheus metrics](https://kiali.io/documentation/latest/faq/#prom-metrics)
 
 ## Cleanup
 
