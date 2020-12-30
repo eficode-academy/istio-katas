@@ -2,8 +2,8 @@
 
 set -e
 
-ARG_PROTO=$1
-ARG_PATH=$2
+ARG_PROTO=${1:-"http"}
+ARG_PATH=${2:-""}
 
 CURL_OPTS=""
 
@@ -19,10 +19,7 @@ else
 fi
 HOST="sentences.example.com"
 
-URL_PATH="/"
-if [ ! -z $ARG_PATH ]; then
-    URL_PATH="/$ARG_PATH"
-fi
+URL_PATH="/$ARG_PATH"
 
 echo "Using ingress gateway with label: $INGRESS_GW_LABEL"
 LBIP=$(kubectl -n istio-system get svc -l $INGRESS_GW_LABEL -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
