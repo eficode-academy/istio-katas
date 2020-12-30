@@ -229,7 +229,7 @@ The Istio ingress gateway are typically located in the `istio-system` namespace,
 however, there are good reasons for not doing this in a production system:
 
 1. The Istio controlplane is central in securing the Istio mesh - access the the
-`istio-system` namespace should be limited to infrastrusture SRE roles.
+`istio-system` namespace should be limited to infrastructure SRE roles.
 
 2. Ingress gateways logically belong to one or more applications since they
 consume capacity from the PODs. Hence scaling and monitoring the ingress gateway
@@ -277,12 +277,13 @@ Hint 4: `cat deploy/teams/team4-vs-canary-2.yaml | envsubst | kubectl apply -f -
 
 The three components of the sentences application have different values of the
 `app` label, and since Istio/Kiali use this to separate *workloads*, we can see
-the three services are circled in Kiali. We can double-click on a workload in
-Kiali to focus on it and leave out other services.
+the three services are surrounded by an outer box in Kiali. We can double-click
+on a workload in Kiali to focus on it and leave out other services. This is
+particularly useful on larger applications.
 
 ![Kiali with separate workloads and canary](images/kiali-teams-canary.png)
 
-Besides the `app` label, Istio/Kiali also use the `version` label ti identify
+Besides the `app` label, Istio/Kiali also use the `version` label to identify
 different workload versions.
 
 # Cleanup
