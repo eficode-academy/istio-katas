@@ -55,6 +55,10 @@ primary version:
 kubectl apply -f deploy/virtual-service-canary-promote.yaml
 ```
 
+and after a short while we will see all traffic flowing to `v2`:
+
+![Canary promoted](images/kiali-canary-promoted.png)
+
 Again, this promotion step would normally be handled automatically by an
 continous deployment agent, but we can also do it manually as we did here.
 
