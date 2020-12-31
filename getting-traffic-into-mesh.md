@@ -150,6 +150,10 @@ With this change, we see the following in Kiali:
 
 ![Traffic through ingress gateway](images/kiali-ingress-gw-no-tcp.png)
 
+In exercise [Securing with Mutual TLS](mutual-tls.md) we will extend what we
+have seen in this exercise to mutual-TLS, i.e. authenticating both client and
+server in the TLS connection.
+
 ## Cleanup
 
 ```sh

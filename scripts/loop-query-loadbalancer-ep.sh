@@ -8,7 +8,14 @@ ARG_PATH=${2:-""}
 CURL_OPTS=""
 
 INGRESS_GW_LABEL="app=istio-ingressgateway"
-if [ $ARG_PROTO == "https" ]; then
+if [ $ARG_PROTO == "https+mtls" ]; then
+  PROTO="https"
+  PORT=443
+  CA="example.com.crt"
+  CLIENT_CERT="client.example.com.crt"
+  CLIENT_KEY="client.example.com.key"
+  CURL_OPTS="--cacert $CA --cert $CLIENT_CERT --key $CLIENT_KEY"
+elif [ $ARG_PROTO == "https" ]; then
   PROTO="https"
   PORT=443
   CA="example.com.crt"

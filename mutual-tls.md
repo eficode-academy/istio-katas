@@ -1,4 +1,4 @@
-# Authentication with Mutual TLS
+# Securing with Mutual TLS
 
 This exercise will demonstrate how to use mutual TLS inside the mesh between
 PODs with the Istio sidecar injected and also from mesh-external services
@@ -113,10 +113,76 @@ Now we see a missing padlock on the traffic towards `v1`:
 
 ## Mutual TLS from External Clients through Ingress Gateways
 
+This exercise extends the server-side TLS we tried out in [exercise Multiple
+Teams and Separation of Duties](multi-teams.md). Create a Certificate authority
+and certificate as follows (or reuse the one from the previous exercise):
+
+We must have the sentences application deployed with sidecars:
+
+```sh
+cat deploy/mtls/*.yaml |grep -v inject | kubectl apply -f -
+```
+
+Create the certificate authority:
+
+```sh
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout example.com.key -out example.com.crt
+openssl req -out sentences.example.com.csr -newkey rsa:2048 -nodes -keyout sentences.example.com.key -subj "/CN=sentences.example.com/O=ACMEorg"
+openssl x509 -req -days 365 -CA example.com.crt -CAkey example.com.key -set_serial 0 -in sentences.example.com.csr -out sentences.example.com.crt
+```
+
+Also, since we will be using mTLS, we need to create a client certificate we can
+use when accessing the sentences application through the ingress gateway:
+
+```sh
+openssl req -out client.example.com.csr -newkey rsa:2048 -nodes -keyout client.example.com.key -subj "/CN=client.example.com/O=ACMEorg"
+openssl x509 -req -days 365 -CA example.com.crt -CAkey example.com.key -set_serial 1 -in client.example.com.csr -out client.example.com.crt
+```
+
+Create a kubernetes secret in the Kubernetes namespace in which the ingress
+gateway is defined (see [exercise Multiple Teams and Separation of
+Duties](multi-teams.md) for details on this):
+
+```sh
+export SENTENCES_INGRESSGATEWAY_NS=istio-system
+kubectl -n $SENTENCES_INGRESSGATEWAY_NS create secret generic sentences-tls-secret --from-file=cert=sentences.example.com.crt --from-file=key=sentences.example.com.key --from-file=cacert=example.com.crt
+```
+
+
+```sh
+kubectl -n $SENTENCES_INGRESSGATEWAY_NS apply -f deploy/mtls/igw/gateway.yaml
+cat deploy/mtls/igw/virtual-service.yaml | envsubst | kubectl apply -f -
+```
+
+Finally, we query the sentences application using HTTPS and mTLS with the
+following command:
+```sh
+scripts/loop-query-loadbalancer-ep.sh https+mtls
+```
+
+Note the curl options (printed when the script starts) that specify not only the
+certificate authority, but also the client certificate and key which is required
+for mTLS:
+
+### PKI Domains
+
+PKI (Public Key Infrastructure) does not necessarily mean, that we are using
+internet-scoped public/private key encryption. In this exercise we have seen how
+we can leverage the Istio-internal PKI to implement mTLS inside the Istio mesh
+between PODs with Istio sidecars. We have also seen how to setup mTLS for Istio
+ingress gateways. For internet-accessible traffic, a likely cloud architecture
+could be the following, where we have a load balancer in front of the ingress
+gateways that implement internet-trusted TLS termination and DoS protection and
+where we have mTLS between elements behind the load balancer. This provides
+end-to-end protection of traffic.
+
+![Cloud infrastructure mTLS](images/istio-cloud-mtls.png)
 
 ## Cleanup
 
 ```sh
 kubectl delete -f deploy/mtls/peer-auth/permissive.yaml
+kubectl delete -f deploy/mtls/dest-rule/name.yaml
 kubectl delete -f deploy/mtls/
+kubectl -n $SENTENCES_INGRESSGATEWAY_NS delete secret sentences-tls-secret
 ```

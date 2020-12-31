@@ -18,7 +18,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [Locality/Topology Aware Load Balancing and Failover](locality-aware-load-balancing.md)
 - [A Tour of the Istio Metrics](metrics.md)
 - HTTP Network Policies
-- [WIP:Authentication with Mutual TLS](mutual-tls.md)
+- [Securing with Mutual TLS](mutual-tls.md)
 
 ## Deployment Patterns
 
