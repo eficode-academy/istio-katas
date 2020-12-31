@@ -56,8 +56,8 @@ kubectl apply -f deploy/v2
 If we inspect the traffic flow in Kiali we see the following, which also shows a
 50/50 split of traffic towards the two versions of the `name` service. Note that
 you may need to select the namespace in which the sentences application is
-deployed, the versioned graph and enable showing of requests rates - the items
-marked with red boxes in the image.
+deployed, the versioned graph and enable showing of requests distribution - the
+items marked with red boxes in the image.
 
 ![Blue green 50/50 split of traffic](images/kiali-blue-green-anno.png)
 
