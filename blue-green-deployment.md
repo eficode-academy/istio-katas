@@ -53,6 +53,15 @@ returned from both versions of the `name` service
 kubectl apply -f deploy/v2
 ```
 
+If we inspect the traffic flow in Kiali we see the following, which also shows a
+50/50 split of traffic towards the two versions of the `name` service. Note that
+you may need to select the namespace in which the sentences application is
+deployed, the versioned graph and enable showing of requests rates - the items
+marked with red boxes in the image.
+
+![Blue green 50/50 split of traffic](images/kiali-blue-green-anno.png)
+
+
 > Try inspect the Kubernetes services `name`, `name-v1` and `name-v2` to see how they differ in their label selectors.
 
 ## Header Based Routing
@@ -86,6 +95,12 @@ apply the following Istio `VirtualService` resource:
 ```sh
 kubectl apply -f deploy/virtual-service-svc-based.yaml
 ```
+
+Now we only see responses from `v2`. In Kiali we see a VirtualService is
+configured for the `name` service and that all requests are flowing towards
+`v2`:
+
+![Traffic to v2 only](images/kiali-blue-green-hdr-v2.png)
 
 Inspect the file `deploy/virtual-service-svc-based.yaml` to see how routing
 towards the host `name` is directed to either the service `name-v1` or `name-v2`
