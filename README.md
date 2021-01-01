@@ -17,8 +17,9 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - Controlling Load Balancing
 - [Locality/Topology Aware Load Balancing and Failover](locality-aware-load-balancing.md)
 - [A Tour of the Istio Metrics](metrics.md)
-- HTTP Network Policies
 - [Securing with Mutual TLS](mutual-tls.md)
+- Authorization - HTTP Network Policies
+- Authentication
 
 ## Deployment Patterns
 
@@ -56,7 +57,7 @@ sentences from the following simple algorithm:
 ```
 age = random(0,100)
 name = random(['Peter','Ray','Egon'])
-return name + ' is ' + age + 'years'
+return name + ' is ' + age + ' years'
 ```
 
 i.e. it returns sentences of the form: 'Peter is 42 years'.
