@@ -10,6 +10,8 @@ Deploy the sentences application:
 
 ```sh
 kubectl apply -f deploy/mtls/
+kubectl apply -f deploy/mtls/igw/gateway-http.yaml
+kubectl apply -f deploy/mtls/igw/virtual-service-http.yaml
 ```
 
 Execute `kubectl get pods` and observe that we have one container per POD, i.e. no Istio sidecars injected:
@@ -88,6 +90,12 @@ Lets inject Istio sidecars into all sentences services:
 cat deploy/mtls/*.yaml |grep -v inject | kubectl apply -f -
 ```
 
+Since all services now have an Istio sidecar, we can enable strict mTLS:
+
+```sh
+kubectl apply -f deploy/mtls/peer-auth/strict.yaml
+```
+
 Now we can see in Kiali, that mTLS is enabled between all services of the
 sentences application (in the view below, the link between the frontend and the
 `age` service has been selected):
@@ -96,9 +104,10 @@ sentences application (in the view below, the link between the frontend and the
 
 To show how we can control egress mTLS settings with a DestinationRule, we
 create one that use mTLS towards `v2` of the `name` service and no mTLS for
-`v1`:
+`v1`. Note that we now need to use a `PERMISSIVE` PeerAuthentication:
 
 ```sh
+kubectl apply -f deploy/mtls/peer-auth/permissive.yaml
 kubectl apply -f deploy/mtls/dest-rule/name.yaml
 ```
 
@@ -117,7 +126,17 @@ This exercise extends the server-side TLS we tried out in [exercise Multiple
 Teams and Separation of Duties](multi-teams.md). Create a Certificate authority
 and certificate as follows (or reuse the one from the previous exercise):
 
-We must have the sentences application deployed with sidecars:
+First, ensure that the gateway and virtual service from the first part of this
+exercise is removed - we re-create them later with TLS enabled:
+
+```sh
+kubectl delete -f deploy/mtls/igw/gateway-http.yaml
+kubectl delete -f deploy/mtls/igw/virtual-service-http.yaml
+```
+
+We must have the sentences application deployed with sidecars (this might
+already be the case, unless you skipped some of the first part of this
+exercise):
 
 ```sh
 cat deploy/mtls/*.yaml |grep -v inject | kubectl apply -f -
@@ -160,8 +179,8 @@ following command:
 scripts/loop-query-loadbalancer-ep.sh https+mtls
 ```
 
-Note the curl options (printed when the script starts) that specify not only the
-certificate authority, but also the client certificate and key which is required
+Note the curl options (printed when the script starts) that specify the
+certificate authority and also the client certificate and key which is required
 for mTLS:
 
 ### PKI Domains
@@ -181,6 +200,8 @@ end-to-end protection of traffic.
 ## Cleanup
 
 ```sh
+kubectl -n $SENTENCES_INGRESSGATEWAY_NS delete -f deploy/mtls/igw/gateway.yaml
+cat deploy/mtls/igw/virtual-service.yaml | envsubst | kubectl delete -f -
 kubectl delete -f deploy/mtls/peer-auth/permissive.yaml
 kubectl delete -f deploy/mtls/dest-rule/name.yaml
 kubectl delete -f deploy/mtls/
