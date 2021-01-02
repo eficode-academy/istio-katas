@@ -167,6 +167,7 @@ export SENTENCES_INGRESSGATEWAY_NS=istio-system
 kubectl -n $SENTENCES_INGRESSGATEWAY_NS create secret generic sentences-tls-secret --from-file=cert=sentences.example.com.crt --from-file=key=sentences.example.com.key --from-file=cacert=example.com.crt
 ```
 
+Also create a new Gateway and VirtualService to use the secret for TLS:
 
 ```sh
 kubectl -n $SENTENCES_INGRESSGATEWAY_NS apply -f deploy/mtls/igw/gateway.yaml
