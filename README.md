@@ -19,6 +19,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - Circuit Breakers
 - [A Tour of the Istio Metrics](metrics.md)
 - [Securing with Mutual TLS](mutual-tls.md)
+- [WIP: When not to use TLS](when-not-to-use-tls.md)
 - Authorization - HTTP Network Policies
 - Authentication
 

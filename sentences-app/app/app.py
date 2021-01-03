@@ -7,6 +7,7 @@ import prometheus_client
 import datetime, time
 import logging
 import random
+import re
 
 random_app = flask.Flask('random')
 age_app = flask.Flask('age')
@@ -23,6 +24,8 @@ mode = os.getenv('SENTENCE_MODE', 'age')
 age_svc_url = os.getenv('SENTENCE_AGE_SVC_URL', 'http://age:5000')
 name_svc_url = os.getenv('SENTENCE_NAME_SVC_URL', 'http://name:5000')
 random_svc_url = os.getenv('SENTENCE_RANDOM_SVC_URL', '')
+random_svc_url2 = os.getenv('SENTENCE_RANDOM_SVC_URL2', '')
+random_svc2_probability = float(os.getenv('SENTENCE_RANDOM_SVC2_PROBABILITY', 0.0))
 
 auth_z_bug_value = '12345'
 
@@ -51,11 +54,23 @@ class timed():
 
 def get_random_int(xmin, xmax):
     if random_svc_url:
+        random_url = random_svc_url
+        if random_svc_url2:
+            p = float(random.randint(0,100))/100.0
+            if p < random_svc2_probability:
+                random_url = random_svc_url2
         with timed('random') as t:
             hdrs = get_fwd_headers()
             logging.warning('Forwarding headers {}'.format(hdrs))
-            r = requests.get(random_svc_url, timeout=1, headers=hdrs).text
-        return xmin + (int(r) % (xmax-xmin))
+            r = requests.get(random_url, timeout=1, headers=hdrs)
+            if r.status_code != 200:
+                flask.abort(r.status_code)
+            logging.warning("Used random-svc URL {}. Got '{}'".format(random_url, r.text))
+            if re.match('\d+' ,r.text):
+                val = int(r.text)
+            else:
+                val = ord(r.text)
+        return xmin + (val % (xmax-xmin+1))
     else:
         return random.randint(xmin, xmax)
 
