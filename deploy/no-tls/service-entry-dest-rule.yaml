@@ -1,4 +1,17 @@
 apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: random-int
+spec:
+  host: httpbin.org
+  trafficPolicy:
+    portLevelSettings:
+    - port:
+        number: 80
+      tls:
+        mode: SIMPLE
+---
+apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
   name: random-int
@@ -15,17 +28,4 @@ spec:
     protocol: HTTPS
   resolution: DNS
   location: MESH_EXTERNAL
----
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: random-int
-spec:
-  host: httpbin.org
-  trafficPolicy:
-    portLevelSettings:
-    - port:
-        number: 80
-      tls:
-        mode: SIMPLE
 ---

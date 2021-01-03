@@ -19,6 +19,10 @@ spec:
         app: sentences
         mode: sentence
         app.kubernetes.io/part-of: sentences
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8000'
+        prometheus.io/path: '/metrics'
     spec:
       containers:
       - image: michaelvl/sentences:v1
@@ -68,6 +72,10 @@ spec:
         app: sentences-age
         mode: age
         app.kubernetes.io/part-of: sentences
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8000'
+        prometheus.io/path: '/metrics'
     spec:
       containers:
       - image: michaelvl/sentences:v1
@@ -120,6 +128,10 @@ spec:
         mode: name
         app.kubernetes.io/part-of: sentences
         version: v1
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8000'
+        prometheus.io/path: '/metrics'
     spec:
       containers:
       - image: michaelvl/sentences:v1
