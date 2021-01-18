@@ -1,12 +1,17 @@
 # Debugging with Ephemeral Containers
 
 With Istio, all traffic is by default encrypted, which makes debugging network
-issues difficult. This exercise will demonstrate how to debug network traffic
-using Kubernetes [Ephemeral containers](https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/).
+issues difficult since we cannot simply inspect the network traffic using tools
+like `tcpdump`. 
 
-> Ephemeral containers are not enabled by default on most production Kubernetes
-> deployments. The following assumes a Kubernetes cluster deployed with feature
-> gate `EphemeralContainers=true`.
+This exercise will demonstrate how to debug network traffic using Kubernetes
+[Ephemeral
+containers](https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/).
+
+> Ephemeral containers have been available in Kubernetes since 1.16, however,
+> they are not enabled by default on many production Kubernetes deployments. The
+> following assumes a Kubernetes cluster deployed with feature gate
+> `EphemeralContainers=true`.
 
 First, we create a web server deployment and expose it with a service:
 
@@ -17,7 +22,7 @@ kubectl expose deploy nginx --port 80
 
 Next, we create a tooling deployment from which we can query the web
 server. Alternatively you may create the service above with type `LoadBalancer`
-or `NodePort` and access the web server through those types.
+or `NodePort` and access the web server through those service types.
 
 ```console
 kubectl create deploy multitool --image praqma/network-multitool
@@ -29,8 +34,8 @@ Exec into the tooling POD as follows:
 kubectl exec -it <multitool POD> -- bash
 ```
 
-and query the web server with a `curl` command. You should see the *Welcome to
-nginx!* HTML output from the curl command if everything is working as expected.
+and query the web server with a `curl` command. You should expect to see the
+*Welcome to nginx!* HTML output from the curl command.
 
 ```console
 curl nginx
@@ -48,8 +53,9 @@ image `praqma/network-multitool`:
 
 ![Ephemeral container](images/ephemeral-container.png)
 
-Attach an ephemeral container with the following command and run bash inside
-this container:
+Attach an ephemeral container to our web server POD with the following command
+and run bash inside this container (note how this is very similar to an `exec`
+into an existing container):
 
 ```console
 kubectl debug -it <nginx POD> --image praqma/network-multitool -- bash
@@ -74,6 +80,7 @@ kubectl get po <nginx POD> -o jsonpath='{.spec.ephemeralContainers}' | jq .
     "tty": true
     ...
   }
+  ...
 ```
 
 With the bash terminal inside the debugging container, we can list the network interfaces:
@@ -90,11 +97,12 @@ command to inspect network traffic at the POD *external interface* (marked with
 tcpdump -i eth0 -vv -XX 'tcp port 80'
 ```
 
-With the command above, and if re-running the `curl` command from the tooling
-container you will see encrypted network traffic.
+With the command above, and re-running the `curl` command from the tooling
+container you will see an encrypted response from the Nginx web server.
 
-To inspect traffic between the Istio proxy and the web server container, inspect
-traffic internally in the POD using the `lo` interface (i.e. *local* interface):
+To inspect traffic between the Istio proxy and the web server container (marked
+with (2) on the figure above), inspect traffic internally in the POD using the
+`lo` interface (i.e. *local* interface):
 
 ```console
 tcpdump -i lo -vv -XX 'tcp port 80'
