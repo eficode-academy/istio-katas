@@ -7,21 +7,20 @@ to use Kubernetes labels for identifying different versions.
 
 First, deploy version `v1` of the test application:
 
-```sh
+```console
 kubectl apply -f deploy/v1
 ```
 
 This created three deployments with associated services. After deployment list
 PODs and services with:
 
-```sh
-kubectl get po,svc
+```console
+kubectl get pod,svc
 ```
 
 We should see something like the following:
 
-```
-kubectl get po,svc
+```console
 NAME                             READY   STATUS    RESTARTS   AGE
 pod/age-79475c5566-5677k         2/2     Running   0          2m18s
 pod/name-v1-dfcb76bdf-8lbc4      2/2     Running   0          2m18s
@@ -40,7 +39,7 @@ and one non-versioned `name` (referencing all versions of `name`).
 In another shell, run the following to continuously query the sentence service
 and observe the effect of deployment changes:
 
-```sh
+```console
 scripts/loop-query.sh
 ```
 
@@ -49,7 +48,7 @@ name. This `name` service does not include a `version` label in its selectors,
 i.e. when we deploy version `v2` with the following command, we will see names
 returned from both versions of the `name` service
 
-```sh
+```console
 kubectl apply -f deploy/v2
 ```
 
@@ -82,7 +81,7 @@ preference. Use the following command to continuously run a query against the
 sentence service with the `x-test` HTTP header set to the value of `use-v2`:
 
 
-```sh
+```console
 scripts/loop-query.sh 'x-test: use-v2'
 ```
 
@@ -92,7 +91,7 @@ from both `name-v1` and `name-v2`.
 To configure routing in the Istio service mesh based on the `x-test` header
 apply the following Istio `VirtualService` resource:
 
-```sh
+```console
 kubectl apply -f deploy/virtual-service-svc-based.yaml
 ```
 
@@ -118,7 +117,7 @@ Kubernetes.
 
 # Cleanup
 
-```sh
+```console
 kubectl delete -f deploy/v1
 kubectl delete -f deploy/v2
 kubectl delete -f deploy/virtual-service-svc-based.yaml
