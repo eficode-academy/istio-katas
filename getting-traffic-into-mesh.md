@@ -16,14 +16,14 @@ and is connected to the mesh on the 'backside'.
 Ingress gateways typically are deployed in the `istio-system` namespace (but is
 not limited to this), and we can find them with the following command:
 
-```sh
+```console
 kubectl -n istio-system get deploy --show-labels
 ```
 
 In the infrastructure used to develop these exercises we have two ingress
 gateway deployments:
 
-```
+```console
 NAME                       READY   UP-TO-DATE   AVAILABLE   AGE   LABELS
 istio-ingressgateway       1/1     1            1           24m   app=istio-ingressgateway,istio=ingressgateway ...
 istio-ingressgateway-int   1/1     1            1           24m   app=istio-ingressgateway-int,istio=ingressgateway-int ...
@@ -37,7 +37,7 @@ controllers without Ingress resources defined.
 
 Before configuring a gateway, we deploy the sentences application:
 
-```sh
+```console
 kubectl apply -f deploy/v1
 ```
 
@@ -47,9 +47,9 @@ To configure ingress through a gateway we need to define two resources:
 
 - VirtualService: Defines routes for the gateway. A `Gateway` definition only defines the 'entry' but no traffic can be routed by the gateway without a VirtualService.
 
-The gateway definition found in `deploy/mesh-in/gateway.yaml` looks like this:
+The [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/) definition found in `deploy/mesh-in/gateway.yaml` looks like this:
 
-```
+```yaml
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
@@ -75,13 +75,13 @@ We also see, that the gateway is for HTTP on port 80 and for the host `sentences
 
 Apply this definition:
 
-```sh
+```console
 kubectl apply -f deploy/mesh-in/gateway.yaml
 ```
 
-To route traffic from the gateway to the sentence application, we use the following VirtualService:
+To route traffic from the gateway to the sentence application, we use the following [VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service/):
 
-```
+```yaml
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
@@ -103,11 +103,12 @@ hostnames and a VirtualService can be bound to multiple gateways, i.e. these are
 not necessarily related one-to-one.
 
 We also see, that the VirtualService routes all traffic for the given hostname
-to the `sentences` service.
+to the `sentences` service (the two last lines specifying the Kubernetes
+`sentences` service as destination).
 
 Apply the routing:
 
-```sh
+```console
 kubectl apply -f deploy/mesh-in/virtual-service.yaml
 ```
 
@@ -116,12 +117,12 @@ through the ingress gateway.
 
 > Note that this scripts assumes your Istio ingress gateway are exposed with a LoadBalancer service and labelled with `app=istio-ingressgateway`. If this is not the case, you might want to adjust the script.
 
-```sh
+```console
 scripts/loop-query-loadbalancer-ep.sh
 ```
 
 With queries running against the sentences application, we can see them flowing
-through the ingress gateway in Kiali:
+through the ingress gateway in Kiali ('service graph'):
 
 ![Traffic through ingress gateway](images/kiali-ingress-gw.png)
 
@@ -137,13 +138,20 @@ In the latter situation, we can specify the application protocol for each of our
 For the sentences service, we could modify `deploy/v1/sentences.yaml` by adding
 `appProtocol: http` as shown in the excerpt below.
 
-```
+```yaml
 spec:
   ports:
   - port: 5000
     protocol: TCP
     targetPort: 5000
     appProtocol: http
+```
+
+Add `appProtocol` to the service definition in `deploy/v1/sentences.yaml` and
+re-apply the file, or alternatively edit the Kubernetes service directly:
+
+```console
+KUBE_EDITOR=nano kubectl edit svc sentences
 ```
 
 With this change, we see the following in Kiali:
@@ -156,7 +164,7 @@ server in the TLS connection.
 
 ## Cleanup
 
-```sh
+```console
 kubectl delete -f deploy/mesh-in/virtual-service.yaml
 kubectl delete -f deploy/mesh-in/gateway.yaml
 kubectl delete -f deploy/v1
