@@ -19,6 +19,6 @@ spec:
         http2MaxRequests: 100
         maxRequestsPerConnection: 10
     outlierDetection:
-      consecutiveErrors: 7
+      consecutiveGatewayErrors: 7
       interval: 30s
       baseEjectionTime: 30s
