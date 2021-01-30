@@ -29,6 +29,11 @@ spec:
         env:
         - name: "SENTENCE_MODE"
           value: "sentence"
+        resources:
+          requests:
+            cpu: 0.25
+          limits:
+            cpu: 0.25
 ---
 apiVersion: v1
 kind: Service
@@ -83,6 +88,11 @@ spec:
         env:
         - name: "SENTENCE_MODE"
           value: "age"
+        resources:
+          requests:
+            cpu: 0.25
+          limits:
+            cpu: 0.25
 ---
 apiVersion: v1
 kind: Service
@@ -137,6 +147,11 @@ spec:
         env:
         - name: "SENTENCE_MODE"
           value: "name"
+        resources:
+          requests:
+            cpu: 0.25
+          limits:
+            cpu: 0.25
 ---
 apiVersion: v1
 kind: Service
