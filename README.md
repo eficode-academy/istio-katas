@@ -5,24 +5,37 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 
 ## Exercises
 
+### Deployment Patterns and Observability
+
 - [Blue/green Deployments](blue-green-deployment.md)
 - [Blue/green Deployments Using Kubernetes Labels](blue-green-deployment-w-labels.md)
 - [Canary Deployments](canary-deployment.md)
 - [Network Delay Investigations - Simple](request-delays.md)
 - [Network Delay Investigations - Larger Application Graph](request-delays-larger-graph.md)
 - WIP: Network Delay Investigations with Jaeger
+- [A Tour of the Istio Metrics](metrics.md)
+
+### Designing and Securing the Mesh
+
 - [Getting Traffic into the Mesh with Ingress Gateways](getting-traffic-into-mesh.md)
 - Getting Traffic out of the Mesh
 - [Multiple Teams and Separation of Duties](multi-teams.md)
 - Controlling Load Balancing
 - [Locality/Topology Aware Load Balancing and Failover](locality-aware-load-balancing.md)
-- Circuit Breakers
-- [A Tour of the Istio Metrics](metrics.md)
 - [Securing with Mutual TLS](mutual-tls.md)
-- [When not to use TLS](when-not-to-use-tls.md)
-- Authorization - HTTP Network Policies
-- Authentication
 - [Debugging with Ephemeral Containers](debugging-with-ephemeral-containers.md)
+- [When not to use TLS](when-not-to-use-tls.md)
+- [WIP: Authorization - HTTP Network Policies](authorization.md)
+- Authentication
+
+### Impriving Applications
+
+- Circuit Breakers
+
+### Architectural Patterns
+
+- Multi-mesh and Migrations
+
 
 ## Deployment Patterns
 

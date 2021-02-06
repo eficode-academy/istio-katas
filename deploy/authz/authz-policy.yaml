@@ -1,0 +1,18 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-sentences-to-name
+spec:
+  selector:
+    matchLabels:
+      app: sentences
+      mode: name
+  action: ALLOW
+  rules:
+   - from:
+      - source:
+          principals: ["cluster.local/ns/$NAMESPACE/sa/sentences"]
+     to:
+      - operation:
+          methods: ["GET"]
+          paths: ["/"]
