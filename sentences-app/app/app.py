@@ -125,6 +125,10 @@ def get_name():
         logging.warning("Using name '{}'".format(name))
     return name
 
+@name_app.route('/choices')
+def get_name_choices():
+    return str(names)
+
 @sentence_app.route('/')
 def get_sentence():
     with timed('sentence') as t:
