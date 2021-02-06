@@ -28,7 +28,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [WIP: Authorization - HTTP Network Policies](authorization.md)
 - Authentication
 
-### Impriving Applications
+### Improving Applications
 
 - Circuit Breakers
 
