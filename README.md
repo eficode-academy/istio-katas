@@ -25,7 +25,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [Securing with Mutual TLS](mutual-tls.md)
 - [Debugging with Ephemeral Containers](debugging-with-ephemeral-containers.md)
 - [When not to use TLS](when-not-to-use-tls.md)
-- [WIP: Authorization - HTTP Network Policies](authorization.md)
+- [Authorization - HTTP Network Policies](authorization.md)
 - Authentication
 
 ### Improving Applications
