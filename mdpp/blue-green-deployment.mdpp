@@ -90,29 +90,7 @@ from both `name-v1` and `name-v2`.
 
 To configure routing in the Istio service mesh based on the `x-test` header we will use the following Istio [VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service):
 
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: name
-spec:
-  hosts:
-  - name
-  gateways:
-  - mesh
-  http:
-  - match:
-    - headers:
-        x-test:
-          exact: use-v2
-    route:
-    - destination:
-        host: name-v2
-  - route:
-    - destination:
-        host: name-v1
-
-```
+!INCLUDECODE "deploy/virtual-service-svc-based.yaml" (yaml)
 
 Create the VirtualService resource:
 
