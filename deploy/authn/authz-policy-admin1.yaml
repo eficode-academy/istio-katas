@@ -1,0 +1,14 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: jwt-req
+spec:
+  selector:
+    matchLabels:
+      app: sentences
+      mode: sentence
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        requestPrincipals: ["https://github.com/MichaelVL/istio-katas/admin1"]

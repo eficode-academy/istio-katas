@@ -1,0 +1,13 @@
+apiVersion: security.istio.io/v1beta1
+kind: "RequestAuthentication"
+metadata:
+  name: jwt-req
+spec:
+  selector:
+    matchLabels:
+      app: sentences
+      mode: sentence
+  jwtRules:
+  - issuer: "https://github.com/MichaelVL/istio-katas"
+    jwks: |
+      { "keys": [{"e":"AQAB","kid":"123","kty":"RSA","n":"$KEY_NOM"}]}
