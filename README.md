@@ -26,7 +26,7 @@ access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
 - [Debugging with Ephemeral Containers](debugging-with-ephemeral-containers.md)
 - [When not to use TLS](when-not-to-use-tls.md)
 - [Authorization - HTTP Network Policies](authorization.md)
-- [WIP: Authentication with OIDC](authentication.md)
+- [Authentication with OIDC](authentication.md)
 
 ### Improving Applications
 
