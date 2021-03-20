@@ -1,3 +1,7 @@
+[//]: # (Author: Michael Vittryp Larsen)
+[//]: # (Source: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #blue-green-deployment #http-header-routing #VirtualService #kiali)
+
 # Blue/green deployments
 
 This exercise will show how to implement blue/green deployments using Kubernetes

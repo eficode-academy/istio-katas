@@ -1,3 +1,7 @@
+[//]: # (Author: Michael Vittryp Larsen)
+[//]: # (Source: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #authentication #oidc #jwt #RequestAuthentication #AuthorizationPolicy)
+
 # Authentication
 
 This exercise will demonstrate how to authenticate access to services,

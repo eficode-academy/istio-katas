@@ -3,12 +3,13 @@ all: exercises
 
 .PHONY: all exercises
 
-exercisemdpp := $(wildcard mdpp/*.mdpp)
-exercisemd := $(exercisemdpp:mdpp/%.mdpp=%.md)
+exercisemdpp := $(wildcard markdown-source/*.mdpp)
+exercisemd := $(exercisemdpp:markdown-source/%.mdpp=%.md)
 
 exercises: $(exercisemd)
 
-%.md : mdpp/%.mdpp
+# Run markdown sources through a preprocessor to inject source snippets etc.
+%.md : markdown-source/%.mdpp
 	-chmod u+w $@
 	docker run --rm -it --user $(shell id -u):$(shell id -g) -v $(shell pwd):/work michaelvl/markdown-pp $< -o $@
 	chmod u-w $@

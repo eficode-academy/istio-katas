@@ -1,3 +1,7 @@
+[//]: # (Author: Michael Vittryp Larsen)
+[//]: # (Source: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #authorization #epehemeral-containers #NetworkPolicies #AuthorizationPolicy #workload-identity)
+
 # Authorization - HTTP Network Policies
 
 This exercise will demonstrate how to authorize access between components of our
