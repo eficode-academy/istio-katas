@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #delay #network-delay #kiali)
+
 # Observing Delays
 
 This exercise will show that some forms of delays can be observed with the
@@ -8,7 +12,7 @@ observations like sums and averages. This is however, in some cases very useful.
 First, deploy the following, which creates three versions of the `name` service
 `v1`, `v2` and `v3`:
 
-```sh
+```console
 kubectl apply -f deploy/v1
 kubectl apply -f deploy/v2
 kubectl apply -f deploy/v3
@@ -17,7 +21,7 @@ kubectl apply -f deploy/v3
 In another shell, run the following to continuously query the sentence service
 and observe the effect of deployment changes:
 
-```sh
+```console
 scripts/loop-query.sh
 ```
 
@@ -43,7 +47,7 @@ distributed tracing.
 
 # Cleanup
 
-```sh
+```console
 kubectl delete -f deploy/v1
 kubectl delete -f deploy/v2
 kubectl delete -f deploy/v3

@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #TLS)
+
 # When not to use TLS
 
 While it could be a natural reaction to apply TLS where possible to protect
@@ -7,13 +11,13 @@ encryption.
 
 To illustrate this, first deploy the sentences application:
 
-```sh
+```console
 kubectl apply -f deploy/no-tls/sentences.yaml
 ```
 
 and run the following script to query for sentences.
 
-```sh
+```console
 scripts/loop-query.sh
 ```
 
@@ -49,7 +53,7 @@ that the Istio proxy cannot inspect the traffic.
 
 Lets switch the downstream `random` service URLs to HTTP instead of HTTPS:
 
-```sh
+```console
 kubectl apply -f deploy/no-tls/sentences-http.yaml
 ```
 
@@ -102,7 +106,7 @@ traffic should be TLS encrypted. The ServiceEntry specify, that traffic for
 
 Apply the two resources:
 
-```sh
+```console
 kubectl apply -f deploy/no-tls/service-entry-dest-rule.yaml
 ```
 
@@ -113,7 +117,7 @@ unfortunately Kiali does not show that traffic is now encrypted.
 
 # Cleanup
 
-```sh
+```console
 kubectl delete -f deploy/no-tls/service-entry-dest-rule.yaml
 kubectl delete -f deploy/no-tls/sentences.yaml
 

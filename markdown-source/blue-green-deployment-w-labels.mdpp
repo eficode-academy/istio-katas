@@ -1,5 +1,4 @@
-[//]: # (Author: Michael Vittryp Larsen)
-[//]: # (Source: https://github.com/MichaelVL/istio-katas)
+!INCLUDE "markdown-source/meta.md"
 [//]: # (Tags: #blue-green-deployment #http-header-routing #VirtualService #kiali)
 
 # Blue/green deployments with Kubernetes Labels

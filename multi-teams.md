@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #multiple-teams #multiple-roles #VirtualService #Gateway)
+
 # Multiple Teams and Separation of Duties
 
 > This exercise require an Istio deployment with VirtualService delegation support. This is not enabled by default in Istio versions prior to 1.8.0.
@@ -49,7 +53,7 @@ For this exercise we will setup the following three namespaces and store their
 names in environment variables. Use the following command to setup namespaces as
 shown above or modify the commands to use alternative names:
 
-```sh
+```console
 source deploy/teams/namespaces.sh
 ```
 
@@ -57,7 +61,7 @@ Alternatively, modify the following for alternative namespace names. Note that
 its important, that `SENTENCES_INGRESSGATEWAY_NS` is the namespace in which the
 ingress gateways are deployed:
 
-```sh
+```console
 export SENTENCES_INGRESSGATEWAY_NS=istio-system
 export SENTENCES_NS=sentences
 export SENTENCES_AGE_NS=sentences-age
@@ -79,13 +83,13 @@ create a certificate for `sentences.example.com`.
 
 Create the certificate authority:
 
-```sh
+```console
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout example.com.key -out example.com.crt
 ```
 
 Create a certificate signing request and use our certificate authority to sign it:
 
-```sh
+```console
 openssl req -out sentences.example.com.csr -newkey rsa:2048 -nodes -keyout sentences.example.com.key -subj "/CN=sentences.example.com/O=ACMEorg"
 openssl x509 -req -days 365 -CA example.com.crt -CAkey example.com.key -set_serial 0 -in sentences.example.com.csr -out sentences.example.com.crt
 ```
@@ -93,7 +97,7 @@ openssl x509 -req -days 365 -CA example.com.crt -CAkey example.com.key -set_seri
 Create a kubernetes secret in the namespace defined by
 `SENTENCES_INGRESSGATEWAY_NS`:
 
-```sh
+```console
 kubectl -n $SENTENCES_INGRESSGATEWAY_NS create secret tls sentences-tls-secret --cert=sentences.example.com.crt --key=sentences.example.com.key
 ```
 
@@ -103,7 +107,7 @@ The manifests for the sentences application and Istio configuration has been
 divided into parts according to teams. Use the following commands to inspect the
 manifests resulting from expanding environment variables with namespaces:
 
-```sh
+```console
 cat deploy/teams/team1-vs-gw.yaml     | envsubst
 
 cat deploy/teams/team2-sentences.yaml | envsubst
@@ -148,7 +152,7 @@ namespace. **They cannot be in different namespaces**.
 
 Next, apply the manifests with the namespaces expanded:
 
-```sh
+```console
 cat deploy/teams/team1-vs-gw.yaml     | envsubst | kubectl apply -f -
 
 cat deploy/teams/team2-sentences.yaml | envsubst | kubectl apply -f -
@@ -167,7 +171,7 @@ Kubernetes recommended
 label](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels)
 that designate that a deployment is part of a 'larger' application:
 
-```sh
+```console
 kubectl get po -A -l app.kubernetes.io/part-of=sentences
 ```
 
@@ -182,7 +186,7 @@ sentences        sentences-94b98fc4c-scnq5   2/2     Running   0          10m
 
 Similarly we can list the Gateway and VirtualServices using the label selector:
 
-```sh
+```console
 kubectl get gw,vs -A -l app.kubernetes.io/part-of=sentences
 ```
 
@@ -204,7 +208,7 @@ Finally, start the following script, which will lookup the IP of the ingress
 gateway and query the `name` service in the sentences application using HTTPS
 (this is purple circle (1) in illustration above):
 
-```sh
+```console
 scripts/loop-query-loadbalancer-ep.sh https name
 ```
 
@@ -218,7 +222,7 @@ do e.g. canary deployment without possibly breaking the other services:
 Run the following to create a canary for the `name` service - note that the yaml
 files are located in the namespace of the `name` service:
 
-```sh
+```console
 cat deploy/teams/team4-sentences-canary.yaml | envsubst | kubectl apply -f -
 cat deploy/teams/team4-vs-canary.yaml | envsubst | kubectl apply -f -
 ```
@@ -261,7 +265,7 @@ If we run the command below, which queries the sentences application for a full
 sentence, not just a name, we do not see the 10%/90% traffic mix we would expect
 with the configured canary setup. Why could that be?
 
-```sh
+```console
 scripts/loop-query-loadbalancer-ep.sh https
 ```
 
@@ -288,7 +292,7 @@ different workload versions.
 
 # Cleanup
 
-```sh
+```console
 cat deploy/teams/team1-vs-gw.yaml     | envsubst | kubectl delete -f -
 kubectl -n $SENTENCES_INGRESSGATEWAY_NS delete secret sentences-tls-secret
 kubectl delete ns sentences sentences-age sentences-name

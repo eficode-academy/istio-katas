@@ -1,5 +1,4 @@
-[//]: # (Author: Michael Vittryp Larsen)
-[//]: # (Source: https://github.com/MichaelVL/istio-katas)
+!INCLUDE "markdown-source/meta.md"
 [//]: # (Tags: #authentication #oidc #jwt #RequestAuthentication #AuthorizationPolicy)
 
 # Authentication

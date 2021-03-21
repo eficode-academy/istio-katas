@@ -1,5 +1,5 @@
-[//]: # (Author: Michael Vittryp Larsen)
-[//]: # (Source: https://github.com/MichaelVL/istio-katas)
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
 [//]: # (Tags: #blue-green-deployment #http-header-routing #VirtualService #kiali)
 
 # Blue/green deployments with Kubernetes Labels

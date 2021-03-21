@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #load-balancing #locality-aware-load-balancing #DestinationRule)
+
 # Locality/Topology Aware Load Balancing and Failover
 
 This exercise will demonstrate how Istio routing is aware of the topology of the
@@ -117,6 +121,29 @@ configured for Istio to perform locality-based routing.
 
 Next, configure an Istio traffic policy with 'outlier' definitions (health
 checks) for the `multitool` service:
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: multitool
+spec:
+  host: multitool
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http2MaxRequests: 100
+        maxRequestsPerConnection: 10
+    outlierDetection:
+      consecutiveGatewayErrors: 7
+      interval: 30s
+      baseEjectionTime: 30s
+
+```
+
+Apply the DestinationRule with:
 
 ```console
 kubectl apply -f deploy/multitool-dest-rule.yaml

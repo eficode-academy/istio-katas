@@ -1,16 +1,20 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #delay #network-delay #kiali #jaeger #tracing #distributed-tracing)
+
 # Investigate Network Delay with Distributed Tracing
 
 First, deploy version `v1` of the test application:
 
-```sh
+```console
 kubectl apply -f deploy/v1
 ```
 
-```sh
+```console
 scripts/loop-query.sh
 ```
 
-```sh
+```console
 kubectl apply -f deploy/virtual-service-age-delay.yaml
 ```
 
@@ -19,7 +23,7 @@ kubectl apply -f deploy/virtual-service-age-delay.yaml
 
 # Cleanup
 
-```sh
+```console
 kubectl delete -f deploy/v1
 kubectl delete -f deploy/virtual-service-age-delay.yaml
 ```

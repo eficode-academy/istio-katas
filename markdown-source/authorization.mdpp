@@ -1,5 +1,4 @@
-[//]: # (Author: Michael Vittryp Larsen)
-[//]: # (Source: https://github.com/MichaelVL/istio-katas)
+!INCLUDE "markdown-source/meta.md"
 [//]: # (Tags: #authorization #epehemeral-containers #NetworkPolicies #AuthorizationPolicy #workload-identity)
 
 # Authorization - HTTP Network Policies

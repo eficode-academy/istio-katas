@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #delay #network-delay #kiali #jaeger #tracing #distributed-tracing)
+
 # Observing Delays in a Larger Application
 
 In the exercise [Observing Delays](request-delays.md) we saw how we could
@@ -18,14 +22,14 @@ Istio and Jaeger can help us get a clearer picture on the problem.
 First, deploy the following version of the `sentence` application - now with
 three tiers to simulate a slightly more complex application:
 
-```sh
+```console
 kubectl apply -f deploy/three-tiers/
 ```
 
 In another shell, run the following to continuously query the sentence service
 and observe the effect of deployment changes:
 
-```sh
+```console
 scripts/loop-query.sh
 ```
 
@@ -33,7 +37,7 @@ scripts/loop-query.sh
 
 Next, deploy `v2` of the `sentences` service:
 
-```sh
+```console
 kubectl apply -f deploy/three-tiers/v2/
 ```
 
@@ -55,6 +59,6 @@ trace, we will find that the top-level service is indeed `sentences` version
 
 # Cleanup
 
-```sh
+```console
 kubectl delete -R -f deploy/three-tiers/
 ```

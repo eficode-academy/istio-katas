@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #metrics #prometheus-annotations #sidecar-injection)
+
 # A Tour of the Istio Metrics
 
 This exercise will demonstrate how to use metrics from Istio together with
@@ -8,7 +12,7 @@ Note: This exercise assumes an Istio deployment with `enablePrometheusMerge` ena
 
 Deploy the sentences application:
 
-```sh
+```console
 kubectl apply -f deploy/metrics/sentences.yaml
 ```
 
@@ -27,7 +31,7 @@ update both Istio and sentences application metrics.
 To retrieve metrics from a POD in the sentences application we can query the
 nodeport mapped to the metrics port 8000:
 
-```sh
+```console
 curl -s <Any node IP>:<node port for POD port 8000>/metrics | grep sentence_requests_total
 ```
 
@@ -63,7 +67,7 @@ just did manually.
 Next, we will allow Istio to inject a sidecar. Re-deploy the sentences
 application without the annotation that disables sidecar injection:
 
-```sh
+```console
 cat deploy/metrics/sentences.yaml |grep -v inject | kubectl apply -f -
 ```
 
@@ -72,7 +76,7 @@ POD (it may take a few seconds for the old PODs to terminate).
 
 Next, observe the values of the Prometheus annotations:
 
-```sh
+```console
 kubectl describe pod -l mode=sentence | head -n 30
 ```
 
@@ -96,7 +100,7 @@ annotation `prometheus.istio.io/merge-metrics` (see above).
 
 Re-deploy the sentences application with this annotation removed as well:
 
-```sh
+```console
 cat deploy/metrics/sentences.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
 ```
 
@@ -118,13 +122,13 @@ i.e. the metrics scrape endpoint has moved from the application to the sidecar.
 
 First, list PODs to get their cluster IP:
 
-```sh
+```console
 kubectl get pods -o wide
 ```
 
 Next, deploy a test tool (if you prefer, you can use any other tool that have `curl` and `grep`):
 
-```sh
+```console
 kubectl create deploy multitool --image praqma/network-multitool
 kubectl exec -it <multitool container> -- bash
 ```
@@ -132,7 +136,7 @@ kubectl exec -it <multitool container> -- bash
 Inside the test tool, run `curl` against the metrics scrape endpoint defined by
 the POD annotations - insert the <POD IP> found above:
 
-```sh
+```console
 curl -s <POD IP>:15020/stats/prometheus | grep requests_total
 ```
 
@@ -162,7 +166,7 @@ Prometheus metrics](https://kiali.io/documentation/latest/faq/#prom-metrics)
 
 ## Cleanup
 
-```sh
+```console
 kubectl delete -f deploy/metrics/sentences.yaml
 kubectl delete deploy multitool
 ```

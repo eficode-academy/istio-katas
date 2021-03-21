@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #epehemeral-containers)
+
 # Debugging with Ephemeral Containers
 
 With Istio, all traffic is by default encrypted, which makes debugging network

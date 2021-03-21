@@ -1,5 +1,5 @@
-[//]: # (Author: Michael Vittryp Larsen)
-[//]: # (Source: https://github.com/MichaelVL/istio-katas)
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
 [//]: # (Tags: #authentication #oidc #jwt #RequestAuthentication #AuthorizationPolicy)
 
 # Authentication

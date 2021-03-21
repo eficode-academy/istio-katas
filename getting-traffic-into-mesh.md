@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #ingress-gateway #VirtualService #Gateway)
+
 # Getting Traffic into the Mesh with Ingress Gateways
 
 The previous exercises used a Kubernetes node-port service to get traffic to the

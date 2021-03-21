@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #canary-deployment #VirtualService)
+
 # Canary deployments
 
 Blue/green deployments are characterised by an explicit choice of which version
@@ -16,7 +20,7 @@ This exercise show how to implement Canary deployments with Istio.
 
 First, deploy version `v1` and `v2`:
 
-```sh
+```console
 kubectl apply -f deploy/v1
 kubectl apply -f deploy/v2
 ```
@@ -24,7 +28,7 @@ kubectl apply -f deploy/v2
 In another shell, run the following to continuously query the sentence service
 and observe the effect of deployment changes:
 
-```sh
+```console
 scripts/loop-query.sh
 ```
 
@@ -35,7 +39,7 @@ Apply the following Istio
 [VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service/)
 to specify that 10% of the traffic should go to `v2`:
 
-```sh
+```console
 kubectl apply -f deploy/virtual-service-canary.yaml
 ```
 
@@ -51,7 +55,7 @@ version. Deployment tools like Spinnaker and ArgoRollout supports such logic.
 When we are confident, that `name-v2` is solid, we can promote it to be the
 primary version:
 
-```sh
+```console
 kubectl apply -f deploy/virtual-service-canary-promote.yaml
 ```
 
@@ -64,7 +68,7 @@ continous deployment agent, but we can also do it manually as we did here.
 
 # Cleanup
 
-```sh
+```console
 kubectl delete -f deploy/v1
 kubectl delete -f deploy/v2
 kubectl delete -f deploy/virtual-service-canary-promote.yaml

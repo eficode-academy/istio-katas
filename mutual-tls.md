@@ -1,3 +1,7 @@
+[//]: # (Copyright, Michael Vittrup Larsen)
+[//]: # (Origin: https://github.com/MichaelVL/istio-katas)
+[//]: # (Tags: #TLS #mutual-tls #PKI-domains #ingress-gateway #VirtualService #Gateway #PeerAuthentication #DestinationRule)
+
 # Securing with Mutual TLS
 
 This exercise will demonstrate how to use mutual TLS inside the mesh between
@@ -8,7 +12,7 @@ accessing the mesh through an ingress gateway.
 
 Deploy the sentences application:
 
-```sh
+```console
 kubectl apply -f deploy/mtls/
 kubectl apply -f deploy/mtls/igw/gateway-http.yaml
 kubectl apply -f deploy/mtls/igw/virtual-service-http.yaml
@@ -25,7 +29,7 @@ sentences-779767c659-mlcm9   1/1     Running   0          4s
 
 Execute the following to retreive sentences and thus update Istio metrics.
 
-```sh
+```console
 scripts/loop-query-loadbalancer-ep.sh
 ```
 
@@ -38,7 +42,7 @@ is in use and be able to see the difference from this view).:
 
 We now create a PeerAuthentication settings that require `STRICT` mTLS:
 
-```sh
+```console
 kubectl apply -f deploy/mtls/peer-auth/strict.yaml
 ```
 
@@ -57,7 +61,7 @@ Istio lets us define mTLS settings using these resource types:
 
 Lets enable the Istio sidecar for the age service:
 
-```sh
+```console
 cat deploy/mtls/age.yaml |grep -v inject | kubectl apply -f -
 ```
 
@@ -75,7 +79,7 @@ un-authenticated traffic.
 
 Execute the following to restore traffic:
 
-```sh
+```console
 kubectl apply -f deploy/mtls/peer-auth/permissive.yaml
 ```
 
@@ -86,13 +90,13 @@ Hint: Which services have sidecars providing metrics for Kiali?
 
 Lets inject Istio sidecars into all sentences services:
 
-```sh
+```console
 cat deploy/mtls/*.yaml |grep -v inject | kubectl apply -f -
 ```
 
 Since all services now have an Istio sidecar, we can enable strict mTLS:
 
-```sh
+```console
 kubectl apply -f deploy/mtls/peer-auth/strict.yaml
 ```
 
@@ -106,7 +110,7 @@ To show how we can control egress mTLS settings with a DestinationRule, we
 create one that use mTLS towards `v2` of the `name` service and no mTLS for
 `v1`. Note that we now need to use a `PERMISSIVE` PeerAuthentication:
 
-```sh
+```console
 kubectl apply -f deploy/mtls/peer-auth/permissive.yaml
 kubectl apply -f deploy/mtls/dest-rule/name.yaml
 ```
@@ -129,7 +133,7 @@ and certificate as follows (or reuse the one from the previous exercise):
 First, ensure that the gateway and virtual service from the first part of this
 exercise is removed - we re-create them later with TLS enabled:
 
-```sh
+```console
 kubectl delete -f deploy/mtls/igw/gateway-http.yaml
 kubectl delete -f deploy/mtls/igw/virtual-service-http.yaml
 ```
@@ -138,13 +142,13 @@ We must have the sentences application deployed with sidecars (this might
 already be the case, unless you skipped some of the first part of this
 exercise):
 
-```sh
+```console
 cat deploy/mtls/*.yaml |grep -v inject | kubectl apply -f -
 ```
 
 Create the certificate authority:
 
-```sh
+```console
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout example.com.key -out example.com.crt
 openssl req -out sentences.example.com.csr -newkey rsa:2048 -nodes -keyout sentences.example.com.key -subj "/CN=sentences.example.com/O=ACMEorg"
 openssl x509 -req -days 365 -CA example.com.crt -CAkey example.com.key -set_serial 0 -in sentences.example.com.csr -out sentences.example.com.crt
@@ -153,7 +157,7 @@ openssl x509 -req -days 365 -CA example.com.crt -CAkey example.com.key -set_seri
 Also, since we will be using mTLS, we need to create a client certificate we can
 use when accessing the sentences application through the ingress gateway:
 
-```sh
+```console
 openssl req -out client.example.com.csr -newkey rsa:2048 -nodes -keyout client.example.com.key -subj "/CN=client.example.com/O=ACMEorg"
 openssl x509 -req -days 365 -CA example.com.crt -CAkey example.com.key -set_serial 1 -in client.example.com.csr -out client.example.com.crt
 ```
@@ -162,21 +166,22 @@ Create a kubernetes secret in the Kubernetes namespace in which the ingress
 gateway is defined (see [exercise Multiple Teams and Separation of
 Duties](multi-teams.md) for details on this):
 
-```sh
+```console
 export SENTENCES_INGRESSGATEWAY_NS=istio-system
 kubectl -n $SENTENCES_INGRESSGATEWAY_NS create secret generic sentences-tls-secret --from-file=cert=sentences.example.com.crt --from-file=key=sentences.example.com.key --from-file=cacert=example.com.crt
 ```
 
 Also create a new Gateway and VirtualService to use the secret for TLS:
 
-```sh
+```console
 kubectl -n $SENTENCES_INGRESSGATEWAY_NS apply -f deploy/mtls/igw/gateway.yaml
 cat deploy/mtls/igw/virtual-service.yaml | envsubst | kubectl apply -f -
 ```
 
 Finally, we query the sentences application using HTTPS and mTLS with the
 following command:
-```sh
+
+```console
 scripts/loop-query-loadbalancer-ep.sh https+mtls
 ```
 
@@ -200,7 +205,7 @@ end-to-end protection of traffic.
 
 ## Cleanup
 
-```sh
+```console
 kubectl -n $SENTENCES_INGRESSGATEWAY_NS delete -f deploy/mtls/igw/gateway.yaml
 cat deploy/mtls/igw/virtual-service.yaml | envsubst | kubectl delete -f -
 kubectl delete -f deploy/mtls/peer-auth/permissive.yaml
