@@ -1,0 +1,53 @@
+!INCLUDE "markdown-source/meta.md"
+[//]: # (Tags: #delay #network-delay #kiali)
+
+# Observing Delays
+
+This exercise will show that some forms of delays can be observed with the
+**metrics** that Istio tracks. Metrics are statistical and not specific to
+e.g. a certain request, i.e. we can only observe statistical data about
+observations like sums and averages. This is however, in some cases very useful.
+
+First, deploy the following, which creates three versions of the `name` service
+`v1`, `v2` and `v3`:
+
+```console
+kubectl apply -f deploy/v1
+kubectl apply -f deploy/v2
+kubectl apply -f deploy/v3
+```
+
+In another shell, run the following to continuously query the sentence service
+and observe the effect of deployment changes:
+
+```console
+scripts/loop-query.sh
+```
+
+In this exercise we have not created any Istio Kubernetes resources to affect
+routing, i.e. requests to the `name` services are approximately evenly
+distributed across the three version. However, from the output of
+`loop-query.sh` we will observe an occasional delay.
+
+If we open Kiali and select to display 'response time', we see the following,
+which shows that `v3` have a significantly higher delay than the two other
+versions.
+
+![Canary Traffic in Kiali](images/kiali-request-delays-anno.png)
+
+This scenario in this exercise was rather simple, and the problem was isolated
+to something we could isolate in Kubernetes i.e. a specific version of a
+service. If the delay was caused by something more complicated, e.g. an
+unforeseen interaction between services, it would have been difficult to
+diagnose purely from metrics due to their statistical nature.
+
+The following exercise will show how to diagnose cross-service issues using
+distributed tracing.
+
+# Cleanup
+
+```console
+kubectl delete -f deploy/v1
+kubectl delete -f deploy/v2
+kubectl delete -f deploy/v3
+```
