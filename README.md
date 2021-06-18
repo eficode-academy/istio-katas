@@ -1,92 +1,57 @@
 # Istio Katas
 
-This repository contain exercises for the Istio service mesh. Exercises assume
-access to a Kubernetes cluster with Istio, Kiali and Jaeger tracing.
+Excercises for the [Eficode Academy](https://www.eficode.com/academy) Istio course.
 
-## Exercises
+## Exercise Overview
 
-### Deployment Patterns and Observability
+Natural order:
 
-- [Blue/green Deployments](blue-green-deployment.md)
-- [Blue/green Deployments Using Kubernetes Labels](blue-green-deployment-w-labels.md)
-- [Canary Deployments](canary-deployment.md)
-- [Network Delay Investigations - Simple](request-delays.md)
-- [Network Delay Investigations - Larger Application Graph](request-delays-larger-graph.md)
-- WIP: Network Delay Investigations with Jaeger
-- [A Tour of the Istio Metrics](metrics.md)
+- [Introducing the setup]()
+- [Get familiar with Kiali ]()
+- [Using Virtual Services]()
+- [Using Destination Rules]()
+- [Deployment Patterns]()
+  - [Blue/Green]()
+  - [Canary]()
+  - [Shadow]()
+- [Getting traffic into the mesh]()
+- [Getting traffic out of the mesh]()
+- [Securing with mutual TLS]()
+- [Controlling service to service communication]()
+- [Securing access to services]()
+- [A tour of Istio's metrics]()
+- [??]()
 
-### Designing and Securing the Mesh
+## How to Read Exercise Files
 
-- [Getting Traffic into the Mesh with Ingress Gateways](getting-traffic-into-mesh.md)
-- Getting Traffic out of the Mesh
-- [Multiple Teams and Separation of Duties](multi-teams.md)
-- Controlling Load Balancing
-- [Locality/Topology Aware Load Balancing and Failover](locality-aware-load-balancing.md)
-- [Securing with Mutual TLS](mutual-tls.md)
-- [Debugging with Ephemeral Containers](debugging-with-ephemeral-containers.md)
-- [When not to use TLS](when-not-to-use-tls.md)
-- [Authorization - HTTP Network Policies](authorization.md)
-- [Authentication with OIDC](authentication.md)
+All exercise files start with an introduction
+followed by the actual exercise.
 
-### Improving Applications
+A general overview of the exercise is given first,
+followed by more detailed step-by-step
+instructions. If you want a little challenge, you
+can try to read the general steps of the
+exercise and do the exercise, if you need more help, take a look at
+the **step-by-step** instructions. The step-by-step instructions also explain _why_
+some of the steps are done in the way they are in the exercise.
 
-- Circuit Breakers
+**Each exercise is summarized in bold text at the
+beginning.**
 
-### Architectural Patterns
+- All exercise steps are bulleted. The bulleted
+  points summarize the previous paragraphs as
+  small individual tasks. **To finish the
+  exercise, it's sufficient to read only the
+  bulleted steps.** All other text is just
+  narrative and explanations as to why things are
+  done the way they are.
 
-- Multi-mesh and Migrations
-
-
-## Deployment Patterns
-
-Exercises will cover the following deployment patterns:
-
-- Blue/green. This pattern have multiple service versions deployed for
-  test. Tests are being performed against different versions based on a
-  **deliberate choice** of the version to use. I.e. this is typically used for
-  tests being performed by testers or test frameworks.
-
-- Canary. This pattern have multiple versions deployed for test and both/all
-  versions are in active use. The version to use are determined on each request
-  based on **statistics**, e.g. *1% of traffic should go to the test
-  version*. Typically its end-users that are being exposed to this.
-
-Typically, blue/green and canary deployments are used in succession. First
-blue/green deployments are used to validate a new version in a production
-environment such that other production-dependencies can be included in the
-tests. When deliberate testing using blue/green deployments have proved the
-software to be OK, a larger group of users are exposed to the new version using
-canary deployments.
-
-Another deployments pattern is:
-
-- A/B testing. With this type of deployment, a certain percentage of end-users
-  are exposed to a test version. This is typically used to test out different
-  hypothesis, e.g. "a larger 'Buy' button makes users more liable to buy
-  products".
-
-## Test Application
-
-The test application implements a simple 'sentences' builder, which can build
-sentences from the following simple algorithm:
-
-```
-age = random(0,100)
-name = random(['Peter','Ray','Egon'])
-return name + ' is ' + age + ' years'
-```
-
-i.e. it returns sentences of the form: 'Peter is 42 years'.
-
-The application is made up of three services, one which can be queried for the
-random age, one which can be queried for a random name and a frontend, which
-calls the two other through HTTP requests and formats the final sentences. This
-is deployed to Kubernetes using three Deployments - typically with names like
-`age`, `name` and `sentences`.
-
-The Python source for the application can be found
-[here](sentences-app/app/app.py). Note that the application is a 'test'
-application and thus configurable for different test purposes.  Much of the
-configuration is through environment variables. The most important environment
-variable is `SENTENCE_MODE` which define whether the application is running in
-`age`, `name` or `sentences` mode.
+> Quoted blocks indicate points that are "nice to know" and
+> can be safely ignored. They won't affect the
+> outcome of the exercise, but generally include
+> additional information the training doesn't
+> handle.
+>
+> :bulb: If a quoted paragraph begins with a
+> lightbulb, it indicates that it's a hint for the
+> exercise step.
