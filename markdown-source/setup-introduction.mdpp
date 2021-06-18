@@ -106,7 +106,7 @@ In another shell, run the following to continuously query the sentence service a
 
 - Open Kiali, filter by your namespace, and find the sentences application and browse the application.
 
-You should now see traffic and metrics being collected by kiali for the sentnces application.
+You should now see traffic and metrics being collected by kiali for the sentences application.
 
 ### Step by Step
 <details>
