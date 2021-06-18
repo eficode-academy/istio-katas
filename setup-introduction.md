@@ -95,6 +95,10 @@ In another shell, run the following to continuously query the sentence service a
 ./scripts/loop-query.sh
 ```
 
+Traffic is now flowing between the services.
+
+Browse to kiali and investigate the traffic flow.
+
 </details>
 
 ## Exercise 2
@@ -125,7 +129,7 @@ Label **your** namespace (user1, user2, user3, etc) for automatic sidecar inject
 kubectl label namespace <user1> istio-injection=enabled
 ```
 
-Deploy version 1 (`v1`).
+Redeploy version 1 (`v1`).
 
 ```console
 kubectl apply -f deploy/v1
