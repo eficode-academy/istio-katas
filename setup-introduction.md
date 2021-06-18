@@ -41,13 +41,21 @@ It provides detailed metrics, Grfana access and integrates with Jaeger for distr
 
 </details>
 
-## Exercise
+## Exercise 1
 
 - Deploy version 1 of the sentences application with kubectl. It is located under the `deploy/v1` directory.
 
 - Run the `loop-query.sh` script located in the `scripts` directory.
 
 - Observe the number of pods running and the output from the `loop-query.sh` script.
+
+- Open Kiali, filter by your namespace, and find the sentences application as shown below.
+
+![Sentences with no sidecars](images/kiali-no-sidecars.png)
+
+The red icons beside the workloads mean we have no istio sidecars deployed.
+Browse the different tabs to see that there is no traffic nor metrics being captured. 
+As there are no sidecars the traffic is not part of the istio service mesh.
 
 ### Step by Step
 <details>
@@ -90,19 +98,17 @@ In another shell, run the following to continuously query the sentence service a
 
 </details>
 
-- Open Kiali, filter by your namespace, and find the sentences application as shown below.
-
-![Sentences with no sidecars](images/kiali-no-sidecars.png)
-
-The red icons beside the workloads mean we have no istio sidecars deployed.
-Browse the different tabs to see that there is no traffic nor metrics being captured. 
-As there are no sidecars the traffic is not part of the istio service mesh.
+## Exercise 2
 
 - Pull the sentences version 1 deployment down.
 
 - Label your namespace with `istio-injection=enabled` for automtatic sidecar injection.
 
 - Redploy sentences version 1 and run the `loop-query.sh` script.
+
+- Open Kiali, filter by your namespace, and find the sentences application and browse the application.
+
+You should now see traffic and metrics being collected by kiali for the sentnces application.
 
 ### Step by Step
 <details>
@@ -133,10 +139,6 @@ Run the `loop-query.sh` script to produce some traffic.
 ```
 
 </details>
-
-- Open Kiali, filter by your namespace, and find the sentences application and browse the application.
-
-You should now see traffic and metrics being collected by kiali for the sentnces application.
 
 # Cleanup
 
