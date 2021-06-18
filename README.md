@@ -6,7 +6,7 @@ Excercises for the [Eficode Academy](https://www.eficode.com/academy) Istio cour
 
 Natural order:
 
-- [Introducing the setup]()
+- [Introducing the setup](setup-introduction.md)
 - [Get familiar with Kiali ]()
 - [Using Virtual Services]()
 - [Using Destination Rules]()
