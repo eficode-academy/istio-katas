@@ -61,9 +61,8 @@ As there are no sidecars the traffic is not part of the istio service mesh.
 <details>
     <summary> More Details </summary>
 
-Open a terminal in the root of the git repository (istio-katas) and use `kubectl apply -f deploy/v1` to deploy the stack:
+Open a terminal in the root of the git repository (istio-katas) and use `kubectl` to deploy `v1` of the application.
 
-Deploy version 1 (`v1`).
 
 ```console
 kubectl apply -f deploy/v1
