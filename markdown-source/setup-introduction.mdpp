@@ -50,12 +50,6 @@ It provides detailed metrics, Grfana access and integrates with Jaeger for distr
 
 - Open Kiali, filter by your namespace, and find the sentences application as shown below.
 
-![Sentences with no sidecars](images/kiali-no-sidecars.png)
-
-The red icons beside the workloads mean we have no istio sidecars deployed.
-Browse the different tabs to see that there is no traffic nor metrics being captured. 
-As there are no sidecars the traffic is not part of the istio service mesh.
-
 ### Step by Step
 <details>
     <summary> More Details </summary>
@@ -98,6 +92,12 @@ Traffic is now flowing between the services.
 
 Browse to kiali and investigate the traffic flow.
 
+![Sentences with no sidecars](images/kiali-no-sidecars.png)
+
+The red icons beside the workloads mean we have no istio sidecars deployed.
+Browse the different tabs to see that there is no traffic nor metrics being captured. 
+As there are no sidecars the traffic is not part of the istio service mesh.
+
 </details>
 
 ## Exercise 2
@@ -139,6 +139,13 @@ Run the `loop-query.sh` script to produce some traffic.
 ```console
 ./scripts/loop-query.sh
 ```
+
+Browse to kiali and investigate the traffic flow.
+
+![Sentences with sidecars](images/kiali-with-sidecars.png)
+
+Now you can see there are sidecars and the traffic is part of the mesh. 
+Browse the different tabs to see the traffic and metrics being captured. 
 
 </details>
 
