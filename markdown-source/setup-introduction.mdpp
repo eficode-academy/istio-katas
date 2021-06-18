@@ -48,7 +48,7 @@ It provides detailed metrics, Grfana access and integrates with Jaeger for distr
 
 - Observe the number of pods running and the output from the `loop-query.sh` script.
 
-- Open Kiali, filter by your namespace, and find the sentences application as shown below.
+- Open Kiali, filter by your namespace, find the sentences application view.
 
 ### Step by Step
 <details>
@@ -108,9 +108,7 @@ As there are no sidecars the traffic is not part of the istio service mesh.
 
 - Redploy sentences version 1 and run the `loop-query.sh` script.
 
-- Open Kiali, filter by your namespace, and find the sentences application and browse the application.
-
-You should now see traffic and metrics being collected by kiali for the sentences application.
+- Open Kiali, filter by your namespace, and find the sentences application view and browse the traffic and metrics.
 
 ### Step by Step
 <details>
