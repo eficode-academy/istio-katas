@@ -167,7 +167,7 @@ it happens at the pod level and you won't see any changes to the deployment itse
 
 You can find more information about the two different methods [here](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/).
 
-And you can more details about sidecar configuration [here](https://istio.io/latest/docs/concepts/traffic-management/#sidecars).
+And you can find more details about sidecar configuration [here](https://istio.io/latest/docs/concepts/traffic-management/#sidecars).
 
 # Cleanup
 
