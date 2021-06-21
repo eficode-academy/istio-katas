@@ -159,13 +159,15 @@ kubectl apply -f deploy/v1
 </details>
 
 Excercise 2 uses automatic sidecar injection and this is what we will be using 
-for the rest of the course.Most of the time this is what you want to do instead 
+for the rest of the course. Most of the time this is what you want to do instead 
 manually injecting sidecars.
 
 It ensures a more pervasive and homogenous observaibility. It is less intrusive as 
 it happens at the pod level and you won't see any changes to the deployment itself.
 
-You can find more information about the two methods [here](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/).
+You can find more information about the two different methods [here](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/).
+
+And you can more details about sidecar configuration [here](https://istio.io/latest/docs/concepts/traffic-management/#sidecars).
 
 # Cleanup
 
