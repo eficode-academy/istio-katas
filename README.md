@@ -7,19 +7,16 @@ Excercises for the [Eficode Academy](https://www.eficode.com/academy) Istio cour
 Natural order:
 
 - [Introducing the setup](setup-introduction.md)
-- [Get familiar with Kiali ]()
-- [Using Virtual Services]()
-- [Using Destination Rules]()
-- [Deployment Patterns]()
-  - [Blue/Green]()
-  - [Canary]()
-  - [Shadow]()
-- [Getting traffic into the mesh]()
-- [Getting traffic out of the mesh]()
-- [Securing with mutual TLS]()
-- [Controlling service to service communication]()
-- [Securing access to services]()
-- [A tour of Istio's metrics]()
+- [Routing traffic with Istio]() - In Progress
+- [Blue/Green deployment]() - Todo
+- [Canary deployment]() - Todo
+- [Shadow deployment]() - Todo
+- [Getting traffic into the mesh]()  - Todo
+- [Getting traffic out of the mesh]()  - Todo
+- [Securing with mutual TLS]()  - Todo
+- [Controlling service to service communication]() - Todo
+- [Securing access to services]()  - Todo
+- [A tour of Istio's metrics]() - Todo
 - [??]()
 
 ## How to Read Exercise Files
