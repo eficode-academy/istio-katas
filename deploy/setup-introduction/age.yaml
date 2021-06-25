@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: age
+  name: age
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: age
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: age
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: age
+        env:
+        - name: "SENTENCE_MODE"
+          value: "age"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: age
+  name: age
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: sentences
+    mode: age
+  type: ClusterIP
+

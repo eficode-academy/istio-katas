@@ -43,7 +43,7 @@ It provides detailed metrics, Grafana access and integrates with Jaeger for dist
 
 ## Exercise 1
 
-- Deploy version 1 of the sentences application with kubectl. It is located under the `deploy/v1` directory.
+- Deploy the sentences application with kubectl. It is located under the `deploy/setup-introduction` directory.
 
 - Observe the number of pods running.
 
@@ -62,7 +62,7 @@ It provides detailed metrics, Grafana access and integrates with Jaeger for dist
 Open a terminal in the root of the git repository (istio-katas) and use `kubectl` to deploy `v1` of the application.
 
 ```console
-kubectl apply -f deploy/v1
+kubectl apply -f deploy/setup-introduction
 ```
 
 **Observe the number of services and pods running**
@@ -82,7 +82,6 @@ pod/sentences-6dffccb8c6-7fd57   1/1     Running   0          2s
 NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
 service/age         ClusterIP   172.20.123.133   <none>        5000/TCP         2s
 service/name        ClusterIP   172.20.108.51    <none>        5000/TCP         2s
-service/name-v1     ClusterIP   172.20.226.141   <none>        5000/TCP         2s
 service/sentences   NodePort    172.20.168.218   <none>        5000:30326/TCP   2s
 ```
 
@@ -110,11 +109,11 @@ Traffic is now flowing between the services.
 
 ## Exercise 2
 
-- Pull the sentences version 1 deployment down.
+- Pull the sentences application down.
 
 - Enable automtatic sidecar injection for **your** namespace, e.g. user1, user2, etc, with label `istio-injection=enabled`.
 
-- Redeploy sentences version 1.
+- Redeploy sentences application.
  
 - Run the `loop-query.sh` script to produce traffic.
 
@@ -124,10 +123,10 @@ Traffic is now flowing between the services.
 <details>
     <summary> More Details </summary>
 
-**Pull sentences version 1 deployment down**
+**Pull sentences application down**
 
 ```console
-kubectl delete -f deploy/v1
+kubectl delete -f deploy/setup-introduction
 ```
 
 **Enable automtatic sidecar injection**
@@ -136,10 +135,10 @@ kubectl delete -f deploy/v1
 kubectl label namespace <USERNAME HERE> istio-injection=enabled
 ```
 
-**Redeploy sentences version 1**
+**Redeploy sentences application**
 
 ```console
-kubectl apply -f deploy/v1
+kubectl apply -f deploy/setup-introduction
 ```
 
 **Run the loop-query.sh script**
@@ -172,5 +171,5 @@ And you can find more details about sidecar configuration [here](https://istio.i
 # Cleanup
 
 ```console
-kubectl delete -f deploy/v1
+kubectl delete -f deploy/setup-introduction
 ```
