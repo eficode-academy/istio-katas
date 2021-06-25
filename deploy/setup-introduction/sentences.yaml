@@ -4,18 +4,21 @@ metadata:
   labels:
     app: sentences
     mode: sentence
-  name: sentences
+    version: v1
+  name: sentences-v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: sentences
       mode: sentence
+      version: v1
   template:
     metadata:
       labels:
         app: sentences
         mode: sentence
+        version: v1
     spec:
       containers:
       - image: michaelvl/sentences:v1
