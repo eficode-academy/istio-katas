@@ -23,22 +23,3 @@ spec:
         env:
         - name: "SENTENCE_MODE"
           value: "sentence"
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: sentences
-    mode: sentence
-  name: sentences
-spec:
-  ports:
-  - port: 5000
-    protocol: TCP
-    targetPort: 5000
-    #appProtocol: http
-  selector:
-    app: sentences
-    mode: sentence
-  type: NodePort
-
