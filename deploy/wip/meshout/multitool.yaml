@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: multitool
+  name: multitool
+spec:
+  selector:
+    matchLabels:
+      app: multitool
+  template:
+    metadata:
+      labels:
+        app: multitool
+    spec:
+      containers:
+      - image: praqma/network-multitool
+        name: network-multitool
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: multitool
+  name: multitool
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: multitool
