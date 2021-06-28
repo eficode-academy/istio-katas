@@ -3,9 +3,8 @@ kind: Service
 metadata:
   labels:
     app: sentences
-    mode: name
-    version: v1
-  name: name
+    mode: age
+  name: age
 spec:
   ports:
   - port: 5000
@@ -13,6 +12,5 @@ spec:
     targetPort: 5000
   selector:
     app: sentences
-    mode: name
-    version: v1
+    mode: age
   type: ClusterIP

@@ -3,16 +3,15 @@ kind: Service
 metadata:
   labels:
     app: sentences
-    mode: name
-    version: v1
-  name: name
+    mode: sentence
+  name: sentences
 spec:
   ports:
   - port: 5000
     protocol: TCP
     targetPort: 5000
+    #appProtocol: http
   selector:
     app: sentences
-    mode: name
-    version: v1
-  type: ClusterIP
+    mode: sentence
+  type: NodePort

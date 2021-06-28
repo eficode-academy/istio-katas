@@ -4,8 +4,8 @@ metadata:
   labels:
     app: sentences
     mode: name
-    version: v1
-  name: name
+    version: v2
+  name: name-v2
 spec:
   ports:
   - port: 5000
@@ -14,5 +14,5 @@ spec:
   selector:
     app: sentences
     mode: name
-    version: v1
+    version: v2
   type: ClusterIP
