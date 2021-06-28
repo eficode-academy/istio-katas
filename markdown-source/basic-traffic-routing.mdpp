@@ -26,7 +26,7 @@ The VirtualService and the DestinationRule.
 A VirtualService defines a set of traffic routing rules to apply when a host 
 is addressed. Each routing rule defines matching criteria for traffic of a 
 specific protocol. If the traffic is matched, then it is sent to a named 
-destination service (or subset/version of it) defined in the registry.
+destination **service** or subset/version of it.
 
 ```console
 apiVersion: networking.istio.io/v1alpha3
@@ -41,19 +41,21 @@ spec:
     - destination:
         host: my-service
 ```
+The **http** section contains the routing rules for HTTP/1.1, HTTP/2 and gRPC 
+traffic. You can also use TCP and TLS sections for configuring routing.
 
-<details>
-    <summary> More Info </summary>
+The **hosts** field is the user addressable destination that the routing rules 
+apply to. This is **virtual and doesn't actuaslly have to exist.
 
-List some of the most important route types, like HTTPRoute, TLSRoute, TCPRoute, etc.
-
-</details>
+The **destination** field specifies the **actual** destination of the routing 
+rule and **must** exist. In kubernetes this is a **service** and generally 
+takes a form like `reviews`, `ratings`, etc.
 
 ## Exercise 1
 
 ### Overview
 
-- Deploy the sentences app and a second version (`v2`) of of the name service. 
+- Deploy the sentences app and a second version (`v2`) of the name service. 
 
 - Run the script `scripts/loop-query.sh` to produce traffic.
 
@@ -120,6 +122,7 @@ spec:
     mode: name
     version: v1
   type: ClusterIP
+
 ```
 
 ```console
