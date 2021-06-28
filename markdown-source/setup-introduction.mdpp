@@ -12,9 +12,12 @@
 ## Introduction
 
 This exercise introduces the sentences application which you will be using during the course.
+It also introduces you to the Kiali management console for the Istio service mesh.
 
 <details>
     <summary> More Info </summary>
+
+### Sentences application
 
 This application implements a simple 'sentences' builder, which can build
 sentences from the following simple algorithm:
@@ -28,15 +31,24 @@ The application is made up of three services, one which can be queried for the
 random age, one which can be queried for a random name and a frontend sentence service, which
 calls the two other through HTTP requests and formats the final sentences.
 
-</details>
+### Kiali
 
-It also introduces you to the Kiali management console for the Istio service mesh.
+Kiali provides dashboards and observability by showing you the structure and 
+health of your service mesh. It provides detailed metrics, Grafana access and 
+integrates with Jaeger for distributed tracing.
 
-<details>
-    <summary> More Info </summary>
+One of it's most powerful features are it's graphs. They provide a powerful way 
+to visualize the topology oy your service mesh. 
 
-Kiali provides dashboards and observability by showing you the structure and health of your service mesh.
-It provides detailed metrics, Grafana access and integrates with Jaeger for distributed tracing. 
+It provides four main graph renderings of the mesh telemetry.
+
+* The **workload** graph provides the a detailed view of communication between workloads.
+
+* The **app** graph aggregates the workloads with the same app labeling, which provides a more logical view.
+
+* The **versioned app** graph aggregates by app, but breaks out the different versions providing traffic breakdowns that are version-specific.
+
+* The **service** graph provides a high-level view, which aggregates all traffic for defined services.
 
 </details>
 
@@ -113,10 +125,14 @@ Traffic is now flowing between the services.
 - Enable automtatic sidecar injection for **your** namespace, e.g. user1, user2, etc, with label `istio-injection=enabled`.
 
 - Redeploy sentences application.
+
+- Observe that an envoy sidecar proxy is deployed in the pod.
  
 - Run the `loop-query.sh` script to produce traffic.
 
 - Open Kiali find the sentences application view and browse info, traffic and metrics.
+
+- Investigate the different graphs provided by kiali.
 
 ### Step by Step
 <details>
@@ -140,6 +156,18 @@ kubectl label namespace <USERNAME HERE> istio-injection=enabled
 kubectl apply -f deploy/setup-introduction
 ```
 
+**Observe envoy proxy**
+
+```console
+kubectl get pods -o=custom-columns=NAME:.metadata.name,CONTAINERS:.spec.containers[*].name
+```
+
+This should show two containers for the name service and should look like this.
+
+```console
+
+```
+
 **Run the loop-query.sh script**
 
 ```console
@@ -150,9 +178,24 @@ kubectl apply -f deploy/setup-introduction
 
 ![Sentences with sidecars](images/kiali-with-sidecars.png)
 
-> :bulb: Now you can see there are sidecars and the traffic is part of the mesh. 
-> Browse the different tabs to see the traffic and metrics being captured.
-> If you run `kubectl get pods` you will see two containers per pod.
+Now you can see there are sidecars and the traffic is part of the mesh. 
+
+Browse the different tabs to see the traffic and metrics being captured.
+
+> :bulb: It may take a minute before Kiali starts showing the traffic.
+> You can change the refresh rate in the top right hand corner.
+
+**Investigate the different graphs**
+
+Browse to the graphs and investigate the **service**, **workload**, **app** 
+and **versioned app** graphs. 
+
+> :bulb: Use the details to modify what is shown in the 
+> different graphs. Showing request distribution is something
+> we will be using often.
+
+![Graph Details](images/kiali-details.png)
+
 
 </details>
 
