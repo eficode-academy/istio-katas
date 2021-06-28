@@ -162,10 +162,13 @@ kubectl apply -f deploy/setup-introduction
 kubectl get pods -o=custom-columns=NAME:.metadata.name,CONTAINERS:.spec.containers[*].name
 ```
 
-This should show two containers for the name service and should look like this.
+This should show two containers for each service and should look like this.
 
 ```console
-
+NAME                            CONTAINERS
+age-v1-676bf56bdd-m6bcj         age,istio-proxy
+name-v1-587b56cdf4-6tnhs        name,istio-proxy
+sentences-v1-6ccc9fdcc5-fzt2g   sentences,istio-proxy
 ```
 
 **Run the loop-query.sh script**
