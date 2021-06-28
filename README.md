@@ -7,7 +7,7 @@ Excercises for the [Eficode Academy](https://www.eficode.com/academy) Istio cour
 Natural order:
 
 - [Introducing the setup](setup-introduction.md)
-- [Basic traffic routing]() - In Progress
+- [Basic traffic routing](basic-traffic-routing.md) - In Progress
 - [Blue/Green deployment]() - Todo
 - [Canary deployment]() - Todo
 - [Shadow deployment]() - Todo
