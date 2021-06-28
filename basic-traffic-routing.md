@@ -83,7 +83,7 @@ kubectl apply -f deploy/basic-traffic-routing/start/
 ./scripts/loop-query.sh
 ```
 
-**Observe traffic flow in Kiali**
+**Observe traffic flow with the **version app graph** in Kiali**
 ![50/50 split of traffic](images/kiali-blue-green-anno.png)
 
 What you are seeing here is kubernetes load balancing between PODS.
@@ -154,7 +154,10 @@ Observe the traffic flow in Kiali using the **versioned app graph**. It may
 take a minute before fully complete but you should see the traffic being routed 
 to the `name-v1` **service**.
 
+> :bulb: Make sure to select `Idle Edges` and `Service Nodes` in the Display 
+drop down.
 
+![Basic virtual service route](images/basic-route-vs.png)
 
 ## DestinationRule
 
