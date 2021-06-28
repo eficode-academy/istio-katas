@@ -46,7 +46,7 @@ The **http** section contains the routing rules for HTTP/1.1, HTTP/2 and gRPC
 traffic. You can also use TCP and TLS sections for configuring routing.
 
 The **hosts** field is the user addressable destination that the routing rules 
-apply to. This is **virtual and doesn't actuaslly have to exist.
+apply to. This is **virtual** and doesn't actuaslly have to exist.
 
 The **destination** field specifies the **actual** destination of the routing 
 rule and **must** exist. In kubernetes this is a **service** and generally 
@@ -123,7 +123,6 @@ spec:
     mode: name
     version: v1
   type: ClusterIP
-
 ```
 
 ```console
@@ -131,7 +130,7 @@ kubectl apply -f deploy/basic-traffic-routing/start/name-svc-v1.yaml
 ```
 
 Create a virtual service called `name-virtual-service.yaml` in 
-`deploy/basic-traffic-routing/start/`.
+`deploy/basic-traffic-routing/start/` and apply it.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -145,8 +144,17 @@ spec:
   - route:
     - destination:
         host: name-v1
-
 ```
+
+```console
+kubectl apply -f deploy/basic-traffic-routing/start/name-virtual-service.yaml
+```
+
+Observe the traffic flow in Kiali using the **versioned app graph**. It may 
+take a minute before fully complete but you should see the traffic being routed 
+to the `name-v1` **service**.
+
+
 
 ## DestinationRule
 
