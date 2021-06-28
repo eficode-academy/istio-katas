@@ -40,13 +40,16 @@ spec:
   http:
   - route:
     - destination:
-        host: my-service
+        host: my-service-v1
+    - destination:
+        host: my-service-v2
 ```
 The **http** section contains the routing rules for HTTP/1.1, HTTP/2 and gRPC 
 traffic. You can also use TCP and TLS sections for configuring routing.
 
 The **hosts** field is the user addressable destination that the routing rules 
-apply to. This is **virtual** and doesn't actuaslly have to exist.
+apply to. This is **virtual** and doesn't actuaslly have to exist. For examnple 
+You could use it for consolidating routes to all services for an application. 
 
 The **destination** field specifies the **actual** destination of the routing 
 rule and **must** exist. In kubernetes this is a **service** and generally 
@@ -66,6 +69,8 @@ takes a form like `reviews`, `ratings`, etc.
 
 > :bulb: A virtual service lets you configure how requests are routed 
 > to a **service** within an Istio service mesh.
+
+- Observe route precedence by adding a route to version 2 of the name service.
 
 ### Step by Step
 <details>
@@ -158,6 +163,63 @@ to the `name-v1` **service**.
 drop down.
 
 ![Basic virtual service route](images/basic-route-vs.png)
+
+**Observe route precedence**
+
+Create a new service called `name-svc-v2.yaml` which has a version in the label selector 
+ in `deploy/basic-traffic-routing/start/` and apply it.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: name
+    version: v2
+  name: name-v2
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: sentences
+    mode: name
+    version: v2
+  type: ClusterIP
+```
+
+```console
+kubectl apply -f deploy/basic-traffic-routing/start/name-svc-v2.yaml
+```
+
+Add a destination to the new service in the `name-virtual-service.yaml` you 
+created before. But place it **before** 
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name-route
+spec:
+  hosts:
+  - name
+  http:
+  - route:
+    - destination:
+        host: name-v2
+  - route:
+    - destination:
+        host: name-v1
+```
+Observe the traffic flow in Kiali using the **versioned app graph**.
+You will see that trafiic is now being routed to the version 2 service.
+
+![Routing precedence](images/basic-route-precedence-vs.png)
+
+Routing rules are evaluated in sequential order from top to bottom, with the 
+first rule in the virtual service definition being given highest priority. 
 
 ## DestinationRule
 
