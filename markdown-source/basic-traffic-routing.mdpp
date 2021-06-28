@@ -105,8 +105,8 @@ So why is this happening?
 
 **Route ALL traffic to version 1 of the name service** 
 
-Create a new service called `name-svc-v1.yaml` which has a version in the label selector 
- in `deploy/basic-traffic-routing/start/` and apply it.
+Create a new service called `name-svc-v1.yaml` which has a version (`v1`) in 
+the label selector in `deploy/basic-traffic-routing/start/` and apply it.
 
 ```yaml
 apiVersion: v1
@@ -165,8 +165,8 @@ drop down.
 
 **Observe route precedence**
 
-Create a new service called `name-svc-v2.yaml` which has a version in the label selector 
- in `deploy/basic-traffic-routing/start/` and apply it.
+Create a new service called `name-svc-v2.yaml` which has a version (`v2`) in 
+the label selector in `deploy/basic-traffic-routing/start/` and apply it.
 
 ```yaml
 apiVersion: v1
@@ -194,7 +194,7 @@ kubectl apply -f deploy/basic-traffic-routing/start/name-svc-v2.yaml
 ```
 
 Add a destination to the new service in the `name-virtual-service.yaml` you 
-created before. But place it **before** 
+created before. But place it **before** the `name-v1` service and apply it.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -212,6 +212,7 @@ spec:
     - destination:
         host: name-v1
 ```
+
 Observe the traffic flow in Kiali using the **versioned app graph**.
 You will see that trafiic is now being routed to the version 2 service.
 
@@ -219,6 +220,15 @@ You will see that trafiic is now being routed to the version 2 service.
 
 Routing rules are evaluated in sequential order from top to bottom, with the 
 first rule in the virtual service definition being given highest priority. 
+
+Reorder the destination rules so that service `name-v1` will be evaluated 
+first and apply the changes.
+
+```console
+kubectl apply -f deploy/basic-traffic-routing/start/name-virtual-service.yaml
+```
+
+Traffic should now be routed to the `name-v1` service.
 
 ## DestinationRule
 
