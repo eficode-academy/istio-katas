@@ -194,7 +194,7 @@ Browse the different tabs to see the traffic and metrics being captured.
 Browse to the graphs and investigate the **service**, **workload**, **app** 
 and **versioned app** graphs. 
 
-> :bulb: Use the details to modify what is shown in the 
+> :bulb: Use the display options to modify what is shown in the 
 > different graphs. Showing request distribution is something
 > we will be using often.
 
