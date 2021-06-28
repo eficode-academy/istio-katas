@@ -4,7 +4,7 @@ metadata:
   name: sentences
 spec:
   hosts:
-  - "sentences.example.com"
+  - "sentences.istio.eficode.academy"
   gateways:
   - $SENTENCES_INGRESSGATEWAY_NS/sentences
   http:
