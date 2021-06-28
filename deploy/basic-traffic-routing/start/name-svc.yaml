@@ -13,5 +13,5 @@ spec:
     targetPort: 5000
   selector:
     app: sentences
-    mode: name    
+    mode: name
   type: ClusterIP
