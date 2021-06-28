@@ -231,6 +231,8 @@ kubectl apply -f deploy/basic-traffic-routing/start/name-virtual-service.yaml
 
 Traffic should now be routed to the `name-v1` service.
 
+</details>
+
 ## DestinationRule
 
 You can think of virtual services as how you route your traffic to a given 
@@ -241,17 +243,6 @@ The most common use of `DestinationRule` is to specify named service **subsets**
 
 For example, grouping all of a service instances **versions**. You can then 
 use these **subsets** in a virtual service to control traffic to different versions.
-
-### DestinationRule
-
-You can think of virtual services as how you route your traffic to a given 
-destination, and then you use destination rules to configure **what** happens 
-to traffic for that destination.
-
-The most common use of `DestinationRule` is to specify named service **subsets**.
-
-For example, grouping all of a services instances versions. You can then use these 
-**subset** in a virtual service to control to different instances.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -306,5 +297,5 @@ Some summary text!
 # Cleanup
 
 ```console
-kubectl delete -f deploy/v1
+kubectl delete -f deploy/basic-traffic-routing/start/
 ```
