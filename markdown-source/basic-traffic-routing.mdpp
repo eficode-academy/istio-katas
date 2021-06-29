@@ -373,22 +373,21 @@ kubectl delete -f deploy/basic-traffic-routing/done/name-svc-v2.yaml
 
 In exercise 1 you learned what a virtual service is and how to route traffic 
 to a destination service in kubernetes with an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute). 
-
-But you can also leverage [TLSRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TLSRoute) 
+You can also leverage [TLSRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TLSRoute) 
 and [TCPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TCPRoute).
 
-> :bulb: Kubernetes only supports traffic distribution based on instance scaling. 
-
-But there is a lot more virtual services can be do for traffic distribution like 
+There is a lot more virtual services can be do for traffic distribution like 
 match conditions for HTTPRoute on headers, uri, schemes, etc. HTTP redirects and 
-rewrites. 
+rewrites. We will looking at some of these in following exercises.
 
 See the [documentation](https://istio.io/latest/docs/reference/config/networking/virtual-service/#VirtualService) 
 for more details.
 
+> :bulb: Kubernetes only supports traffic distribution based on instance scaling. 
+
 In exercise 2 you saw how a destination rule could be used to determine **what** 
 happened to traffic routed to a kubernetes service using labels identifying 
-workload version. But you can also set traffic policies on a destination rule 
+workload versions. But you can also set traffic policies on a destination rule 
 to apply load balancing policies, connection pool settings, etc.
 
 See the [documentation](https://istio.io/latest/docs/reference/config/networking/destination-rule/#DestinationRule) 
