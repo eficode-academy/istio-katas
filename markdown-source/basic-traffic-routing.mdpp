@@ -28,7 +28,7 @@ is addressed. Each routing rule defines matching criteria for traffic of a
 specific protocol. If the traffic is matched, then it is sent to a named 
 destination **service** or subset/version of it.
 
-```console
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
