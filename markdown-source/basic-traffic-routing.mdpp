@@ -106,8 +106,8 @@ So why is this happening?
 
 * **Route ALL traffic to version 1 of the name service** 
 
-Create a new service called `name-svc-v1.yaml` which has a version (`v1`) in 
-the label selector in `deploy/basic-traffic-routing/start/` and apply it.
+Create a new service called `name-svc-v1.yaml` in `deploy/basic-traffic-routing/start/` 
+and apply it. Make sure it has a version (`v1`) in the label selector.
 
 ```yaml
 apiVersion: v1
@@ -166,8 +166,8 @@ drop down.
 
 * **Observe route precedence**
 
-Create a new service called `name-svc-v2.yaml` which has a version (`v2`) in 
-the label selector in `deploy/basic-traffic-routing/start/` and apply it.
+Create a new service called `name-svc-v2.yaml` in `deploy/basic-traffic-routing/start/` 
+and apply it. Make sure it has a version (`v2`) in the label selector.
 
 ```yaml
 apiVersion: v1
