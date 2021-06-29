@@ -203,11 +203,20 @@ and **versioned app** graphs.
 
 </details>
 
+## Summary
+
+Excercise 1 introduced you to the sentences application and Kiali. There is not 
+enough time in the course to go into much more details around Kiali. But it has 
+more features like the Istio Wizards feature which lets you create delete 
+istio configuration on the fly. It can do validation on the most common Istio 
+objects and more. See the [documentation](https://kiali.io/documentation/latest/features/) 
+for a more complete overview.
+
 Excercise 2 uses automatic sidecar injection and this is what we will be using 
 for the rest of the course. Most of the time this is what you want to do instead 
 manually injecting sidecars.
 
-It ensures a more pervasive and homogenous observaibility. It is less intrusive as 
+It ensures a more **pervasive** and homogenous observaibility. It is less intrusive as 
 it happens at the pod level and you won't see any changes to the deployment itself.
 
 You can find more information about the two different methods [here](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/).
