@@ -234,11 +234,11 @@ Traffic should now be routed to the `name-v1` service.
 
 ## DestinationRule
 
-You can think of virtual services as how you route your traffic to a given 
+You can think of virtual services as **how** you route your traffic to a given 
 destination, and then you use destination rules to configure **what** happens 
 to traffic for that destination.
 
-The most common use of `DestinationRule` is to specify named service **subsets**.
+One of the most common uses of `DestinationRule` is to specify named service **subsets**.
 
 For example, grouping all of a service instances **versions**. You can then 
 use these **subsets** in a virtual service to control traffic to different versions.
@@ -267,31 +267,132 @@ spec:
 
 ## Exercise 2
 
-- 
+- Create a destination rule with **subsets** for the `name-v1` and `name-v2` workloads and apply it.
 
-- 
+- Run the script `scripts/loop-query.sh` to produce traffic.
 
-- 
- 
+- Update the virtual service from the previous exercise to include the subsets and apply it.
+
+- Use the version app graph in Kiali to observe the traffic flow.
+
+- Remove the `name-v1` and `name-v2` services. 
 
 ### Step by Step
 <details>
     <summary> More Details </summary>
 
-**Bold from bullets**
+**Create a destination rule and apply it**
+
+Create a destination rule called `name-destination-rule.yaml` in 
+`deploy/basic-traffic-routing/start/` and apply it.
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: name-destination-rule
+spec:
+  host: name
+  subsets:
+  - name: name-v1
+    labels:
+      version: v1
+  - name: name-v2
+    labels:
+      version: v2
+```
+The above destination rule says, when combined with a virtual service, **what** 
+I want to do is send traffic to a workload **labeled** with either `v1` or `v2`.
 
 ```console
-a command
+kubectl apply -f deploy/basic-traffic-routing/start/name-destination-rule.yaml
+```
+Applying the destination rule has no effect at this point becuase the virtual 
+service has not yet been updated to use the subsets.
+
+> :bulb: To avoid 503 errors **always** apply destination rules and changes to  
+destination rules **prior** to changing virtual services.
+
+**Update the virtual service**
+
+Update the virtual service `deploy/basic-traffic-routing/start/name-virtual-service.yaml` 
+you created in exercise 1 and apply it.
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name-route
+spec:
+  hosts:
+  - name
+  gateways:
+  - mesh
+  http:
+  - route:
+    - destination:
+        host: name
+        subset: name-v1
+  - route:
+    - destination:
+        host: name
+        subset: name-v2
 ```
 
-**Bold from bullets**
+Notice that the `destination` of the route's are no longer the two new services 
+you created in exercise 1. Instead it is the original `name` service 
+which has no version in the selector. The virtual service is going to route all 
+traffic to the generic `name` service and **what** workload is going to recieve 
+traffic is determined by the destination rule.
 
 ```console
-a command
+kubectl apply -f deploy/basic-traffic-routing/start/name-virtual-service.yaml
 ```
+
+**Observe traffic flow with version app graph in Kiali**
+
+You can see in Kiali that the virtual servce combined with the destination 
+rule subsets routes traffic to the name workload labeled `v1` even though the 
+name service has no versions defined in the selector.
+
+![Virtual service and destination rule](images/kiali-vs-dr.png)
+
+> :bulb: Order of precedence in the virtual service still applies. The destination 
+> rule does **not** affect it.
+
+**Remove the unneeded services**
+
+```console
+kubectl delete -f deploy/basic-traffic-routing/done/name-svc-v1.yaml
+kubectl delete -f deploy/basic-traffic-routing/done/name-svc-v2.yaml
+```
+
 </details>
 
-Some summary text!
+## Summary
+
+In exercise 1 you learned what a virtual service is and how to route traffic 
+to a destination service in kubernetes with an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute). 
+
+But you can also leverage [TLSRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TLSRoute) 
+and [TCPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TCPRoute).
+
+> :bulb: Kubernetes only supports traffic distribution based on instance scaling. 
+
+But there is a lot more virtual services can be do for traffic distribution like 
+match conditions for HTTPRoute on headers, uri, schemes, etc. HTTP redirects and 
+rewrites. 
+
+See the [documentation](https://istio.io/latest/docs/reference/config/networking/virtual-service/#VirtualService) 
+for more details.
+
+In exercise 2 you saw how a destination rule could be used to determine **what** 
+happened to traffic routed to a kubernetes service using labels identifying 
+workload version. But you can also set traffic policies on a destination rule 
+to apply load balancing policies, connection pool settings, etc.
+
+See the [documentation](https://istio.io/latest/docs/reference/config/networking/destination-rule/#DestinationRule) 
+for more details.
 
 # Cleanup
 
