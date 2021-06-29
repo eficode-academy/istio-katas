@@ -3,7 +3,7 @@
 
 # Routing Traffic with Istio
 
-## Learning goal
+## Learning goals
 
 - Using Virtual Services
 - Using Destination Rules
@@ -13,7 +13,7 @@
 These exercises introduce you to the basics of traffic routing with Istio. 
 We are going to deploy all the services for our sentences application 
 and a new version of the **name** service. This will demonstrate normal 
-kubernetes load balancing bewtween services. 
+kubernetes load balancing between services. 
 
 Then we are going to use two Istio custom resource definitions(CRD's) which are
 the building blocks of Istio's traffic routing functionality to route traffic to 
@@ -49,7 +49,7 @@ The **http** section contains the routing rules for HTTP/1.1, HTTP/2 and gRPC
 traffic. You can also use TCP and TLS sections for configuring routing.
 
 The **hosts** field is the user addressable destination that the routing rules 
-apply to. This is **virtual** and doesn't actuaslly have to exist. For examnple 
+apply to. This is **virtual** and doesn't actually have to exist. For example 
 You could use it for consolidating routes to all services for an application. 
 
 The **destination** field specifies the **actual** destination of the routing 
@@ -75,19 +75,19 @@ takes a form like `reviews`, `ratings`, etc.
 <details>
     <summary> More Details </summary>
 
-**Deploy sentences app and 2 versions of name services**
+* **Deploy sentences app and 2 versions of name services**
 
 ```console
 kubectl apply -f deploy/basic-traffic-routing/start/
 ```
 
-**Run loop-query.sh**
+* **Run loop-query.sh**
 
 ```console
 ./scripts/loop-query.sh
 ```
 
-**Observe traffic flow with the **version app graph** in Kiali**
+* **Observe traffic flow with the **version app graph** in Kiali**
 ![50/50 split of traffic](images/kiali-blue-green-anno.png)
 
 What you are seeing here is kubernetes load balancing between PODS.
@@ -103,7 +103,7 @@ So why is this happening?
 > :bulb: Take a look at the label selector for the name service.
 > It doesn't specify a version...
 
-**Route ALL traffic to version 1 of the name service** 
+* **Route ALL traffic to version 1 of the name service** 
 
 Create a new service called `name-svc-v1.yaml` which has a version (`v1`) in 
 the label selector in `deploy/basic-traffic-routing/start/` and apply it.
@@ -163,7 +163,7 @@ drop down.
 
 ![Basic virtual service route](images/basic-route-vs.png)
 
-**Observe route precedence**
+* **Observe route precedence**
 
 Create a new service called `name-svc-v2.yaml` which has a version (`v2`) in 
 the label selector in `deploy/basic-traffic-routing/start/` and apply it.
@@ -214,7 +214,7 @@ spec:
 ```
 
 Observe the traffic flow in Kiali using the **versioned app graph**.
-You will see that trafiic is now being routed to the version 2 service.
+You will see that traffic is now being routed to the version 2 service.
 
 ![Routing precedence](images/basic-route-precedence-vs.png)
 
@@ -285,7 +285,7 @@ spec:
 <details>
     <summary> More Details </summary>
 
-**Create a destination rule and apply it**
+* **Create a destination rule and apply it**
 
 Create a destination rule called `name-destination-rule.yaml` in 
 `deploy/basic-traffic-routing/start/` and apply it.
@@ -311,13 +311,13 @@ I want to do is send traffic to a workload **labeled** with either `v1` or `v2`.
 ```console
 kubectl apply -f deploy/basic-traffic-routing/start/name-destination-rule.yaml
 ```
-Applying the destination rule has no effect at this point becuase the virtual 
+Applying the destination rule has no effect at this point because the virtual 
 service has not yet been updated to use the subsets.
 
 > :bulb: To avoid 503 errors **always** apply destination rules and changes to  
 destination rules **prior** to changing virtual services.
 
-**Update the virtual service**
+* **Update the virtual service**
 
 Update the virtual service `deploy/basic-traffic-routing/start/name-virtual-service.yaml` 
 you created in exercise 1 and apply it.
@@ -346,16 +346,16 @@ spec:
 Notice that the `destination` of the route's are no longer the two new services 
 you created in exercise 1. Instead it is the original `name` service 
 which has no version in the selector. The virtual service is going to route all 
-traffic to the generic `name` service and **what** workload is going to recieve 
+traffic to the generic `name` service and **what** workload is going to receive 
 traffic is determined by the destination rule.
 
 ```console
 kubectl apply -f deploy/basic-traffic-routing/start/name-virtual-service.yaml
 ```
 
-**Observe traffic flow with version app graph in Kiali**
+* **Observe traffic flow with version app graph in Kiali**
 
-You can see in Kiali that the virtual servce combined with the destination 
+You can see in Kiali that the virtual service combined with the destination 
 rule subsets routes traffic to the name workload labeled `v1` even though the 
 name service has no versions defined in the selector.
 
