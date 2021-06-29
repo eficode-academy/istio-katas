@@ -10,7 +10,9 @@ spec:
   http:
   - route:
     - destination:
-        host: name-v1
+        host: name
+        subset: name-v1
   - route:
     - destination:
-        host: name-v2
+        host: name
+        subset: name-v2
