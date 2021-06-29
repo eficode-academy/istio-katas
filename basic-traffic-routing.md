@@ -89,6 +89,7 @@ kubectl apply -f deploy/basic-traffic-routing/start/
 ```
 
 * **Observe traffic flow with the **version app graph** in Kiali**
+
 ![50/50 split of traffic](images/kiali-blue-green-anno.png)
 
 What you are seeing here is kubernetes load balancing between PODS.
