@@ -278,9 +278,9 @@ spec:
 
 - Update the virtual service from the previous exercise to include the subsets and apply it.
 
-- Use the version app graph in Kiali to observe the traffic flow.
-
 - Remove the `name-v1` and `name-v2` services. 
+
+- Use the version app graph in Kiali to observe the traffic flow.
 
 ### Step by Step
 <details>
@@ -354,6 +354,13 @@ traffic is determined by the destination rule.
 kubectl apply -f deploy/basic-traffic-routing/start/name-virtual-service.yaml
 ```
 
+* **Remove the un-needed services**
+
+```console
+kubectl delete -f deploy/basic-traffic-routing/start/name-svc-v1.yaml
+kubectl delete -f deploy/basic-traffic-routing/start/name-svc-v2.yaml
+```
+
 * **Observe traffic flow with version app graph in Kiali**
 
 You can see in Kiali that the virtual service combined with the destination 
@@ -364,13 +371,6 @@ name service has no versions defined in the selector.
 
 > :bulb: Order of precedence in the virtual service still applies. The destination 
 > rule does **not** affect it.
-
-* **Remove the un-needed services**
-
-```console
-kubectl delete -f deploy/basic-traffic-routing/done/name-svc-v1.yaml
-kubectl delete -f deploy/basic-traffic-routing/done/name-svc-v2.yaml
-```
 
 </details>
 
