@@ -349,7 +349,7 @@ Notice that the `destination` of the route's are no longer the two new services
 you created in exercise 1. Instead it is the original `name` service 
 which has no version in the selector. The virtual service is going to route all 
 traffic to the generic `name` service and **what** is going to happen after it 
-has been routed this service is determined by the destination rule. In this case 
+has been routed to this service is determined by the destination rule. In this case 
 the traffic is going to be directed to a workload based on version label.
 
 ```console
