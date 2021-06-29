@@ -11,3 +11,6 @@ spec:
   - route:
     - destination:
         host: name-v1
+  - route:
+    - destination:
+        host: name-v2
