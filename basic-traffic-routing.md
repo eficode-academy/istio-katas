@@ -11,7 +11,7 @@
 
 ## Introduction
 
-This exercise introduces you to the basics of traffic routing with Istio. 
+These exercises introduce you to the basics of traffic routing with Istio. 
 We are going to deploy all the services for our sentences application 
 and a new version of the **name** service. This will demonstrate normal 
 kubernetes load balancing bewtween services. 
@@ -22,7 +22,9 @@ the desired workloads.
 
 The VirtualService and the DestinationRule.
 
-## VirtualService
+## Exercise 1
+
+On Kubernetes you use virtual services to route traffic to kubernetes services.
 
 A VirtualService defines a set of traffic routing rules to apply when a host 
 is addressed. Each routing rule defines matching criteria for traffic of a 
@@ -54,8 +56,6 @@ You could use it for consolidating routes to all services for an application.
 The **destination** field specifies the **actual** destination of the routing 
 rule and **must** exist. In kubernetes this is a **service** and generally 
 takes a form like `reviews`, `ratings`, etc.
-
-## Exercise 1
 
 ### Overview
 
@@ -233,7 +233,10 @@ Traffic should now be routed to the `name-v1` service.
 
 </details>
 
-## DestinationRule
+## Exercise 2
+
+Destination rules configure **what** happens to traffic for a destination 
+defined in a virtual service.
 
 You can think of virtual services as **how** you route your traffic to a given 
 destination, and then you use destination rules to configure **what** happens 
@@ -266,7 +269,6 @@ spec:
 > :bulb: Destination rules are applied **after** virtual service routing rules are evaluated, so they apply 
 > to the traffic’s “real” destination.
 
-## Exercise 2
 
 ### Overview
 
