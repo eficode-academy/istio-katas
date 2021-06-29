@@ -316,8 +316,8 @@ kubectl apply -f deploy/basic-traffic-routing/start/name-destination-rule.yaml
 Applying the destination rule has no effect at this point because the virtual 
 service has not yet been updated to use the subsets.
 
-> :bulb: To avoid 503 errors **always** apply destination rules and changes to  
-destination rules **prior** to changing virtual services.
+> :bulb: To avoid 503 errors **always** apply destination rules and changes to 
+> destination rules **prior** to changing virtual services.
 
 * **Update the virtual service**
 
