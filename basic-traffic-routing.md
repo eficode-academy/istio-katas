@@ -268,6 +268,8 @@ spec:
 
 ## Exercise 2
 
+### Overview
+
 - Create a destination rule with **subsets** for the `name-v1` and `name-v2` workloads and apply it.
 
 - Run the script `scripts/loop-query.sh` to produce traffic.
