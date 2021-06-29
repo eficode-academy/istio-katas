@@ -366,7 +366,7 @@ name service has no versions defined in the selector.
 > :bulb: Order of precedence in the virtual service still applies. The destination 
 > rule does **not** affect it.
 
-**Remove the unneeded services**
+* **Remove the un-needed services**
 
 ```console
 kubectl delete -f deploy/basic-traffic-routing/done/name-svc-v1.yaml
