@@ -8,15 +8,11 @@ spec:
   gateways:
   - mesh
   http:
-  - match:
-    - headers:
-        x-test:
-          exact: use-v2
-    route:
-    - destination:
-        host: name
-        subset: name-v2
   - route:
     - destination:
         host: name
         subset: name-v1
+  - route:
+    - destination:
+        host: name
+        subset: name-v2
