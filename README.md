@@ -8,9 +8,7 @@ Natural order:
 
 - [Introducing the setup](setup-introduction.md)
 - [Basic traffic routing](basic-traffic-routing.md)
-- [Blue/Green deployment]() - In Progress
-- [Canary deployment]() - Todo
-- [Shadow deployment]() - Todo
+- [Deployment patterns](deployment-patterns.md) - In Progress
 - [Getting traffic into the mesh]()  - Todo
 - [Getting traffic out of the mesh]()  - Todo
 - [Securing with mutual TLS]()  - Todo

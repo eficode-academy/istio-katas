@@ -1,0 +1,131 @@
+[//]: # (Copyright, Eficode )
+[//]: # (Origin: https://github.com/eficode-academy/istio-katas)
+[//]: # (Tags: #sentences #kiali)
+
+# Deployment Patterns
+
+## Learning goal
+
+- Use weighted traffic distribution for canary deployment
+- Use a match criteria in a virtual service
+- Use header based routing for blue/green deployment
+- Mirror traffic for shadow deployment
+
+## Introduction
+These exercises will introduce you to the match field of the HTTPRoute and give 
+basic examples of how this can enable several useful deployment patterns.
+
+## Exercise 1
+
+This exercise is going to introduce you to weighted traffic distribution to 
+route traffic in canary deployment pattern.
+
+```yaml
+Some yaml
+```
+
+### Overview
+
+- 
+- 
+
+> :bulb: Some info
+
+### Step by Step
+<details>
+    <summary> More Details </summary>
+
+* **Step**
+
+```console
+Some command
+```
+
+*** **Step****
+
+```console
+Some command
+```
+
+</details>
+
+## Exercise 2
+
+This exercise is going to introduce you to header based routing so we can 
+implement a Blue/Green deployment pattern where the client can actively select 
+the version of the name service we would like to hit.
+
+```yaml
+Some yaml
+```
+
+### Overview
+
+- 
+- 
+
+> :bulb: Some info
+
+### Step by Step
+<details>
+    <summary> More Details </summary>
+
+* **Step**
+
+```console
+Some command
+```
+
+*** **Step****
+
+```console
+Some command
+```
+
+</details>
+
+## Exercise 3
+
+
+
+```yaml
+Some yaml
+```
+
+### Overview
+
+- 
+- 
+
+> :bulb: Some info
+
+### Step by Step
+<details>
+    <summary> More Details </summary>
+
+* **Step**
+
+```console
+Some command
+```
+
+*** **Step****
+
+```console
+Some command
+```
+
+</details>
+
+
+## Summary
+
+In exercise 1 you learned XXX
+
+In exercise 2 you saw XXX 
+
+# Cleanup
+
+```console
+kubectl delete -f deploy/deployment-patterns/start/
+```
