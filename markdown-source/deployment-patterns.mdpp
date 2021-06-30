@@ -75,10 +75,10 @@ Some command
 
 ## Exercise 2
 
-This exercise is going to introduce you to the match field in the HTTPRoute 
-so we can use **header** based routing to implement a Blue/Green deployment 
-pattern. This allows the client to actively select the version of the name 
-service it will hit.
+This exercise is going to introduce you to the HTTPRoute `match` field in a 
+virtual service. We want to implement a Blue/Green deployment pattern which 
+allows the **client** to actively select the version of the name service it 
+will hit.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -99,15 +99,20 @@ spec:
             subset: my-service-v2
 ```
 
-In the example above we define a HTTPMatchRequest with the field `match`.
-> :bulb: The match is evaluated prior to any destination's being applied.
+In the example above we define a HTTPMatchRequest with the field `match`. The 
+`headers` field declares that we want to match on **request** headers. The 
+`exact` field declares that the header **must** match exactly `use-v2`.
 
-Istio allows to use certain parts of **incoming** requests and match them to values 
-**you** define.
+You can have multiple conditions in a match block and multiple match blocks. 
 
 > :bulb: All conditions inside a **single** match block have **AND** semantics, while the 
 > list of **match blocks** have **OR** semantics. The rule is matched if any one of the 
 > match blocks succeed.
+
+**NOTE:** Matches are evaluated **prior** to any destination's being applied.
+
+Istio allows to use other parts of **incoming** requests and match them to values 
+**you** define. To see what these rae expand **More Info** below.
 
 <details>
     <summary> More Info </summary>
@@ -142,9 +147,13 @@ regular expression syntax.
 
 ### Overview
 
-- Deploy the sentences app with the destination rule and virtual service from previous exercises.
+- Deploy the sentences app.
 
-- Update the virtual service with a HTTPMatchRequest and apply it.
+- Run the `scripts/loop-query.sh` script to produce traffic.
+
+- Use the version app graph in Kiali to observe the traffic flow.
+
+- Add a match block with **header** condition `x-test` and a match type of **exact** use-v2` to route traffic to the `v2` workload and apply it.
 
 - Run the `scripts/loop-query.sh` and pass the header `x-test: use-v2` to it.
 
@@ -163,7 +172,7 @@ regular expression syntax.
 <details>
     <summary> More Details </summary>
 
-* **Deploy the sentences app with the destination rule and virtual service**
+* **Deploy the sentences app**
 
 ```console
 kubectl apply -f deploy/deployment-patterns/start/
@@ -171,6 +180,19 @@ kubectl apply -f deploy/deployment-patterns/start/
 
 This will deploy two versions of the **name** service along with a destination 
 rule and virtual service as defined in a previous exercise.
+
+* **Run the `scripts/loop-query.sh` script**
+
+```console
+./scripts/loop-query.sh
+```
+
+* **Observe traffic flow with version app graph in Kiali**
+
+You should see the traffic being routed to `v1` of the name service because of 
+the precedence of the routes in the name virtual service.
+
+![Precedence routing]()
 
 * **Update the virtual service with a HTTPMatchRequest and apply it**
 
@@ -207,15 +229,15 @@ kubectl apply -f deploy/deployment-patterns/start/name-virtual-service.yaml
 
 * **Observe traffic flow with version app graph in Kiali**
 
-![Header based routing](images/kiali-blue-green.png)
+You should see all traffic being directed to `v2` of the name workload.
+That is because the the match evaluated to true and the route **under** the 
+match block is used.
 
-You can see that all traffic is being directed to `v2` of the name workload.
-That is because the the match evaluated to true and the destination block under 
-the match block is used.
+![Header based routing](images/kiali-blue-green.png)
 
 But what happens when we do not pass the header?
 
-* **Run the `scripts/loop-query.sh` **without** header**
+* **Run the `scripts/loop-query.sh` without header**
 
 ```console
 ./scripts/loop-query.sh
@@ -223,14 +245,14 @@ But what happens when we do not pass the header?
 
 * **Observe traffic flow with version app graph in Kiali**
 
-![Missing default destination](kiali-no-default-destination.png)
-
 The problem we have here is that the match is evaluated first **before** any 
 destination's are applied. Since the match was not true the route defined under 
 it was not applied. Nor have we provided another route to fall back on when the 
 match does not evaluate to true.
 
-* **Update the virtual service**
+![Missing default destination](kiali-no-default-destination.png)
+
+* **Update the virtual service to fix the problem**
 
 To fix the problem we need to update the virtual service and give it a **default** 
 route and apply it.
@@ -245,15 +267,13 @@ route and apply it.
 > :bulb: Think about the indentation for the route to `v1`, which will be our 
 > **default** route.
 
-> :bulb: Order of precedence in the virtual service still applies.
-
 ```console
 kubectl apply -f deploy/deployment-patterns/start/name-virtual-service.yaml
 ```
 
 * **Observe traffic flow with version app graph in Kiali**
 
-![]()
+![Default route]()
 
 </details>
 
