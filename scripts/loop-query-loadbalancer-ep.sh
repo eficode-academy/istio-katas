@@ -24,16 +24,16 @@ else
   PROTO="http"
   PORT=80
 fi
-HOST="sentences.example.com"
+HOST="sentences.istio.eficode.academy"
 
 URL_PATH="/$ARG_PATH"
 
 echo "Using ingress gateway with label: $INGRESS_GW_LABEL"
-LBIP=$(kubectl -n istio-system get svc -l $INGRESS_GW_LABEL -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
-echo " = $LBIP"
+#LBIP=$(kubectl -n istio-system get svc -l $INGRESS_GW_LABEL -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
+#echo " = $LBIP"
 
 URL="$PROTO://$HOST:$PORT$URL_PATH"
-CURL_OPTS="--resolve $HOST:$PORT:$LBIP $CURL_OPTS"
+CURL_OPTS="--resolve $HOST:$PORT $CURL_OPTS"
 echo "Using curl options: '$CURL_OPTS'"
 echo "Using URL: $URL"
 

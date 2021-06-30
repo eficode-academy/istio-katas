@@ -22,8 +22,8 @@ These exercises build on the [Basic traffic routing](basic-traffic-routing.md) e
 
 This exercise is going to introduce you to the HTTPRoute `match` field in a 
 virtual service. We want to implement a Blue/Green deployment pattern which 
-allows the **client** to actively select the version of the name service it 
-will hit.
+allows the **client** to actively select version `v2` of the **name** service 
+it will hit.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -98,7 +98,7 @@ regular expression syntax.
 
 - Use the version app graph in Kiali to observe the traffic flow.
 
-- Add a match block with **header** condition `x-test` and a match type of **exact** `use-v2` to route traffic to the `v2` workload and apply it.
+- Add a match block with **header** condition `x-test` and a match type of **exact** and a value of `use-v2` and apply it.
 
 - Run the `scripts/loop-query.sh` and pass the header `x-test: use-v2` to it.
 
