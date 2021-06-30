@@ -5,10 +5,10 @@
 
 ## Learning goal
 
-- Use weighted traffic distribution for canary deployment
-- Use a match criteria in a virtual service
+- Basic use of match criteria in a virtual service
 - Use header based routing for blue/green deployment
-- Mirror traffic for shadow deployment
+- Use weighted traffic distribution for canary deployment
+- Mirror traffic for shadow/dark deployment
 
 ## Introduction
 These exercises will introduce you to the match, weight and mirror fields of the 
@@ -261,6 +261,8 @@ the traffic between **releases**. But it is not an uncommon to scenario have a
 canary deployment alongside of a blue/green deployment for the next 
 **unreleased** version.
 
+</details>
+
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -408,8 +410,6 @@ kubectl apply -f deploy/deployment-patterns/name-virtual-service.yaml
 ```
 
 * **Observe traffic flow with version app graph in Kiali**
-
-
 
 </details>
 
