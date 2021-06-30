@@ -103,7 +103,7 @@ spec:
 In the example above we define a HTTPMatchRequest with the field `match`.
 > :bulb: The match is evaluated prior to any destination's being applied.
 
-Istio allows to use certain parts of incoming requests and match them to values 
+Istio allows to use certain parts of **incoming** requests and match them to values 
 **you** define.
 
 > :bulb: All conditions inside a **single** match block have **AND** semantics, while the 
@@ -113,7 +113,7 @@ Istio allows to use certain parts of incoming requests and match them to values
 <details>
     <summary> More Info </summary>
 
-The following parts of an incoming request can be used in a match.
+**Match Fields**
 
 - **uri:** Matches the request URI to the specified value.
 
@@ -125,10 +125,10 @@ The following parts of an incoming request can be used in a match.
 
 - **header:** Matches the request headers.
 
-> :bulb: Headers need to be **lower** cased and separated by hyphens. 
-> If headers is used uri, schema, method and authority are ignored.
+**NOTE:** Headers need to be **lower** cased and separated by hyphens. If 
+headers is used uri, schema, method and authority are ignored.
 
-There are three match types which can be used.
+**Match Types**
 
 - **exact:** Exactly matches the **provided** value.
 
@@ -136,8 +136,8 @@ There are three match types which can be used.
 
 - **regex:** The **provided** value will be matched based on the regex.
 
-> :bulb: Istio regex's use the [re2](https://github.com/google/re2/wiki/Syntax) 
-> regular expression syntax.
+**NOTE:** Istio regex's use the [re2](https://github.com/google/re2/wiki/Syntax) 
+regular expression syntax.
 
 </details>
 
