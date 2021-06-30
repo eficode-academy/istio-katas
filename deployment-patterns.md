@@ -300,7 +300,9 @@ receive 10% of **all** traffic.
 
 - Use the version app graph in Kiali to observe the traffic flow.
 
-- Add the `weight` fields to the **name** virtual service to distribute traffic between `v1`and `v2` and apply it.
+- Add the `weight` fields to the **name** virtual service to distribute traffic between `v1` and `v2` and apply it.
+
+- Use the version app graph in Kiali to observe the traffic flow.
 
 - In a **new** terminal run the scripts/loop-query.sh and pass the header `x-test: use-v3` to it.
 
