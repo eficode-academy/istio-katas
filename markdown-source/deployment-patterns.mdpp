@@ -153,7 +153,7 @@ regular expression syntax.
 
 - Use the version app graph in Kiali to observe the traffic flow.
 
-- Add a match block with **header** condition `x-test` and a match type of **exact** use-v2` to route traffic to the `v2` workload and apply it.
+- Add a match block with **header** condition `x-test` and a match type of **exact** `use-v2` to route traffic to the `v2` workload and apply it.
 
 - Run the `scripts/loop-query.sh` and pass the header `x-test: use-v2` to it.
 
@@ -192,7 +192,7 @@ rule and virtual service as defined in a previous exercise.
 You should see the traffic being routed to `v1` of the name service because of 
 the precedence of the routes in the name virtual service.
 
-![Precedence routing]()
+![Precedence routing](images/kiali-precedence-routing.png)
 
 * **Update the virtual service with a HTTPMatchRequest and apply it**
 
@@ -250,7 +250,7 @@ destination's are applied. Since the match was not true the route defined under
 it was not applied. Nor have we provided another route to fall back on when the 
 match does not evaluate to true.
 
-![Missing default destination](kiali-no-default-destination.png)
+![Missing default destination](images/kiali-no-default-destination.png)
 
 * **Update the virtual service to fix the problem**
 
@@ -273,7 +273,10 @@ kubectl apply -f deploy/deployment-patterns/start/name-virtual-service.yaml
 
 * **Observe traffic flow with version app graph in Kiali**
 
-![Default route]()
+You should now see all traffic being routed to the **default** route which 
+will directs traffic to version `v1` of the name workload.
+
+![Default route](images/kiali-default-destination.png)
 
 </details>
 
