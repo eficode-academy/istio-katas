@@ -157,9 +157,12 @@ regular expression syntax.
 
 - Update the virtual service to fix the problem.
 
-> :bulb: Order of precedence in the virtual service still applies. 
+- Use the version app graph in Kiali to observe the traffic flow and understand what happened. 
+
+> :bulb: Order of precedence in the virtual service still applies.
 
 ### Step by Step
+
 <details>
     <summary> More Details </summary>
 
@@ -209,6 +212,12 @@ kubectl apply -f deploy/deployment-patterns/start/name-virtual-service.yaml
 
 ![Header based routing](images/kiali-blue-green.png)
 
+You can see that all traffic is being directed to `v2` of the name workload.
+That is because the the match evaluated to true and the destination block under 
+the match block is used.
+
+But what happens when we do not pass the header?
+
 * **Run the `scripts/loop-query.sh` **without** header**
 
 ```console
@@ -225,35 +234,27 @@ it was not applied. Nor have we provided another route to fall back on when the
 match does not evaluate to true.
 
 * **Update the virtual service**
+
 To fix the problem we need to update the virtual service and give it a **default** 
-route.
+route and apply it.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: name-route
-spec:
-  hosts:
-  - name
-  gateways:
-  - mesh
-  http:
-  - match:
-    - headers:
-        x-test:
-          exact: use-v2
-    route:
-    - destination:
-        host: name
-        subset: name-v2
   - route:
     - destination:
         host: name
         subset: name-v1
 ```
 
-> :bulb: Notice the indentation of the default route.
+> :bulb: Think about the indentation for the route to `v1`, which will be our 
+> **default** route.
+
+```console
+kubectl apply -f deploy/deployment-patterns/start/name-virtual-service.yaml
+```
+
+* **Observe traffic flow with version app graph in Kiali**
+
+![]()
 
 </details>
 
