@@ -1,4 +1,3 @@
-- Update all K8's services with `appProtocol: http`
 - Rebuild the custom sentence app and push it to praqma org on docker hub and change in all deployments.
 - Create an issue on the new sentence app implementation to support istio needs.
 - Move all K8's yaml out of deploy to root directory and archive the deploy directory under WIP.
