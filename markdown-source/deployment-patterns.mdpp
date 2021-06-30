@@ -156,7 +156,7 @@ regular expression syntax.
 
 - Update the virtual service to fix the problem.
 
-- Use the version app graph in Kiali to observe the traffic flow and understand what happened. 
+- Use the version app graph in Kiali to observe the traffic flow.
 
 ### Step by Step
 
