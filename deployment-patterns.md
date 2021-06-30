@@ -98,7 +98,7 @@ regular expression syntax.
 
 - Use the version app graph in Kiali to observe the traffic flow.
 
-- Add a match block with **header** condition `x-test` and a match type of **exact** and a value of `use-v2` and apply it.
+- Add a match block with **header** condition `x-test` and a match type of **exact** with a value of `use-v2` and apply it.
 
 - Run the `scripts/loop-query.sh` and pass the header `x-test: use-v2` to it.
 
@@ -212,8 +212,14 @@ route and apply it.
 > :bulb: Think about the indentation for the route to `v1`, which will be our 
 > **default** route.
 
+Apply the changes and run the `scripts/loop-query.sh` without header.
+
 ```console
 kubectl apply -f deploy/deployment-patterns/start/name-virtual-service.yaml
+```
+
+```console
+./scripts/loop-query.sh
 ```
 
 * **Observe traffic flow with version app graph in Kiali**
