@@ -1,22 +1,13 @@
 apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
+kind: DestinationRule
 metadata:
-  name: name-route
+  name: name-destination-rule
 spec:
-  hosts:
-  - name
-  gateways:
-  - mesh
-  http:
-  - match:
-    - headers:
-        x-test:
-          exact: use-v2
-    route:
-    - destination:
-        host: name
-        subset: name-v2
-  - route:
-    - destination:
-        host: name
-        subset: name-v1
+  host: name
+  subsets:
+  - name: name-v1
+    labels:
+      version: v1
+  - name: name-v2
+    labels:
+      version: v2
