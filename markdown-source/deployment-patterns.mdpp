@@ -19,62 +19,6 @@ These exercises build on the [Basic traffic routing](basic-traffic-routing.md) e
 
 ## Exercise 1
 
-This exercise is going to introduce you to weighted traffic distribution to 
-route traffic in canary deployment pattern.
-
-Canary deployment is a pattern for rolling out releases to a **subset** of users. 
-The idea is to test and gather feedback from this subset of users.
-
-> :laughing: Fun fact. The term canary comes from the coal mining industry 
-> where canaries were used to alert miners when toxic gases reached dangerous 
-> levels. In the same way canary deployments can alert you to issues, bad 
-> design or whether features actually give the intended value.
-
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: my-service-route
-spec:
-  hosts:
-  - my-service
-  http:
-  - route:
-    - destination:
-        host: my-service-v1
-      weight: 90
-    - destination:
-        host: my-service-v2
-      weight: 10
-```
-
-### Overview
-
-- 
-- 
-
-> :bulb: Some info
-
-### Step by Step
-<details>
-    <summary> More Details </summary>
-
-* **Step**
-
-```console
-Some command
-```
-
-*** **Step****
-
-```console
-Some command
-```
-
-</details>
-
-## Exercise 2
-
 This exercise is going to introduce you to the HTTPRoute `match` field in a 
 virtual service. We want to implement a Blue/Green deployment pattern which 
 allows the **client** to actively select the version of the name service it 
@@ -277,6 +221,62 @@ You should now see all traffic being routed to the **default** route which
 will directs traffic to version `v1` of the name workload.
 
 ![Default route](images/kiali-default-destination.png)
+
+</details>
+
+## Exercise 2
+
+This exercise is going to introduce you to weighted traffic distribution to 
+route traffic in canary deployment pattern.
+
+Canary deployment is a pattern for rolling out releases to a **subset** of users. 
+The idea is to test and gather feedback from this subset of users.
+
+> :laughing: Fun fact. The term canary comes from the coal mining industry 
+> where canaries were used to alert miners when toxic gases reached dangerous 
+> levels. In the same way canary deployments can alert you to issues, bad 
+> design or whether features actually give the intended value.
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: my-service-route
+spec:
+  hosts:
+  - my-service
+  http:
+  - route:
+    - destination:
+        host: my-service-v1
+      weight: 90
+    - destination:
+        host: my-service-v2
+      weight: 10
+```
+
+### Overview
+
+- 
+- 
+
+> :bulb: Some info
+
+### Step by Step
+<details>
+    <summary> More Details </summary>
+
+* **Step**
+
+```console
+Some command
+```
+
+*** **Step****
+
+```console
+Some command
+```
 
 </details>
 
