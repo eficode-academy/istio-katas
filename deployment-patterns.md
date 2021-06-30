@@ -241,15 +241,6 @@ virtual service. We want to implement a canary deployment pattern to the
 **name** service's `v1` and `v2` workloads and **header** based blue/green 
 deployment to a `v3` workload.
 
-Canary deployment is a pattern for rolling out **releases** to a **subset** 
-of users/clients. The idea is to test and gather feedback from this subset and 
-reduce risk by gradually introducing a new release.
-
-> :laughing: Fun fact. The term canary comes from the coal mining industry 
-> where canaries were used to alert miners when toxic gases reached dangerous 
-> levels. In the same way canary deployments can alert you to issues, bad 
-> design or whether features actually give the intended value.
-
 <details>
     <summary> More Info </summary>
 
@@ -263,6 +254,15 @@ canary deployment alongside of a blue/green deployment for the next
 **unreleased** version.
 
 </details>
+
+Canary deployment is a pattern for rolling out **releases** to a **subset** 
+of users/clients. The idea is to test and gather feedback from this subset and 
+reduce risk by gradually introducing a new release.
+
+> :laughing: Fun fact. The term canary comes from the coal mining industry 
+> where canaries were used to alert miners when toxic gases reached dangerous 
+> levels. In the same way canary deployments can alert you to issues, bad 
+> design or whether features actually give the intended value.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
