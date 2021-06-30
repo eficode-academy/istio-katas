@@ -78,7 +78,7 @@ Some command
 
 This exercise is going to introduce you to the match field in the HTTPRoute 
 so we can use **header** based routing to implement a Blue/Green deployment 
-pattern. This allows the client can actively select the version of the name 
+pattern. This allows the client to actively select the version of the name 
 service it will hit.
 
 ```yaml
@@ -106,29 +106,38 @@ In the example above we define a HTTPMatchRequest with the field `match`.
 Istio allows to use certain parts of incoming requests and match them to values 
 **you** define.
 
+> :bulb: All conditions inside a **single** match block have **AND** semantics, while the 
+> list of **match blocks** have **OR** semantics. The rule is matched if any one of the 
+> match blocks succeed.
+
 <details>
     <summary> More Info </summary>
 
-* **uri:** Matches the request URI to the specified value.
-* **schema:** Matches the request schema. (HTTP, HTTPS, ...)
-* **method:** Matches the request method. (GET, POST, ...)
-* **authority:** Matches the request authority header.
-* **header:** Matches the request headers.
+The following parts of an incoming request can be used in a match.
+
+- **uri:** Matches the request URI to the specified value.
+
+- **schema:** Matches the request schema. (HTTP, HTTPS, ...)
+
+- **method:** Matches the request method. (GET, POST, ...)
+
+- **authority:** Matches the request authority header.
+
+- **header:** Matches the request headers.
+
 > :bulb: Headers need to be **lower** cased and separated by hyphens. 
 > If headers is used uri, schema, method and authority are ignored.
 
-There are three match types.
+There are three match types which can be used.
 
-* **exact:** Exactly matches the **provided** value.
-* **prefix:** Only the prefix part of the **provided** value will get matched.
-* **regex:** The **provided** value will be matched based on the regex.
+- **exact:** Exactly matches the **provided** value.
+
+- **prefix:** Only the prefix part of the **provided** value will get matched.
+
+- **regex:** The **provided** value will be matched based on the regex.
+
 > :bulb: Istio regex's use the [re2](https://github.com/google/re2/wiki/Syntax) 
 > regular expression syntax.
-
-Match conditions to be satisfied for the rule to be activated. 
-All conditions inside a **single** match block have AND semantics, while the 
-list of match blocks have OR semantics. The rule is matched if any one of the 
-match blocks succeed.
 
 </details>
 
