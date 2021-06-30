@@ -13,6 +13,6 @@ for i in $(seq 1 10000); do
     if [ -z "$OPT_HEADER" ]; then
         curl $NODEIP:$PORT; echo ""
     else
-        curl "$OPT_HEADER" $NODEIP:$PORT; echo ""
+        curl -H "$OPT_HEADER" $NODEIP:$PORT; echo ""
     fi
 done
