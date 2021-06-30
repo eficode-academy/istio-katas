@@ -440,15 +440,16 @@ to `v2`.
 * **Observe traffic flow with version app graph in Kiali**
 
 Yo can see that the traffic distribution is no longer 90/10 between `v1` and `v2`.
-But the weight is still valid. But now only for traffic that reaches the second 
-route, which is weighted. E.g the header match is evaluated first.
 
-So we have two clients producing traffic 50% to `v3` and 50% to `v1` and `v2`.
+We have two clients. One has **all** traffic routed `v3`. The others traffic is 
+distributed 90% to `v1` and 10% `v2`.
 
-Basically 90% of the 50% is going to `v1` and 10% of the 50% is going to `v2`.
+The Kiali graph is showing you the percentage of the **overall** traffic. The 
+weight is applied to the traffic that hits the second route.
 
-Run the `scripts/loop-query.sh` script another terminal, or several, without the header and 
-observe how it affects the traffic distribution. 
+Run `scripts/loop-query.sh` **without** the header in another terminal, or 
+several, and observe how it affects the traffic distribution. You will see the 
+percentage of the **overall** traffic change to look more like the 90/10 weight.
 
 ![90/10 distribution with Blue green](images/kiali-canary-blue-green.png)
 
