@@ -238,29 +238,29 @@ have a **default** route.
 
 This exercise is going to introduce you to the HTTPRoute `weight` field in a 
 virtual service. We want to implement a canary deployment pattern to the 
-**name** service's `v1` and `v2` workloads.
+**name** service's `v1` and `v2` workloads and **header** based blue/green 
+deployment to a `v3` workload.
 
-The canary deployment pattern is often employed **after** a blue/green deployment 
-pattern. Blue/green deployments are characterized by an **explicit** 
-choice by the **client/user** of which version to use. 
-
-A canary deployment removes the need for this explicit choice by **weighting** 
-the traffic between versions.
-
-<details>
-
-    <summary> More Info </summary>
-
-Canary deployment is a pattern for rolling out releases/versions to a **subset** 
+Canary deployment is a pattern for rolling out **releases** to a **subset** 
 of users/clients. The idea is to test and gather feedback from this subset and 
-reduce risk by gradually introducing a new release/version.
+reduce risk by gradually introducing a new release.
 
 > :laughing: Fun fact. The term canary comes from the coal mining industry 
 > where canaries were used to alert miners when toxic gases reached dangerous 
 > levels. In the same way canary deployments can alert you to issues, bad 
 > design or whether features actually give the intended value.
 
-</details>
+<details>
+    <summary> More Info </summary>
+
+The canary deployment pattern is often employed **after** a blue/green deployment 
+pattern. Blue/green deployments are characterized by an **explicit** 
+choice by the **client/user** of which version to use. 
+
+A canary deployment removes the need for this explicit choice by **weighting** 
+the traffic between **releases**. But it is not an uncommon to scenario have a 
+canary deployment alongside of a blue/green deployment for the next 
+**unreleased** version.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -286,31 +286,131 @@ receive 10% of **all** traffic.
 
 ### Overview
 
-- Deploy the sentences app.
+- If not already done, deploy the sentences app.
 
 - Run the `scripts/loop-query.sh` script to produce traffic.
 
-- Add **weight** fields to the **name** virtual service to distribute traffic between `v1`and `v2`.
+- Add `v3` to the name service's to the destination rule.
 
-- 
+- Deploy `v3` of the name service.
 
-> :bulb: Some info
+- Adjust the **name** virtual service's `match` field header to `use-v3` and apply it.
+
+- Use the version app graph in Kiali to observe the traffic flow.
+
+- Add the `weight` fields to the **name** virtual service to distribute traffic between `v1`and `v2` and apply it.
+
+- In a **new** terminal run the scripts/loop-query.sh and pass the header `x-test: use-v3` to it.
+
+- Use the version app graph in Kiali to observe the traffic flow.
 
 ### Step by Step
 <details>
     <summary> More Details </summary>
 
-* **Step**
+* **deploy the sentences app**
 
 ```console
-Some command
+kubectl apply -f deploy/deployment-patterns/start/
 ```
 
-*** **Step****
+*** **Add `v3` to the name service's to the destination rule.****
+
+```yaml
+  - name: name-v3
+    labels:
+      version: v3
+```
+
+* **Deploy `v3` of the name service**
 
 ```console
-Some command
+kubectl apply -f deploy/deployment-patterns/start/v3/
 ```
+
+* **Adjust match field to `use-v3`**
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name-route
+spec:
+  hosts:
+  - name
+  gateways:
+  - mesh
+  http:
+  - match:
+    - headers:
+        x-test:
+          exact: use-v3
+    route:
+    - destination:
+        host: name
+        subset: name-v3
+  - route:
+    - destination:
+        host: name
+        subset: name-v1
+    - destination:
+        host: name
+        subset: name-v2
+```
+
+* **Observe traffic flow with version app graph in Kiali**
+
+The traffic should still be routed to the `v1` workload as the match condition 
+did not evaluate to true and order of precedence dictates the first destination 
+which will direct traffic to * v1* workload.
+
+![Precedence routing](images/kiali-precedence-routing)
+
+* **Add the `weight` fields to the **name** virtual service and apply**
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name-route
+spec:
+  hosts:
+  - name
+  gateways:
+  - mesh
+  http:
+  - match:
+    - headers:
+        x-test:
+          exact: use-v3
+    route:
+    - destination:
+        host: name
+        subset: name-v3
+  - route:
+    - destination:
+        host: name
+        subset: name-v1
+      weight: 90
+    - destination:
+        host: name
+        subset: name-v2
+      weight: 10
+```
+
+```console
+kubectl apply -f deploy/deployment-patterns/name-virtual-service.yaml
+```
+
+* **In a **new** terminal run the scripts/loop-query.sh with header `use-v3`**
+
+```console
+./scripts/loop-query.sh 'x-test: use-v3'
+```
+
+* **Observe traffic flow with version app graph in Kiali**
+
+
 
 </details>
 
