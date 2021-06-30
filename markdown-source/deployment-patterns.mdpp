@@ -291,7 +291,7 @@ receive 10% of **all** traffic.
 
 - Run the `scripts/loop-query.sh` script to produce traffic.
 
-- Add `v3` to the name service's to the destination rule.
+- Add `v3` to the name service's destination rule and apply it.
 
 - Deploy `v3` of the name service.
 
@@ -315,7 +315,14 @@ receive 10% of **all** traffic.
 kubectl apply -f deploy/deployment-patterns/start/
 ```
 
-*** **Add `v3` to the name service's to the destination rule.****
+* **Run `scripts/loop-query.sh`**
+
+
+```console
+./scripts/loop-query.sh
+```
+
+* **Add `v3` to the name service's destination rule and apply it**
 
 ```yaml
   - name: name-v3
@@ -323,13 +330,17 @@ kubectl apply -f deploy/deployment-patterns/start/
       version: v3
 ```
 
+```console
+kubectl apply -f deploy/deployment-patterns/start/name-destination-rule.yaml
+```
+
 * **Deploy `v3` of the name service**
 
 ```console
-kubectl apply -f deploy/deployment-patterns/start/v3/
+kubectl apply -f deploy/deployment-patterns/start/name-v3/
 ```
 
-* **Adjust match field to `use-v3`**
+* **Adjust name services `match` field to `use-v3` and apply it**
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -354,9 +365,14 @@ spec:
     - destination:
         host: name
         subset: name-v1
+  - route:
     - destination:
         host: name
         subset: name-v2
+```
+
+```console
+kubectl apply -f deploy/deployment-patterns/start/name-virtual-service.yaml
 ```
 
 * **Observe traffic flow with version app graph in Kiali**
@@ -399,9 +415,19 @@ spec:
       weight: 10
 ```
 
+> :bulb: The weight is distributed by **route** so the destination for `v2` must 
+> be under the same route block.
+
 ```console
 kubectl apply -f deploy/deployment-patterns/name-virtual-service.yaml
 ```
+
+* **Observe traffic flow with version app graph in Kiali**
+
+You should see that the traffic is distributed approximately 90% to `v1` and 10% 
+to `v2`.
+
+![90/10 traffic distribution](images/kiali-canary-anno.png)
 
 * **In a **new** terminal run the scripts/loop-query.sh with header `use-v3`**
 
@@ -410,6 +436,18 @@ kubectl apply -f deploy/deployment-patterns/name-virtual-service.yaml
 ```
 
 * **Observe traffic flow with version app graph in Kiali**
+
+Yo can see that the traffic distribution is no longer 90/10 between `v1`and `v2`.
+But the weight is still valid. But now only for traffic that reaches the second 
+route, which is weighted. E.g the header match is evaluated first.
+
+So we have two clients producing traffic 50% to `v3` and 50% to `v1`and `v2`.  
+90% of the 50% is going to `v1` and 10% of the 50% is going to `v2`.
+
+Run the `scripts/loop-query.sh` script another terminal, or several, without the header and 
+observe how it affects the traffic distribution. 
+
+![90/10 distribution with Blue green](images/kiali-canary-blue-green.png)
 
 </details>
 
