@@ -230,18 +230,36 @@ will directs traffic to version `v1` of the name workload.
 
 </details>
 
+Whenever you use matches for traffic routing. You should **always** ensure you 
+have a **default** route.
+
 ## Exercise 2
 
-This exercise is going to introduce you to weighted traffic distribution to 
-route traffic in canary deployment pattern.
+This exercise is going to introduce you to the HTTPRoute `weight` field in a 
+virtual service. We want to implement a canary deployment pattern to the 
+**name** service's `v1` and `v2` workloads.
 
-Canary deployment is a pattern for rolling out releases to a **subset** of users. 
-The idea is to test and gather feedback from this subset of users.
+The canary deployment pattern is often employed **after** a blue/green deployment 
+pattern. Blue/green deployments are characterized by an **explicit** 
+choice by the **client/user** of which version to use. 
+
+A canary deployment removes the need for this explicit choice by **weighting** 
+the traffic between versions.
+
+<details>
+
+    <summary> More Info </summary>
+
+Canary deployment is a pattern for rolling out releases/versions to a **subset** 
+of users/clients. The idea is to test and gather feedback from this subset and 
+reduce risk by gradually introducing a new release/version.
 
 > :laughing: Fun fact. The term canary comes from the coal mining industry 
 > where canaries were used to alert miners when toxic gases reached dangerous 
 > levels. In the same way canary deployments can alert you to issues, bad 
 > design or whether features actually give the intended value.
+
+</details>
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -260,10 +278,19 @@ spec:
         host: my-service-v2
       weight: 10
 ```
+In the above example we define a traffic distribution percentage with the 
+`weight` fields on the destinations of the HTTPRoute. The destination 
+`my-service-v1` will receive 90% of **all** traffic while `my-service-v2` will 
+receive 10% of **all** traffic.
 
 ### Overview
 
-- 
+- Deploy the sentences app.
+
+- Run the `scripts/loop-query.sh` script to produce traffic.
+
+- Add **weight** fields to the **name** virtual service to distribute traffic between `v1`and `v2`.
+
 - 
 
 > :bulb: Some info
