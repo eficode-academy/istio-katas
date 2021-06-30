@@ -382,7 +382,7 @@ The traffic should still be routed to the `v1` workload as the match condition
 did not evaluate to true and order of precedence dictates the first destination 
 which will direct traffic to * v1* workload.
 
-![Precedence routing](images/kiali-precedence-routing)
+![Precedence routing](images/kiali-precedence-routing.png)
 
 * **Add the `weight` fields to the **name** virtual service and apply**
 
