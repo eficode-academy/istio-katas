@@ -158,8 +158,6 @@ regular expression syntax.
 
 - Use the version app graph in Kiali to observe the traffic flow and understand what happened. 
 
-> :bulb: Order of precedence in the virtual service still applies.
-
 ### Step by Step
 
 <details>
@@ -246,6 +244,8 @@ route and apply it.
 
 > :bulb: Think about the indentation for the route to `v1`, which will be our 
 > **default** route.
+
+> :bulb: Order of precedence in the virtual service still applies.
 
 ```console
 kubectl apply -f deploy/deployment-patterns/start/name-virtual-service.yaml
