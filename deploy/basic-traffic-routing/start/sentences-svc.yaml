@@ -10,7 +10,7 @@ spec:
   - port: 5000
     protocol: TCP
     targetPort: 5000
-    #appProtocol: http
+    appProtocol: http
   selector:
     app: sentences
     mode: sentence

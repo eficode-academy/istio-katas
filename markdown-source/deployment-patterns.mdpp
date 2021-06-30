@@ -248,7 +248,7 @@ pattern. Blue/green deployments are characterized by an **explicit**
 choice by the **client/user** of which version to use. 
 
 A canary deployment removes the need for this explicit choice by **weighting** 
-the traffic between **releases**. But it is not an uncommon to scenario have a 
+the traffic between **releases**. But it is not an uncommon scenario to have a 
 canary deployment alongside of a blue/green deployment for the next 
 **unreleased** version.
 
@@ -457,13 +457,25 @@ percentage of the **overall** traffic change to look more like the 90/10 weight.
 
 ## Exercise 3
 
-This exercise will introduce you to the `mirror` field of of the HTTPRoute 
-so mirror traffic to another destination while still forwarding traffic to 
-the original destination. 
+This exercise will introduce you to the HTTPRoute `mirror` field in a virtual 
+service. We want to traffic to the **name** service `v3` workload while still 
+forwarding traffic to the original destination. 
 
 > :bulb: Mirrored traffic is on a best effort basis. This means that the 
 sidecar/gateway will **not** wait for mirrored traffic **before** sending 
 a response from the original destination.
+
+Mirroring traffic in this manner is often called a shadow deployment pattern. 
+The idea being that the client/user has no idea about the deployed version and 
+the deployed version has **zero** impact on the client/user as the mirrored 
+traffic happens out of band for the critical request path for the primary 
+service. 
+
+Shadow deployments are particularly useful for load testing and refactoring of 
+monolithic applications. But they can be quite complex and care has to be taken 
+if there are interactions with other systems. Imagine shadow testing a payment 
+service for a shopping cart service. You wouldn't want users paying twice for 
+an order. 
 
 ```yaml
 Some yaml
