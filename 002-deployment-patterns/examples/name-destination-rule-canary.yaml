@@ -5,13 +5,9 @@ metadata:
 spec:
   host: name
   subsets:
-  - name: name-v1
-    labels:
-      version: v1
   - name: name-v2
     labels:
       version: v2
   - name: name-v3
     labels:
       version: v3
-

@@ -19,9 +19,5 @@ spec:
   - route:
     - destination:
         host: name
-        subset: name-v1
-      weight: 0
-    - destination:
-        host: name
         subset: name-v2
       weight: 100

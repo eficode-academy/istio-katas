@@ -8,7 +8,7 @@
 - Basic use of match criteria in a virtual service
 - Use header based routing for blue/green deployment
 - Use weighted traffic distribution for canary deployment
-- Mirror traffic for shadow/dark deployment
+- Mirror traffic for shadow deployment
 
 ## Introduction
 These exercises will introduce you to the match, weight and mirror fields of the 
@@ -40,7 +40,7 @@ spec:
     - route:
         - destination:
             host: my-service
-            subset: my-service-v2
+            subset: v2
 ```
 
 In the example above we define a HTTPMatchRequest with the field `match`. The 
@@ -235,6 +235,9 @@ will directs traffic to version `v1` of the name workload.
 > Whenever you use matches for traffic routing. You should **always** ensure you 
 > have a **default** route.
 
+> If you change the header name in the virtual service to something else, 
+> say `x-vers` the match will stop working. Think about why?
+
 ## Exercise 2
 
 This exercise is going to introduce you to the HTTPRoute `weight` field in a 
@@ -276,16 +279,18 @@ spec:
   http:
   - route:
     - destination:
-        host: my-service-v1
+        host: my-service
+        subset: v1
       weight: 90
     - destination:
-        host: my-service-v2
+        host: my-service
+        subset: v2
       weight: 10
 ```
 In the above example we define a traffic distribution percentage with the 
-`weight` fields on the destinations of the HTTPRoute. The destination 
-`my-service-v1` will receive 90% of **all** traffic while `my-service-v2` will 
-receive 10% of **all** traffic.
+`weight` fields on the destinations of the HTTPRoute. The `v1` workload of 
+`my-service` destination will receive 90% of **all** traffic while the `v2` 
+workload of `my-service` will receive 10% of **all** traffic.
 
 ### Overview
 
@@ -463,13 +468,51 @@ percentage of the **overall** traffic change to look more like the 90/10 weight.
 
 Stop sending traffic to `v3` with `./scripts/loop-query.sh 'x-test: use-v3'`.
 
-To promote `v2` you need to adjust the weights and apply the changes.
+Remove the `name-v1` subset from `name-destination-rule.yaml` file and apply it.
 
 ```yaml
-- destination:
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: name-destination-rule
+spec:
+  host: name
+  subsets:
+  - name: name-v2
+    labels:
+      version: v2
+  - name: name-v3
+    labels:
+      version: v3
+```
+
+```console
+kubectl apply -f 002-deployment-patterns/start/name-destination-rule.yaml
+```
+
+Remove the `name-v1` destination from `name-virtual-service.yaml` file, adjust 
+the weight field to 100% on `name-v2` destination and apply it.
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name-route
+spec:
+  hosts:
+  - name
+  gateways:
+  - mesh
+  http:
+  - match:
+    - headers:
+        x-test:
+          exact: use-v3
+    route:
+    - destination:
         host: name
-        subset: name-v1
-      weight: 0
+        subset: name-v3
+  - route:
     - destination:
         host: name
         subset: name-v2
@@ -478,6 +521,16 @@ To promote `v2` you need to adjust the weights and apply the changes.
 
 ```console
 kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
+```
+
+> :bulb: You could simply adjust the weight values in the 
+> `name-virtual-service.yaml` file. But for the next exercise it will cause 
+> less confusion if the subsets and destinations are removed.
+
+Finally, delete the `name-v1` workload. 
+
+```console
+kubectl delete -f 002-deployment-patterns/start/name-v1.yaml
 ```
 
 - **Use the version app graph in Kiali to observe the traffic**
@@ -493,35 +546,83 @@ would remove the `v1` workload after 100% of traffic is routed to `v2`.
 ## Exercise 3
 
 This exercise will introduce you to the HTTPRoute `mirror` field in a virtual 
-service. We want to traffic to the **name** service `v3` workload while still 
-forwarding traffic to the original destination. 
+service. We want to route traffic to the **name** service `v3` workload while still 
+forwarding traffic to the original destination. This is often called a shadow 
+deployment.
 
-> :bulb: Mirrored traffic is on a best effort basis. This means that the 
-sidecar/gateway will **not** wait for mirrored traffic **before** sending 
-a response from the original destination.
+> In Istio mirrored traffic is on a best effort basis. This means that the 
+> sidecar/gateway will **not** wait for mirrored traffic **before** sending 
+> a response from the original destination.
 
-Mirroring traffic in this manner is often called a shadow deployment pattern. 
-The idea being that the client/user has no idea about the deployed version and 
-the deployed version has **zero** impact on the client/user as the mirrored 
-traffic happens out of band for the critical request path for the primary 
-service. 
+The use case here is the following. You have **completed** a canary deployment 
+for `v1` and `v2` of the **name** service. You have also done a blue/green 
+deployment for `v3` of the **name** service. You have tested it's functionality 
+and everything looks good. Now you would like to load test `v3` as it has some 
+changes that could affect performance.
+
+<details>
+    <summary> More Info </summary>
+
+The idea behind shadow deployments is that the clients/users have no idea about 
+the deployed version and the deployed version has **zero** impact on the 
+clients/users as the mirrored traffic happens out of band for the critical 
+request path for the primary service. 
 
 Shadow deployments are particularly useful for load testing and refactoring of 
 monolithic applications. But they can be quite complex and care has to be taken 
 if there are interactions with other systems. Imagine shadow testing a payment 
-service for a shopping cart service. You wouldn't want users paying twice for 
+service for a shopping cart. You wouldn't want users paying twice for 
 an order. 
 
+</details>
+
 ```yaml
-Some yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: my-service-route
+spec:
+  hosts:
+  - my-service
+  http:
+  - route:
+    - destination:
+        host: my-service
+        subset: v2
+      weight: 100
+    - destination:
+        host: my-service
+        subset: v3
+    mirror:
+      host: my-service
+      subset: v3
+    mirrorPercentage:
+      value: 100.0
 ```
+In the example above you can see that the `weight` field routes 100% of traffic 
+to the `v2` subset of `my-service`. The `mirror` field will route 100% of the 
+traffic `v2` receives to the `v3` subset. 
+
+> Adjusting the `mirrorPercentage` value will adjust how much of the traffic 
+> routed to `v2` that will be mirrored to the `v3` subset. 
+> 
+> E.g, if set to 50.0 then 50% percent of traffic routed to the `v2` subset 
+> will be mirrored to the `v3` subset. 
+> 
+> If the field is not defined then the `v3` subset will get 100% of the traffic 
+> routed to `v2`.
 
 ### Overview
 
-- 
-- 
+- Remove the `match` block from `name-virtual-service.yaml` file and apply it.
 
-> :bulb: Some info
+- Add the `destination` and `mirror` blocks in the `name-virtual-service.yaml` file and apply it.
+
+- Run the scripts/loop-query.sh script to produce traffic.
+
+- Inspect the `name-v3` to see if it is receiving traffic. 
+
+- Use the version app graph in Kiali to observe the traffic flow.
 
 ### Step by Step
 <details>
