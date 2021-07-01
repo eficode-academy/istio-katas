@@ -607,38 +607,141 @@ traffic `v2` receives to the `v3` subset.
 > Adjusting the `mirrorPercentage` value will adjust how much of the traffic 
 > routed to `v2` that will be mirrored to the `v3` subset. E.g, if set to 50.0 
 > then 50% percent of traffic routed to the `v2` subset will be mirrored to 
-> the `v3` subset. 
-> 
-> If the field is not defined then the `v3` subset will get 100% of the traffic 
-> routed to `v2`.
+> the `v3` subset. If the field is not defined then the `v3` subset will get 
+> 100% of the traffic routed to `v2`.
 
 ### Overview
 
-- Remove the `match` block from `name-virtual-service.yaml` file and apply it.
+- Remove the `match` block from `name-virtual-service.yaml`
 
-- Add the `destination` and `mirror` blocks in the `name-virtual-service.yaml` file and apply it.
+- Add the `mirror` blocks to `name-virtual-service.yaml`
 
-- Run the scripts/loop-query.sh script to produce traffic.
+- Apply the changes to `name-virtual-service.yaml`
 
-- Inspect the `name-v3` to see if it is receiving traffic. 
+- Run `scripts/loop-query.sh` to produce traffic
 
-- Use the version app graph in Kiali to observe the traffic flow.
+- Inspect the `name-v3` workload to see if it is receiving traffic
+
+- Observe the traffic in Kiali
 
 ### Step by Step
 <details>
     <summary> More Details </summary>
 
-* **Step**
+- **Remove the `match` block from `name-virtual-service.yaml`**
 
-```console
-Some command
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name-route
+spec:
+  hosts:
+  - name
+  gateways:
+  - mesh
+  http:
+  - route:
+    - destination:
+        host: name
+        subset: name-v2
+      weight: 100
 ```
 
-*** **Step****
+- **Add the `mirror` blocks in the `name-virtual-service.yaml`**
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name-route
+spec:
+  hosts:
+  - name
+  gateways:
+  - mesh
+  http:
+  - route:
+    - destination:
+        host: name
+        subset: name-v2
+      weight: 100
+    mirror:
+      host: name
+      subset: name-v3
+    mirrorPercentage:
+      value: 100.0
+```
+
+- **Apply the changes to `name-virtual-service.yaml`**
 
 ```console
-Some command
+kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 ```
+
+- **- Run `scripts/loop-query.sh` to produce traffic**
+
+```console
+./scripts/loop-query.sh
+```
+
+You should **only** see responses from the `name-v2` workload. It should look 
+something like the following.
+
+```console
+Porthos (v2) is 82 years
+Athos (v2) is 42 years
+Athos (v2) is 85 years
+Athos (v2) is 16 years
+d'Artagnan (v2) is 57 years
+Porthos (v2) is 99 years
+Porthos (v2) is 34 years
+Athos (v2) is 92 years
+Porthos (v2) is 11 years
+Athos (v2) is 75 years
+```
+> Requests mirrored to the `name-v3` workload are done so as **fire and forget** 
+> requests. All **responses** are discarded.
+
+- **Inspect the `name-v3` workload to see if it is receiving traffic**
+
+```console
+export NAME_V3_POD=$(kubectl get pod -l app=sentences,version=v3 -o jsonpath={.items..metadata.name})
+kubectl logs "$NAME_V3_POD" --tail=20 --follow
+```
+
+You should see GET requests hitting the `name-v3` workload. It should look 
+something like this.
+
+```console
+WARNING:root:Using name 'd'Artagnan (v3)'
+WARNING:root:Operation 'name' took 0.171ms
+127.0.0.1 - - [01/Jul/2021 14:18:13] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Jul/2021 14:18:13] "GET / HTTP/1.1" 200 -
+WARNING:root:Using name 'Porthos (v3)'
+WARNING:root:Operation 'name' took 0.160ms
+127.0.0.1 - - [01/Jul/2021 14:18:13] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Jul/2021 14:18:13] "GET / HTTP/1.1" 200 -
+WARNING:root:Using name 'Athos (v3)'
+WARNING:root:Operation 'name' took 0.238ms
+127.0.0.1 - - [01/Jul/2021 14:18:14] "GET / HTTP/1.1" 200 -
+```
+
+- **Observe the traffic in Kiali**
+
+If you look at the **version app graph** you will **not** see the mirrored 
+traffic being shown. 
+
+![Graph with mirror](images/kiali-mirror-graph.png)
+
+But it is possible to see that there is inbound traffic for the `name-v3` 
+workload. There is obviously no outbound traffic.
+
+![Workload with mirror](images/kiali-mirrored-workload-inbound.png)
+
+Metrics are also collected for the **destination** traffic.
+
+![Workload mirror metrics](images/kiali-mirrored-inbound-metrics.png)
 
 </details>
 
