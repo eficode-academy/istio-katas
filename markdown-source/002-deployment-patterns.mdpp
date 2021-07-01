@@ -56,7 +56,7 @@ You can have multiple conditions in a match block and multiple match blocks.
 **NOTE:** Matches are evaluated **prior** to any destination's being applied.
 
 Istio allows to use other parts of **incoming** requests and match them to values 
-**you** define. To see what these rae expand **More Info** below.
+**you** define. To see what these are expand **More Info** below.
 
 <details>
     <summary> More Info </summary>
@@ -103,7 +103,7 @@ regular expression syntax.
 
 - Use the version app graph in Kiali to observe the traffic flow.
 
-- Run the `scripts/loop-query.sh` **without** passing the `x-test:` header.
+- Run the `scripts/loop-query.sh` **without** passing the `x-test` header.
 
 - Use the version app graph in Kiali to observe the traffic flow and understand what happened. 
 
@@ -116,7 +116,7 @@ regular expression syntax.
 <details>
     <summary> More Details </summary>
 
-* **Deploy the sentences app**
+- **Deploy the sentences app**
 
 ```console
 kubectl apply -f 002-deployment-patterns/start/
@@ -125,20 +125,22 @@ kubectl apply -f 002-deployment-patterns/start/
 This will deploy two versions of the **name** service along with a destination 
 rule and virtual service as defined in a previous exercise.
 
-* **Run the `scripts/loop-query.sh` script**
+- **Run the `scripts/loop-query.sh` script**
 
 ```console
 ./scripts/loop-query.sh
 ```
 
-* **Observe traffic flow with version app graph in Kiali**
+- **Observe traffic flow with version app graph in Kiali**
 
 You should see the traffic being routed to `v1` of the name service because of 
 the precedence of the routes in the name virtual service.
 
 ![Precedence routing](images/kiali-precedence-routing.png)
 
-* **Update the virtual service with a HTTPMatchRequest and apply it**
+- **Update the `name-virtual-service.yaml` with an 
+[HTTPMatchRequest](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPMatchRequest) 
+and apply it**
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -165,29 +167,29 @@ spec:
 kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 ```
 
-* **Run loop-query.sh with the `x-test` header**
+- **Run loop-query.sh with the `x-test` header**
 
 ```console
 ./scripts/loop-query.sh 'x-test: use-v2'
 ```
 
-* **Observe traffic flow with version app graph in Kiali**
+- **Observe traffic flow with version app graph in Kiali**
 
 You should see all traffic being directed to `v2` of the name workload.
-That is because the the match evaluated to true and the route **under** the 
+That is because the match evaluated to true and the route **under** the 
 match block is used.
 
 ![Header based routing](images/kiali-blue-green.png)
 
 But what happens when we do not pass the header?
 
-* **Run the `scripts/loop-query.sh` without header**
+- **Run the `scripts/loop-query.sh` without header**
 
 ```console
 ./scripts/loop-query.sh
 ```
 
-* **Observe traffic flow with version app graph in Kiali**
+- **Observe traffic flow with version app graph in Kiali**
 
 The problem we have here is that the match is evaluated first **before** any 
 destination's are applied. Since the match was not true the route defined under 
@@ -221,7 +223,7 @@ kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 ./scripts/loop-query.sh
 ```
 
-* **Observe traffic flow with version app graph in Kiali**
+- **Observe traffic flow with version app graph in Kiali**
 
 You should now see all traffic being routed to the **default** route which 
 will directs traffic to version `v1` of the name workload.
@@ -230,8 +232,8 @@ will directs traffic to version `v1` of the name workload.
 
 </details>
 
-Whenever you use matches for traffic routing. You should **always** ensure you 
-have a **default** route.
+> Whenever you use matches for traffic routing. You should **always** ensure you 
+> have a **default** route.
 
 ## Exercise 2
 
@@ -307,24 +309,28 @@ receive 10% of **all** traffic.
 
 - Use the version app graph in Kiali to observe the traffic flow.
 
+- Promote `v2` to receive **all** traffic.
+
+- Use the version app graph in Kiali to observe the traffic flow.
+
 ### Step by Step
 <details>
     <summary> More Details </summary>
 
-* **deploy the sentences app**
+- **Deploy the sentences app**
 
 ```console
 kubectl apply -f 002-deployment-patterns/start/
 ```
 
-* **Run `scripts/loop-query.sh`**
+- **Run `scripts/loop-query.sh`**
 
 
 ```console
 ./scripts/loop-query.sh
 ```
 
-* **Add `v3` to the name service's destination rule and apply it**
+- **Add `v3` to the destination rule `name-destination-rule.yaml` and apply it**
 
 ```yaml
   - name: name-v3
@@ -336,13 +342,13 @@ kubectl apply -f 002-deployment-patterns/start/
 kubectl apply -f 002-deployment-patterns/start/name-destination-rule.yaml
 ```
 
-* **Deploy `v3` of the name service**
+- **Deploy `v3` of the name service**
 
 ```console
 kubectl apply -f 002-deployment-patterns/start/name-v3/
 ```
 
-* **Adjust name services `match` field to `use-v3` and apply it**
+- **Adjust the `match` field in `name-virtual-service.yaml` to `use-v3` and apply it**
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -377,7 +383,7 @@ spec:
 kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 ```
 
-* **Observe traffic flow with version app graph in Kiali**
+- **Observe traffic flow with version app graph in Kiali**
 
 The traffic should still be routed to the `v1` workload as the match condition 
 did not evaluate to true and order of precedence dictates the first destination 
@@ -385,7 +391,7 @@ which will direct traffic to `v1` workload.
 
 ![Precedence routing](images/kiali-precedence-routing.png)
 
-* **Add the `weight` fields to the **name** virtual service and apply**
+- **Add the `weight` fields to `name-virtual-service.yaml` and apply it**
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -421,23 +427,23 @@ spec:
 > be under the same route block.
 
 ```console
-kubectl apply -f deploy/deployment-patterns/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 ```
 
-* **Observe traffic flow with version app graph in Kiali**
+- **Observe traffic flow with version app graph in Kiali**
 
 You should see that the traffic is distributed approximately 90% to `v1` and 10% 
 to `v2`.
 
 ![90/10 traffic distribution](images/kiali-canary-anno.png)
 
-* **In a **new** terminal run the scripts/loop-query.sh with header `use-v3`**
+- **In a **new** terminal run the scripts/loop-query.sh with header `use-v3`**
 
 ```console
 ./scripts/loop-query.sh 'x-test: use-v3'
 ```
 
-* **Observe traffic flow with version app graph in Kiali**
+- **Observe traffic flow with version app graph in Kiali**
 
 Yo can see that the traffic distribution is no longer 90/10 between `v1` and `v2`.
 
@@ -452,6 +458,35 @@ several, and observe how it affects the traffic distribution. You will see the
 percentage of the **overall** traffic change to look more like the 90/10 weight.
 
 ![90/10 distribution with Blue green](images/kiali-canary-blue-green.png)
+
+- **Promote `v2` to receive all traffic**
+
+Stop sending traffic to `v3` with `./scripts/loop-query.sh 'x-test: use-v3'`.
+
+To promote `v2` you need to adjust the weights and apply the changes.
+
+```yaml
+- destination:
+        host: name
+        subset: name-v1
+      weight: 0
+    - destination:
+        host: name
+        subset: name-v2
+      weight: 100
+```
+
+```console
+kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
+```
+
+- **Use the version app graph in Kiali to observe the traffic**
+
+All traffic will now be routed to the `v2` workload. Normally you would adjust 
+the weights gradually to expose `v2` to more and more users. At some point you 
+would remove the `v1` workload after 100% of traffic is routed to `v2`.
+
+![Canary Promoted](images/kiali-canary-promoted.png)
 
 </details>
 

@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name-route
+spec:
+  hosts:
+  - name
+  gateways:
+  - mesh
+  http:
+  - match:
+    - headers:
+        x-test:
+          exact: use-v3
+    route:
+    - destination:
+        host: name
+        subset: name-v3
+  - route:
+    - destination:
+        host: name
+        subset: name-v1
+      weight: 0
+    - destination:
+        host: name
+        subset: name-v2
+      weight: 100
