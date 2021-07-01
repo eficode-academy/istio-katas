@@ -6,9 +6,9 @@ Exercises for the [Eficode Academy](https://www.eficode.com/academy) Istio cours
 
 The natural order for the exercises would be:
 
-- [Introducing the setup](setup-introduction.md)
-- [Basic traffic routing](basic-traffic-routing.md)
-- [Deployment patterns](deployment-patterns.md) - In Progress
+- [Introducing the setup](000-setup-introduction.md)
+- [Basic traffic routing](001-basic-traffic-routing.md)
+- [Deployment patterns](002-deployment-patterns.md) - In Progress
 - [Getting traffic into the mesh]()  - Todo
 - [Getting traffic out of the mesh]()  - Todo
 - [Securing with mutual TLS]()  - Todo
