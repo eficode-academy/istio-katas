@@ -225,6 +225,10 @@ spec:
         host: name-v1
 ```
 
+```console
+kubectl apply -f 001-basic-traffic-routing/start/name-virtual-service.yaml
+```
+
 Observe the traffic flow in Kiali using the **versioned app graph**.
 You will see that traffic is now being routed to the version 2 service.
 
