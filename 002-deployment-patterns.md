@@ -120,7 +120,7 @@ regular expression syntax.
 * **Deploy the sentences app**
 
 ```console
-kubectl apply -f deployment-patterns/start/
+kubectl apply -f 002-deployment-patterns/start/
 ```
 
 This will deploy two versions of the **name** service along with a destination 
@@ -163,7 +163,7 @@ spec:
 ```
 
 ```console
-kubectl apply -f deployment-patterns/start/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 ```
 
 * **Run loop-query.sh with the `x-test` header**
@@ -215,7 +215,7 @@ route and apply it.
 Apply the changes and run the `scripts/loop-query.sh` without header.
 
 ```console
-kubectl apply -f deployment-patterns/start/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 ```
 
 ```console
@@ -315,7 +315,7 @@ receive 10% of **all** traffic.
 * **deploy the sentences app**
 
 ```console
-kubectl apply -f deployment-patterns/start/
+kubectl apply -f 002-deployment-patterns/start/
 ```
 
 * **Run `scripts/loop-query.sh`**
@@ -334,13 +334,13 @@ kubectl apply -f deployment-patterns/start/
 ```
 
 ```console
-kubectl apply -f deployment-patterns/start/name-destination-rule.yaml
+kubectl apply -f 002-deployment-patterns/start/name-destination-rule.yaml
 ```
 
 * **Deploy `v3` of the name service**
 
 ```console
-kubectl apply -f deployment-patterns/start/name-v3/
+kubectl apply -f 002-deployment-patterns/start/name-v3/
 ```
 
 * **Adjust name services `match` field to `use-v3` and apply it**
@@ -375,7 +375,7 @@ spec:
 ```
 
 ```console
-kubectl apply -f deployment-patterns/start/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 ```
 
 * **Observe traffic flow with version app graph in Kiali**
@@ -519,5 +519,5 @@ In exercise 3 you saw XXX
 # Cleanup
 
 ```console
-kubectl delete -f deployment-patterns/start/
+kubectl delete -f 002-deployment-patterns/start/
 ```

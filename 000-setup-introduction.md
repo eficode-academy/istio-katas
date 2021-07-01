@@ -1,4 +1,5 @@
-!INCLUDE "markdown-source/meta.md"
+[//]: # (Copyright, Eficode )
+[//]: # (Origin: https://github.com/eficode-academy/istio-katas)
 [//]: # (Tags: #sentences #kiali)
 
 # Introducing the setup
@@ -54,7 +55,7 @@ It provides four main graph renderings of the mesh telemetry.
 
 ## Exercise 1
 
-- Deploy the sentences application with kubectl. It is located under the `setup-introduction/` directory.
+- Deploy the sentences application with kubectl. It is located under the `000-setup-introduction/` directory.
 
 - Observe the number of pods running.
 
@@ -73,7 +74,7 @@ It provides four main graph renderings of the mesh telemetry.
 Open a terminal in the root of the git repository (istio-katas) and use `kubectl` to deploy `v1` of the application.
 
 ```console
-kubectl apply -f setup-introduction/
+kubectl apply -f 000-setup-introduction/
 ```
 
 **Observe the number of services and pods running**
@@ -141,7 +142,7 @@ Traffic is now flowing between the services.
 **Pull sentences application down**
 
 ```console
-kubectl delete -f setup-introduction/
+kubectl delete -f 000-setup-introduction/
 ```
 
 **Enable automatic sidecar injection**
@@ -153,7 +154,7 @@ kubectl label namespace <USERNAME HERE> istio-injection=enabled
 **Redeploy sentences application**
 
 ```console
-kubectl apply -f setup-introduction/
+kubectl apply -f 000-setup-introduction/
 ```
 
 **Observe the number of services and pods running**
@@ -245,5 +246,5 @@ And you can find more details about sidecar configuration [here](https://istio.i
 # Cleanup
 
 ```console
-kubectl delete -f setup-introduction/
+kubectl delete -f 000-setup-introduction/
 ```

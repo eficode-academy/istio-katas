@@ -1,10 +1,10 @@
 # Istio Katas
 
-Excercises for the [Eficode Academy](https://www.eficode.com/academy) Istio course.
+Exercises for the [Eficode Academy](https://www.eficode.com/academy) Istio course.
 
 ## Exercise Overview
 
-Natural order:
+The natural order for the exercises would be:
 
 - [Introducing the setup](setup-introduction.md)
 - [Basic traffic routing](basic-traffic-routing.md)
@@ -16,6 +16,10 @@ Natural order:
 - [Securing access to services]()  - Todo
 - [A tour of Istio's metrics]() - Todo
 - [??]()
+
+However each set of exercises, besides the setup introduction, has a 
+start folder located beneath it. E.g. `001-basic-traffic-routing/start` that 
+allows you to do them in **your** preferred order.
 
 ## How to Read Exercise Files
 
