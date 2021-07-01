@@ -4,7 +4,7 @@ Exercises for the [Eficode Academy](https://www.eficode.com/academy) Istio cours
 
 ## Exercise Overview
 
-The natural order for the exercises would be:
+The natural order would be:
 
 - [Introducing the setup](000-setup-introduction.md)
 - [Basic traffic routing](001-basic-traffic-routing.md)
@@ -16,16 +16,18 @@ The natural order for the exercises would be:
 - [A tour of Istio's metrics]() - Todo
 - [??]()
 
-However each set of exercises, besides the setup introduction, has a 
+However each exercise, besides the setup introduction, has a 
 start folder located beneath it. E.g. `001-basic-traffic-routing/start` that 
-allows you to do them in **your** preferred order.
+allows you to do them in **your** preferred order. 
+
+Do note that there can be multiple exercises per exercise file. 
 
 ## How to Read Exercise Files
 
 All exercise files start with an introduction
-followed by the actual exercise.
+followed by the actual exercise(s).
 
-A general overview of the exercise is given first,
+A general overview of the exercise(s) is given first,
 followed by more detailed step-by-step
 instructions. If you want a little challenge, you
 can try to read the general steps of the
