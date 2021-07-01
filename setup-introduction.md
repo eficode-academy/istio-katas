@@ -55,7 +55,7 @@ It provides four main graph renderings of the mesh telemetry.
 
 ## Exercise 1
 
-- Deploy the sentences application with kubectl. It is located under the `deploy/setup-introduction` directory.
+- Deploy the sentences application with kubectl. It is located under the `setup-introduction/` directory.
 
 - Observe the number of pods running.
 
@@ -74,7 +74,7 @@ It provides four main graph renderings of the mesh telemetry.
 Open a terminal in the root of the git repository (istio-katas) and use `kubectl` to deploy `v1` of the application.
 
 ```console
-kubectl apply -f deploy/setup-introduction
+kubectl apply -f setup-introduction/
 ```
 
 **Observe the number of services and pods running**
@@ -142,7 +142,7 @@ Traffic is now flowing between the services.
 **Pull sentences application down**
 
 ```console
-kubectl delete -f deploy/setup-introduction
+kubectl delete -f setup-introduction/
 ```
 
 **Enable automtatic sidecar injection**
@@ -154,7 +154,7 @@ kubectl label namespace <USERNAME HERE> istio-injection=enabled
 **Redeploy sentences application**
 
 ```console
-kubectl apply -f deploy/setup-introduction
+kubectl apply -f setup-introduction/
 ```
 
 **Observe envoy proxy**
@@ -205,14 +205,14 @@ and **versioned app** graphs.
 
 ## Summary
 
-Excercise 1 introduced you to the sentences application and Kiali. There is not 
+Exercise 1 introduced you to the sentences application and Kiali. There is not 
 enough time in the course to go into much more details around Kiali. But it has 
 more features like the Istio Wizards feature which lets you create delete 
 istio configuration on the fly. It can do validation on the most common Istio 
 objects and more. See the [documentation](https://kiali.io/documentation/latest/features/) 
 for a more complete overview.
 
-Excercise 2 uses automatic sidecar injection and this is what we will be using 
+Exercise 2 uses automatic sidecar injection and this is what we will be using 
 for the rest of the course. Most of the time this is what you want to do instead 
 manually injecting sidecars.
 
@@ -226,5 +226,5 @@ And you can find more details about sidecar configuration [here](https://istio.i
 # Cleanup
 
 ```console
-kubectl delete -f deploy/setup-introduction
+kubectl delete -f setup-introduction/
 ```
