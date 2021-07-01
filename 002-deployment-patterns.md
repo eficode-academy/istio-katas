@@ -16,7 +16,7 @@ These exercises will introduce you to the match, weight and mirror fields of the
 HTTPRoute. These fields and their combinations can be used to enable several 
 useful deployment patterns.
 
-These exercises build on the [Basic traffic routing](basic-traffic-routing.md) exercises.
+These exercises build on the [Basic traffic routing](001-basic-traffic-routing.md) exercises.
 
 ## Exercise 1
 
