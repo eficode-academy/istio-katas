@@ -201,7 +201,6 @@ sentences-v1-6ccc9fdcc5-fzt2g   sentences,istio-proxy
 **Browse kiali and investigate the traffic flow**
 
 Now you can see there are sidecars and the traffic is part of the mesh. 
-
 Browse the different tabs to see the traffic and metrics being captured.
 
 > :bulb: It may take a minute before Kiali starts showing the traffic and 
