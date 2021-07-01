@@ -94,7 +94,7 @@ regular expression syntax
 
 - Deploy the sentences app
 
-- Run the `scripts/loop-query.sh` script to produce traffic.
+- Run the `scripts/loop-query.sh`
 
 - Observe the traffic flow with Kiali
 
@@ -296,7 +296,7 @@ workload of `my-service` will receive 10% of **all** traffic.
 
 - If not already done, deploy the sentences app
 
-- Run the `scripts/loop-query.sh` script to produce traffic
+- Run the `scripts/loop-query.sh`
 
 - Add `name-v3` subset in `name-destination-rule.yaml`
 
@@ -308,7 +308,7 @@ workload of `my-service` will receive 10% of **all** traffic.
 
 - Add the `weight` fields in in `name-virtual-service.yaml` to distribute traffic between `name-v1` and `name-v2`
 
-- Use the version app graph in Kiali to observe the traffic flow.
+- Observe the traffic flow with Kiali
 
 - In a **new** terminal pass the header `x-test: use-v3` to `scripts/loop-query.sh`
 
@@ -624,7 +624,7 @@ routed to `v2`.
 
 - Apply the changes to `name-virtual-service.yaml`
 
-- Run `scripts/loop-query.sh` to produce traffic
+- Run `scripts/loop-query.sh`
 
 - Inspect the `name-v3` workload to see if it is receiving traffic
 
@@ -685,7 +685,7 @@ spec:
 kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 ```
 
-**Run `scripts/loop-query.sh` to produce traffic**
+**Run `scripts/loop-query.sh`**
 
 ```console
 ./scripts/loop-query.sh
@@ -706,7 +706,7 @@ Athos (v2) is 92 years
 Porthos (v2) is 11 years
 Athos (v2) is 75 years
 ```
-> Requests mirrored to the `name-v3` workload are done so as **fire and forget** 
+> Requests mirrored to the `name-v3` workload are done as **fire and forget** 
 > requests. All **responses** are discarded.
 
 **Inspect the `name-v3` workload to see if it is receiving traffic**
