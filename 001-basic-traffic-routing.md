@@ -390,7 +390,7 @@ name service has no versions defined in the selector.
 
 </details>
 
-## Summary
+# Summary
 
 In exercise 1 you learned what a virtual service is and how to route traffic 
 to a destination service in kubernetes with an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute). 

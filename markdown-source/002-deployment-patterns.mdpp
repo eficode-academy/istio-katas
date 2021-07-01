@@ -751,7 +751,7 @@ Metrics are also collected for the **destination** traffic.
 </details>
 
 
-## Summary
+# Summary
 
 In these exercises you learned some of functionality provided by Istio's HTTPRoute.
 Implementing blue/green, canary and shadow deployment patterns. But there is a lot 

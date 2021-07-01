@@ -222,7 +222,7 @@ and **versioned app** graphs.
 
 </details>
 
-## Summary
+# Summary
 
 Exercise 1 introduced you to the sentences application and Kiali. There is not 
 enough time in the course to go into much more details around Kiali. But it has 
