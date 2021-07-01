@@ -177,7 +177,7 @@ drop down.
 
 * **Observe route precedence**
 
-Create a new service called `name-svc-v2.yaml` in `basic-traffic-routing/start/` 
+Create a new service called `name-svc-v2.yaml` in `001-basic-traffic-routing/start/` 
 and apply it. Make sure it has a version (`v2`) in the label selector.
 
 ```yaml
