@@ -145,7 +145,7 @@ Traffic is now flowing between the services.
 kubectl delete -f setup-introduction/
 ```
 
-**Enable automtatic sidecar injection**
+**Enable automatic sidecar injection**
 
 ```console
 kubectl label namespace <USERNAME HERE> istio-injection=enabled
@@ -157,13 +157,33 @@ kubectl label namespace <USERNAME HERE> istio-injection=enabled
 kubectl apply -f setup-introduction/
 ```
 
+**Observe the number of services and pods running**
+
+```console
+kubectl get pod,svc
+```
+
+You should see two containers per POD.
+
+```console
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/age-v1-6fccc84ff-kkdgn          2/2     Running   0          4m4s
+pod/name-v1-6644f45d6f-lndkm        2/2     Running   0          4m4s
+pod/sentences-v1-5bbf7bcfcb-fphpp   2/2     Running   0          4m4s
+
+NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/age         ClusterIP   172.20.228.238   <none>        5000/TCP         4m5s
+service/name        ClusterIP   172.20.213.23    <none>        5000/TCP         4m4s
+service/sentences   NodePort    172.20.106.197   <none>        5000:32092/TCP   4m4s
+```
+
 **Observe envoy proxy**
 
 ```console
 kubectl get pods -o=custom-columns=NAME:.metadata.name,CONTAINERS:.spec.containers[*].name
 ```
 
-This should show two containers for each service and should look like this.
+This should show an istio proxy sidecar for each service.
 
 ```console
 NAME                            CONTAINERS
