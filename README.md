@@ -9,7 +9,7 @@ The natural order for the exercises would be:
 - [Introducing the setup](000-setup-introduction.md)
 - [Basic traffic routing](001-basic-traffic-routing.md)
 - [Deployment patterns](002-deployment-patterns.md)
-- [Ingress and Egress traffic]() - In Progress
+- [Ingress and Egress traffic](003-ingress-egress-traffic.md) - In Progress
 - [Securing with mutual TLS]()  - Todo
 - [Controlling service to service communication]() - Todo
 - [Securing access to services]()  - Todo
