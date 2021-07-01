@@ -229,13 +229,13 @@ will directs traffic to version `v1` of the name workload.
 
 ![Default route](images/kiali-default-destination.png)
 
-</details>
-
 > Whenever you use matches for traffic routing. You should **always** ensure you 
 > have a **default** route.
 
 > If you change the header name in the virtual service to something else, 
 > say `x-vers` the match will stop working. Think about why?
+
+</details>
 
 ## Exercise 2
 
