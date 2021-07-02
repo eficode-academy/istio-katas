@@ -92,7 +92,7 @@ regular expression syntax
 
 ### Overview
 
-- Deploy the sentences app
+- Deploy the sentences app and two versions of the name service
 
 - Run the `scripts/loop-query.sh`
 
@@ -121,6 +121,8 @@ regular expression syntax
 
 ```console
 kubectl apply -f 002-deployment-patterns/start/
+kubectl apply -f 002-deployment-patterns/start/name-v1/
+kubectl apply -f 002-deployment-patterns/start/name-v2/
 ```
 
 This will deploy two versions of the **name** service along with a destination 
@@ -134,7 +136,7 @@ rule and virtual service as defined in a previous exercise.
 
 **Observe the traffic flow with Kiali**
 
-You should see the traffic being routed to `v1` of the name service because of 
+You should see the traffic being routed to the `name-v1` workload because of 
 the precedence of the routes in the name virtual service.
 
 ![Precedence routing](images/kiali-precedence-routing.png)
@@ -294,7 +296,7 @@ workload of `my-service` will receive 10% of **all** traffic.
 
 ### Overview
 
-- If not already done, deploy the sentences app
+- Deploy the sentences app and version `name-v3` of the name service
 
 - Run the `scripts/loop-query.sh`
 
@@ -322,10 +324,13 @@ workload of `my-service` will receive 10% of **all** traffic.
 <details>
     <summary> More Details </summary>
 
-**Deploy the sentences app**
+**Deploy the sentences app with `name-v3`**
 
 ```console
 kubectl apply -f 002-deployment-patterns/start/
+kubectl apply -f 002-deployment-patterns/start/name-v1/
+kubectl apply -f 002-deployment-patterns/start/name-v2/
+kubectl apply -f 002-deployment-patterns/start/name-v3/
 ```
 
 **Run `scripts/loop-query.sh`**
@@ -529,14 +534,13 @@ kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 Finally, delete the `name-v1` workload. 
 
 ```console
-kubectl delete -f 002-deployment-patterns/start/name-v1.yaml
+kubectl delete -f 002-deployment-patterns/start/name-v1/
 ```
 
 **Observe the traffic flow with Kiali**
 
 All traffic will now be routed to the `v2` workload. Normally you would adjust 
-the weights gradually to expose `v2` to more and more users. At some point you 
-would remove the `v1` workload after 100% of traffic is routed to `v2`.
+the weights gradually to expose `v2` to more and more users.
 
 ![Canary Promoted](images/kiali-canary-promoted.png)
 
@@ -545,9 +549,9 @@ would remove the `v1` workload after 100% of traffic is routed to `v2`.
 ## Exercise 3
 
 This exercise will introduce you to the HTTPRoute `mirror` field in a virtual 
-service. We want to route traffic to the **name** service `v3` workload while still 
-forwarding traffic to the original destination. This is often called a shadow 
-deployment.
+service. We want to route traffic to the **name** service `v3` workload while 
+still forwarding traffic to the original destination. This is often called a 
+shadow deployment.
 
 > In Istio mirrored traffic is on a best effort basis. This means that the 
 > sidecar/gateway will **not** wait for mirrored traffic **before** sending 
@@ -766,5 +770,8 @@ for a more complete overview of what you can do.
 
 ```console
 kubectl delete -f 002-deployment-patterns/start/name-v3
+kubectl delete -f 002-deployment-patterns/start/name-v2
+kubectl delete -f 002-deployment-patterns/start/name-v1
 kubectl delete -f 002-deployment-patterns/start/
+
 ```

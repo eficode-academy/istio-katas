@@ -63,7 +63,7 @@ takes a form like `reviews`, `ratings`, etc.
 
 ### Overview
 
-- Deploy the sentences app and a second version (`v2`) of the name service
+- Deploy the sentences app and a second version (`name-v2`) of the name service
 
 - Run the script `scripts/loop-query.sh` to produce traffic
 
@@ -84,7 +84,9 @@ takes a form like `reviews`, `ratings`, etc.
 
 ```console
 kubectl apply -f 001-basic-traffic-routing/start/
+kubectl apply -f 001-basic-traffic-routing/start/name-v1
 kubectl apply -f 001-basic-traffic-routing/start/name-v2
+
 ```
 
 **Run loop-query.sh**
@@ -417,6 +419,8 @@ for more details.
 # Cleanup
 
 ```console
+kubectl delete -f 001-basic-traffic-routing/start/name-v2
+kubectl delete -f 001-basic-traffic-routing/start/name-v1
 kubectl delete -f 001-basic-traffic-routing/start/
-kubectl apply -f 001-basic-traffic-routing/start/name-v2
+
 ```
