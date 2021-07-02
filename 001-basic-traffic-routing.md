@@ -85,6 +85,7 @@ takes a form like `reviews`, `ratings`, etc.
 
 ```console
 kubectl apply -f 001-basic-traffic-routing/start/
+kubectl apply -f 001-basic-traffic-routing/start/name-v2
 ```
 
 **Run loop-query.sh**
@@ -418,4 +419,5 @@ for more details.
 
 ```console
 kubectl delete -f 001-basic-traffic-routing/start/
+kubectl apply -f 001-basic-traffic-routing/start/name-v2
 ```
