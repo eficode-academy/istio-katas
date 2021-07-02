@@ -21,31 +21,42 @@ CRD's.
 ## Exercise 1
 
 The previous exercises used a Kubernetes **NodePort** service to get traffic 
-to the `sentences` service. E.g. the **ingress** traffic to `sentences` is 
-**not** flowing through the Istio service mesh. From the `sentences` 
-service to the `age` and `name` services traffic flowing through the Istio 
-service mesh. We know this to be true because we have applied virtual services 
-and destination rules to the `name` service.
+to the sentences service. E.g. the **ingress** traffic to `sentences` **is 
+not** flowing through the Istio service mesh. From the `sentences` 
+service to the `age` and `name` services traffic **is** flowing through the 
+Istio service mesh. We know this to be true because we have applied virtual 
+services and destination rules to the `name` service.
 
 Ingressing traffic directly from the Kubernetes cluster network to a frontend
 service means that Istio features **cannot** be applied on this part of the 
 traffic flow.
 
 In this exercise we are going rectify this by **configuring** ingress traffic 
-to the `sentences` service through a dedicated ingress 
-gateway(`istio-ingressgateway`) provided by Istio.
+to the sentences service through a dedicated ingress gateway(`istio-ingressgateway`) 
+provided by Istio.
 
 <details>
     <summary> More Info </summary>
 
-An Gateway **describes** a load balancer operating at the **edge** of the mesh 
+A Gateway **describes** a load balancer operating at the **edge** of the mesh 
 receiving incoming or outgoing **HTTP/TCP** connections. The specification 
 describes the ports to be expose, type of protocol, configuration for the 
 load balancer, etc.
 
-An **Istio** gateway in a Kubernetes cluster consists, at a minimum, of a 
-Deployment and a Service. Istio ingress gateways are based on the Envoy 
-and have a standalone Envoy proxy.
+An Istio **Ingress** gateway in a Kubernetes cluster consists, at a minimum, of a 
+Deployment and a Service. Istio ingress gateways are based on the Envoy and have a 
+standalone Envoy proxy. 
+
+Inspecting our course environment would show something like:
+
+```console
+NAME                                        TYPE                                   
+istio-ingressgateway                        deployment  
+istio-ingressgateway                        service
+istio-ingressgateway-69c77d896c-5vvjg       pod
+```
+
+Inspecting the POD would show something like:
 
 ```console
 NAME                                    CONTAINERS
