@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: name
+  name: name-v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: name
+      version: v3
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: name
+        version: v3
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1
+        name: name
+        env:
+        - name: "SENTENCE_MODE"
+          value: "name"
+        - name: "SENTENCE_NAMES"
+          value: "Athos (v3),Porthos (v3),Aramis (v3),d'Artagnan (v3)"
