@@ -297,13 +297,13 @@ workload of `my-service` will receive 10% of **all** traffic.
 
 - Deploy the sentences app and version `name-v3` of the name service
 
-- Run the `scripts/loop-query.sh`
-
 - Add `name-v3` subset in `name-destination-rule.yaml`
 
 - Deploy `name-v3` of the name service
 
 - Adjust the `match` field header in `name-virtual-service.yaml` to `use-v3`
+
+- Run the `scripts/loop-query.sh`
 
 - Observe the traffic flow with Kiali
 
@@ -330,12 +330,6 @@ kubectl apply -f 002-deployment-patterns/start/
 kubectl apply -f 002-deployment-patterns/start/name-v1/
 kubectl apply -f 002-deployment-patterns/start/name-v2/
 kubectl apply -f 002-deployment-patterns/start/name-v3/
-```
-
-**Run `scripts/loop-query.sh`**
-
-```console
-./scripts/loop-query.sh
 ```
 
 **Add `name-v3` in `name-destination-rule.yaml`**
@@ -389,6 +383,12 @@ spec:
 
 ```console
 kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
+```
+
+**Run `scripts/loop-query.sh`**
+
+```console
+./scripts/loop-query.sh
 ```
 
 **Observe the traffic flow with Kiali**
