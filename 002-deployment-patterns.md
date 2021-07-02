@@ -173,7 +173,7 @@ kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
 **Run loop-query.sh with the `x-test` header**
 
 ```console
-./scripts/loop-query.sh 'x-test: use-v2'
+./scripts/loop-query.sh -h 'x-test: use-v2'
 ```
 
 **Observe the traffic flow with Kiali**
@@ -449,7 +449,7 @@ to `v2`.
 **In a **new** terminal pass the header `use-v3` to `scripts/loop-query.sh`**
 
 ```console
-./scripts/loop-query.sh 'x-test: use-v3'
+./scripts/loop-query.sh -h 'x-test: use-v3'
 ```
 
 **Observe the traffic flow with Kiali**
@@ -470,7 +470,7 @@ percentage of the **overall** traffic change to look more like the 90/10 weight.
 
 **Promote `v2` to receive all traffic**
 
-Stop sending traffic to `v3` with `./scripts/loop-query.sh 'x-test: use-v3'`.
+Stop sending traffic to `v3` with `./scripts/loop-query.sh.
 
 Remove the `name-v1` subset from `name-destination-rule.yaml` file and apply it.
 

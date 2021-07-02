@@ -63,7 +63,7 @@ In another shell, run the following to continuously query the sentence service
 version `name-v2`:
 
 ```console
-scripts/loop-query.sh 'x-test: use-v2'
+scripts/loop-query.sh -h 'x-test: use-v2'
 ```
 
 With this we now observe in Kiali, that traffic is approximately evenly

@@ -14,4 +14,4 @@ spec:
   selector:
     app: sentences
     mode: sentence
-  type: NodePort
+  type: ClusterIP

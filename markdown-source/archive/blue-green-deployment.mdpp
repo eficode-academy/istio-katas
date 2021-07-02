@@ -85,7 +85,7 @@ sentence service with the `x-test` HTTP header set to the value of `use-v2`:
 
 
 ```console
-scripts/loop-query.sh 'x-test: use-v2'
+scripts/loop-query.sh -h 'x-test: use-v2'
 ```
 
 Since we haven't yet changed the routing, both query commands return results
