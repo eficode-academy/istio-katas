@@ -118,15 +118,15 @@ spec:
     - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
 ```
 
-The **selectors** above are the labels on the `istio-ingressgateway` POD which is 
-running a standalone Envoy proxy.
+The servers block is where you define the port configurations, protocol 
+and the hosts exposed by the gateway. A host entry is specified as a dnsName 
+and should be specified using the FQDN format. 
+
+The **selectors** above are the labels on the `istio-ingressgateway` POD which 
+is running a standalone Envoy proxy.
 
 > You are **not** creating a gateway object with it's own envoy proxy. You are
 > creating a definition of an entry point for the istio-ingressgateway deployment.
-
-The servers block is where you define the port configurations and the hosts 
-exposed by the gateway. A host entry is specified as a dnsName and should be 
-specified using the FQDN format. 
 
 Apply the resource:
 
@@ -136,10 +136,11 @@ kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingressgateway.yaml
 
 **Create a route from the gateway to the sentences service**
 
-In order to actually route traffic from the entry point the sentences 
-service you need to define a virtual service. Create a file called 
-`sentences-ingressgateway-vs.yaml` in `003-traffic-in-out-mesh/start` 
-directory.
+In order to actually route traffic from the entry point **to** the sentences 
+service you need to define a virtual service. 
+
+Create a file called `sentences-ingressgateway-vs.yaml` in 
+`003-traffic-in-out-mesh/start` directory.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -158,7 +159,7 @@ spec:
 ```
 
 > Note how it specifies the hostname and the name of the gateway 
-> (in `spec.gateways`), i.e. a Gateway definition can define an entry for many
+> (in `spec.gateways`). A gateway definition can define an entry for many 
 > hostnames and a VirtualService can be bound to multiple gateways, i.e. these 
 > are not necessarily related one-to-one.
 
@@ -176,6 +177,7 @@ kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingressgateway-vs.yaml
 
 The sentence service we deployed in the first step has a type of `ClusterIP` 
 now. In order to reach it we will need to go through the `istio-ingressgateway`. 
+
 Run the `loop-query.sh` script with the option `-g` and pass it the `hosts` entry.
 
 ```console
@@ -183,6 +185,9 @@ Run the `loop-query.sh` script with the option `-g` and pass it the `hosts` entr
 ```
 
 **Observe the traffic flow with Kiali**
+
+Now we can see that the traffic to the `sentences` service is no longer 
+**unknown** to the service mesh. 
 
 ![Ingress Gateway](images/kiali-ingress-gw.png)
 
