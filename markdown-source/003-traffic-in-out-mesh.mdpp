@@ -62,7 +62,7 @@ istio-ingressgateway-69c77d896c-5vvjg   istio-proxy
 
 In this exercise we are going rectify this by **configuring** ingress traffic 
 to the sentences service through a dedicated **ingress** 
-gateway(`istio-ingressgateway`) provided by **Istio**.
+gateway provided by **Istio** `istio-ingressgateway`.
 
 We are going to do this by defining a gateway.
 
