@@ -196,27 +196,50 @@ Now we can see that the traffic to the `sentences` service is no longer
 ## Exercise 2
 
 A ServiceEntry allows you to apply Istio traffic management for services 
-running outside of your mesh. Like redirecting/forwarding traffic to 
-external destinations and defining retries, timeouts and fault injection 
-policies.
+running **outside** of your mesh. Your service might use an external API 
+as an example. Once you have defined a service entry you can configure 
+virtual services and destination rules to apply Istio features like 
+redirecting or forwarding traffic to external destinations, defining 
+retries, timeouts and fault injection policies. 
+
+By default, Istio configures Envoy proxies to **passthrough** requests to 
+unknown services. So, technically they are not required. But without them 
+you can't apply Istio features. 
+
+There is also the security aspect to consider. While securely controlling 
+ingress traffic is the highest priority, it is good policy to securely control 
+egress traffic also. As part of this many clusters will have the 
+`outBoundTrafficPolicy` set to `REGISTRY_ONLY`. This will force you to define 
+your external services with a service entry.
+
+> :bulb: In our environment we have set the outBoundTrafficPolicy to 
+> `REGISTRY_ONLY`. You will not be able to reach external services without 
+> defining a service entry.
+
+In this exercise we will define a service entry for [httpbin](https://httpbin.org/) 
+and create a virtual service with a timeout of 3 seconds to prove we can use 
+Istio features.
 
 ### Overview
 
-- 
+- Deploy multitool which will be used to reach httpbin from within the mesh
 
-- 
+- Run `.scripts/external-service-query.sh` and observe response
 
-- 
+- Define a service entry for httpbin.org
 
-- 
- 
-- 
+- Run `.scripts/external-service-query.sh` and observe response
 
-- 
+- Create a virtual service with a timeout of 3 seconds
+
+- Run `.scripts/external-service-query.sh http://httpbin.org/delay/5`
 
 ### Step by Step
 <details>
     <summary> More Details </summary>
+
+**Deploy multitool**
+
 
 
 </details>
