@@ -13,4 +13,4 @@ spec:
     name: https-port
     protocol: HTTPS
   resolution: DNS
-  #location: MESH_EXTERNAL
+  

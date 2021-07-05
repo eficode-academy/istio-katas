@@ -89,6 +89,12 @@ The servers block is where you define the port configurations, protocol
 and the hosts exposed by the gateway. A host entry is specified as a dnsName 
 and should be specified using the FQDN format. 
 
+> You can use a wildcard character in the **left-most** component of the 
+> `hosts`field. E.g. `*.example.com`. You can also **prefix** the `hosts` field 
+> with a namespace. 
+> See the [documentation](https://istio.io/latest/docs/reference/config/networking/gateway/#Server) 
+> for more details.
+
 The **selectors** above are the labels on the `istio-ingressgateway` POD which 
 is running a standalone Envoy proxy.
 
@@ -239,6 +245,9 @@ virtual services and destination rules to apply Istio features like
 redirecting or forwarding traffic to external destinations, defining 
 retries, timeouts and fault injection policies. 
 
+<details>
+    <summary> More Info </summary>
+
 By default, Istio configures Envoy proxies to **passthrough** requests to 
 unknown services. So, technically they are not required. But without them 
 you can't apply Istio features. 
@@ -249,13 +258,40 @@ egress traffic also. As part of this many clusters will have the
 `outBoundTrafficPolicy` set to `REGISTRY_ONLY`. This will force you to define 
 your external services with a service entry.
 
-> :bulb: In our environment we have set the outBoundTrafficPolicy to 
-> `REGISTRY_ONLY`. You will not be able to reach external services without 
-> defining a service entry.
+</details>
 
 In this exercise we will define a service entry for [httpbin](https://httpbin.org/) 
 and create a virtual service with a timeout of 3 seconds to prove we can use 
 Istio features.
+
+> :bulb: In our environment we have set the outBoundTrafficPolicy to 
+> `REGISTRY_ONLY`. You will not be able to reach external services without 
+> defining a service entry.
+
+When you create a service entry it is added to Istio's internal service 
+registry.
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: external-api
+spec:
+  hosts:
+  - external-api.example.com
+  ports:
+  - number: 80
+    name: http-port
+    protocol: HTTP
+  - number: 443
+    name: https-port
+    protocol: HTTPS
+  resolution: DNS
+```
+
+The `hosts` field is used to select matching `hosts` in virtual services 
+and destination rules. The `resolution` field is used to determine how the 
+proxy will resolve IP addresses of the end points.
 
 ### Overview
 
@@ -265,11 +301,11 @@ Istio features.
 
 - Define a service entry for httpbin.org
 
-- Run `.scripts/external-service-query.sh` and observe response
+- Run `./scripts/external-service-query.sh` and observe response
 
 - Create a virtual service with a timeout of 3 seconds
 
-- Run `.scripts/external-service-query.sh http://httpbin.org/delay/5`
+- Run `./scripts/external-service-query.sh http://httpbin.org/delay/5`
 
 ### Step by Step
 <details>
@@ -277,7 +313,123 @@ Istio features.
 
 **Deploy multitool**
 
+We want to generate traffic **through** the service mesh. In order to do that 
+we will deploy an image we built for container/network testing and 
+troubleshooting. Our script will then use the `exec`command to have this 
+workload curl the external service.
 
+```console
+kubectl apply -f 003-traffic-in-out-mesh/start/multitool/
+```
+
+**Run `./scripts/external-service-query.sh`**
+
+```console
+./scripts/external-service-query.sh http://httpbin.org
+```
+
+You should see something like below because the exists no service entry 
+for the external service httpbin.
+
+```console
+Using multitool-66d9d48d44-s7wcb to query http://httpbin.org
+HTTP/1.1 502 Bad Gateway
+HTTP/1.1 502 Bad Gateway
+HTTP/1.1 502 Bad Gateway
+```
+
+**Define a service entry for httpbin.org**
+
+Create a service entry called `httpbin-service-entry.yaml`in 
+`003-traffic-in-out-mesh/start/`.
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: httpbin
+spec:
+  hosts:
+  - httpbin.org
+  ports:
+  - number: 80
+    name: http-port
+    protocol: HTTP
+  - number: 443
+    name: https-port
+    protocol: HTTPS
+  resolution: DNS
+```
+
+Apply the service entry.
+
+```console
+kubectl apply -f `003-traffic-in-out-mesh/start/httpbin-service-entry.yaml
+```
+
+**Run `./scripts/external-service-query.sh`**
+
+```console
+./scripts/external-service-query.sh http://httpbin.org
+```
+
+Now you should be getting a 200 OK response from httpbin. 
+
+```console
+Using multitool-66d9d48d44-s7wcb to query http://httpbin.org
+HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+```
+
+Basically all we have done so far is to add an entry for httpbin to Istio's 
+internal service registry. But we can now apply some of the Istio features to 
+external service. 
+
+**Create a virtual service with a timeout of 3 seconds**
+
+Create a file called `httpbin-virtual-service.yaml` in 
+`003-traffic-in-out-mesh/start/`.
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin-ext
+spec:
+  hosts:
+    - httpbin.org
+  http:
+  - timeout: 3s
+    route:
+      - destination:
+          host: httpbin.org
+        weight: 100
+```
+
+Apply the virtual service.
+
+```console
+kubectl apply -f 003-traffic-in-out-mesh/start/httpbin-virtual-service.yaml
+```
+
+**Run `./scripts/external-service-query.sh http://httpbin.org/delay/5`**
+
+We are going to ask httpbin to delay the response for 5 seconds.
+
+```console
+./scripts/external-service-query.sh http://httpbin.org/delay/5
+```
+
+Since you have injected a timeout of 3 seconds on the virtual service you 
+should be seeing a 504 Gateway timeout.
+
+```console
+Using multitool-66d9d48d44-s7wcb to query http://httpbin.org/delay/5
+HTTP/1.1 504 Gateway Timeout
+HTTP/1.1 504 Gateway Timeout
+HTTP/1.1 504 Gateway Timeout
+```
 
 </details>
 
