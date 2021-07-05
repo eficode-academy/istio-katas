@@ -21,19 +21,15 @@ CRD's.
 ## Exercise 1
 
 The previous exercises used a Kubernetes **NodePort** service to get traffic 
-to the sentences service. E.g. the **ingress** traffic to `sentences` **is 
+to the sentences service. E.g. the **ingress** traffic to `sentences` **was 
 not** flowing through the Istio service mesh. From the `sentences` 
-service to the `age` and `name` services traffic **is** flowing through the 
+service to the `age` and `name` services traffic **was** flowing through the 
 Istio service mesh. We know this to be true because we have applied virtual 
 services and destination rules to the `name` service.
 
 Ingressing traffic directly from the Kubernetes cluster network to a frontend
 service means that Istio features **cannot** be applied on this part of the 
 traffic flow.
-
-In this exercise we are going rectify this by **configuring** ingress traffic 
-to the sentences service through a dedicated ingress gateway(`istio-ingressgateway`) 
-provided by Istio.
 
 <details>
     <summary> More Info </summary>
@@ -65,13 +61,73 @@ istio-ingressgateway-69c77d896c-5vvjg   istio-proxy
 
 </details>
 
+In this exercise we are going rectify this by **configuring** ingress traffic 
+to the sentences service through a dedicated **ingress** 
+gateway(`istio-ingressgateway`) provided by **Istio**.
+
+We are going to do this by defining a gateway.
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: my-app-gateway
+spec:
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "my-app.example.com"
+```
+
+The servers block is where you define the port configurations, protocol 
+and the hosts exposed by the gateway. A host entry is specified as a dnsName 
+and should be specified using the FQDN format. 
+
+The **selectors** above are the labels on the `istio-ingressgateway` POD which 
+is running a standalone Envoy proxy.
+
+The gateway defines and entry point to be exposed in the `istio-ingressgateway`. 
+That is it. Nothing else. This entry point knows nothing about how to route the 
+traffic to the desired destination within the mesh. In order to route the 
+traffic we, of course, use a virtual service. 
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: my-app
+spec:
+  hosts:
+  - "my-app.example.com"
+  gateways:
+  - my-app-gateway
+  http:
+  - route:
+    - destination:
+        host: my-app-frontend
+```
+
+Note how it specifies the hostname and the name of the gateway 
+(in `spec.gateways`). A gateway definition can define an entry for many 
+hostnames and a VirtualService can be bound to multiple gateways, i.e. these 
+are not necessarily related one-to-one.
+
 ### Overview
 
 - Deploy the sentences app
 
-- Create an entry point (Gateway) for the sentences service
+- Create an entry point for the sentences service
 
-- Create a route (Virtual Service) from the entry point to the sentences service
+> :bulb: The FQDN you will use should be 
+> `<YOUR_NAMESPACE>.sentences.istio.eficode.academy`.
+
+- Create a route from the entry point to the sentences service
 
 - Run the loop query script with the `-g` option and FQDN
 
@@ -90,8 +146,7 @@ kubectl apply -f 003-traffic-in-out-mesh/start/name-v1/
 
 **Create an entry point for the sentences service**
 
-To create an entry point in the `istio-ingressgateway` we use a gateway 
-resource. Create a file called `sentences-ingressgateway.yaml` in 
+Create a file called `sentences-ingressgateway.yaml` in 
 `003-traffic-in-out-mesh/start` directory.
 
 It should look like the below yaml. 
@@ -118,16 +173,6 @@ spec:
     - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
 ```
 
-The servers block is where you define the port configurations, protocol 
-and the hosts exposed by the gateway. A host entry is specified as a dnsName 
-and should be specified using the FQDN format. 
-
-The **selectors** above are the labels on the `istio-ingressgateway` POD which 
-is running a standalone Envoy proxy.
-
-> You are **not** creating a gateway object with it's own envoy proxy. You are
-> creating a definition of an entry point for the istio-ingressgateway deployment.
-
 Apply the resource:
 
 ```console
@@ -135,9 +180,6 @@ kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingressgateway.yaml
 ```
 
 **Create a route from the gateway to the sentences service**
-
-In order to actually route traffic from the entry point **to** the sentences 
-service you need to define a virtual service. 
 
 Create a file called `sentences-ingressgateway-vs.yaml` in 
 `003-traffic-in-out-mesh/start` directory.
@@ -158,12 +200,7 @@ spec:
         host: sentences
 ```
 
-> Note how it specifies the hostname and the name of the gateway 
-> (in `spec.gateways`). A gateway definition can define an entry for many 
-> hostnames and a VirtualService can be bound to multiple gateways, i.e. these 
-> are not necessarily related one-to-one.
-
-We also see, that the VirtualService routes all traffic for the given hostname
+The VirtualService routes all traffic for the given hostname
 to the `sentences` service (the two last lines specifying the Kubernetes
 `sentences` service as destination).
 
@@ -224,7 +261,7 @@ Istio features.
 
 - Deploy multitool which will be used to reach httpbin from within the mesh
 
-- Run `.scripts/external-service-query.sh` and observe response
+- Run `./scripts/external-service-query.sh` and observe response
 
 - Define a service entry for httpbin.org
 
