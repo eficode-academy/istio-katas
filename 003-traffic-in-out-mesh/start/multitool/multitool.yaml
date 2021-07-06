@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: multitool
+    version: v1
   name: multitool
 spec:
   selector:
@@ -12,10 +13,13 @@ spec:
     metadata:
       labels:
         app: multitool
+        version: v1
     spec:
       containers:
       - image: praqma/network-multitool
         name: network-multitool
+        ports:
+          - containerPort: 80
       affinity:
         podAntiAffinity: 
           preferredDuringSchedulingIgnoredDuringExecution: 
@@ -35,8 +39,9 @@ metadata:
 spec:
   ports:
   - port: 80
+    name: http-multitool
     protocol: TCP
     targetPort: 80
   selector:
     app: multitool
-
+  type: ClusterIP

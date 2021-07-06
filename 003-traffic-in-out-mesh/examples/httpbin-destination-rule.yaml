@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: egressgateway-for-httpbin
+  name: httpbin-destination-rule
 spec:
   host: istio-egressgateway.istio-system.svc.cluster.local
   subsets:

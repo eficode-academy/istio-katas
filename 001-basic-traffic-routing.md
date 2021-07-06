@@ -40,6 +40,8 @@ metadata:
 spec:
   hosts:
   - my-service
+  gateways:
+  - mesh
   http:
   - route:
     - destination:
@@ -50,9 +52,9 @@ spec:
 The **http** block is an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute) 
 containing the routing rules for HTTP/1.1, HTTP/2 and gRPC traffic. 
 
-You can also use [TCPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TCPRoute) 
-and [TLSRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TLSRoute) 
-blocks for configuring routing.
+> You can also use [TCPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TCPRoute) 
+> and [TLSRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TLSRoute) 
+> blocks for configuring routing.
 
 The **hosts** field is the user addressable destination that the routing rules 
 apply to. This is **virtual** and doesn't actually have to exist. For example 
@@ -61,6 +63,9 @@ You could use it for consolidating routes to all services for an application.
 The **destination** field specifies the **actual** destination of the routing 
 rule and **must** exist. In kubernetes this is a **service** and generally 
 takes a form like `reviews`, `ratings`, etc.
+
+The `mesh` field in the gateways block is a reserved keyword used to imply 
+**all** sidecars in the mesh. 
 
 ### Overview
 

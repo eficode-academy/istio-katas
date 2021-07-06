@@ -4,6 +4,7 @@ metadata:
   name: istio-egressgateway
 spec:
   selector:
+    app: istio-egressgateway
     istio: egressgateway
   servers:
   - port:
@@ -12,4 +13,3 @@ spec:
       protocol: HTTP
     hosts:
     - httpbin.org
-

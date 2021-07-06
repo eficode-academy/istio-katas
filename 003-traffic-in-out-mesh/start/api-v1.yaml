@@ -2,32 +2,30 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: sentences
-    mode: sentence
+    app: api
+    mode: api
     version: v1
-  name: sentences-v1
+  name: api-v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sentences
-      mode: sentence
+      app: api
+      mode: api
       version: v1
   template:
     metadata:
       labels:
-        app: sentences
-        mode: sentence
+        app: api
+        mode: api
         version: v1
     spec:
       containers:
       - image: thedukedk/sentences:v1
         imagePullPolicy: Always
-        name: sentences
+        name: api
         ports:
           - containerPort: 5000
         env:
         - name: "SENTENCE_MODE"
-          value: "sentence"
-        - name: "API_SWITCH"
-          value: "true"
+          value: "api"
