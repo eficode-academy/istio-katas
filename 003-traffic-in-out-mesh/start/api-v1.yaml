@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: api
+    app: sentences
     mode: api
     version: v1
   name: api-v1
@@ -10,13 +10,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api
+      app: sentences
       mode: api
       version: v1
   template:
     metadata:
       labels:
-        app: api
+        app: sentences
         mode: api
         version: v1
     spec:
