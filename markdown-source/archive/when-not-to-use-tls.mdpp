@@ -38,7 +38,7 @@ following environment variable for the `random` service - note the `https://`:
 ```
     spec:
       containers:
-      - image: michaelvl/sentences:v1
+      - image: praqma/istio-sentences:v1
         env:
         - name: "SENTENCE_RANDOM_SVC_URL"
           value: "https://httpbin.org/bytes/1"

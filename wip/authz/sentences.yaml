@@ -39,7 +39,7 @@ spec:
     spec:
       serviceAccount: sentences
       containers:
-      - image: michaelvl/sentences:v1
+      - image: praqma/istio-sentences:v1
         name: sentences
         env:
         - name: "SENTENCE_MODE"
@@ -98,7 +98,7 @@ spec:
     spec:
       serviceAccount: age
       containers:
-      - image: michaelvl/sentences:v1
+      - image: praqma/istio-sentences:v1
         name: age
         env:
         - name: "SENTENCE_MODE"
@@ -157,7 +157,7 @@ spec:
     spec:
       serviceAccount: name
       containers:
-      - image: michaelvl/sentences:v1
+      - image: praqma/istio-sentences:v1
         name: name
         env:
         - name: "SENTENCE_MODE"

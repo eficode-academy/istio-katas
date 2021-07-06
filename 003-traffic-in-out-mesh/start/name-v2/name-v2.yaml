@@ -20,7 +20,7 @@ spec:
         version: v2
     spec:
       containers:
-      - image: michaelvl/sentences:v1
+      - image: praqma/istio-sentences:v1
         name: name
         ports:
           - containerPort: 5000

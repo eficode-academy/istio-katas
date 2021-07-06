@@ -21,7 +21,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: thedukedk/sentences:v1
+      - image: praqma/istio-sentences:v1
         imagePullPolicy: Always
         name: sentences
         ports:

@@ -21,7 +21,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: michaelvl/sentences:v1
+      - image: praqma/istio-sentences:v1
         name: age
         env:
         - name: "SENTENCE_MODE"
