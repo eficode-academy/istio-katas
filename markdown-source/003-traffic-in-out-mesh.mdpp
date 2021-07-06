@@ -278,6 +278,8 @@ metadata:
 spec:
   hosts:
   - external-api.example.com
+  exportTo:
+  - "."
   ports:
   - number: 80
     name: http-port
@@ -290,7 +292,12 @@ spec:
 
 The `hosts` field is used to select matching `hosts` in virtual services 
 and destination rules. The `resolution` field is used to determine how the 
-proxy will resolve IP addresses of the end points.
+proxy will resolve IP addresses of the end points. The `exportTo` field scopes 
+the service entry to the namespace where it is defined.
+
+> :bulb: The `exportTo` field is important the exercises in this course. 
+> **Not** scoping the service entry to your namespace will open the external 
+> service **all** attendees. 
 
 ### Overview
 

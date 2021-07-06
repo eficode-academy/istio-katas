@@ -5,6 +5,8 @@ metadata:
 spec:
   hosts:
   - httpbin.org
+  exportTo:
+  - "."
   ports:
   - number: 80
     name: http-port
