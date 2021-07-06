@@ -636,7 +636,7 @@ spec:
 
 # Summary
 
-In exercise 1 you saw hot to route incoming traffic through an ingress gateway. 
+In exercise 1 you saw how to route incoming traffic through an ingress gateway. 
 This allows you to apply istio traffic management features to the sentences 
 service. For example, you could do a blue/green deploy of two different versions 
 of the sentence service. 
