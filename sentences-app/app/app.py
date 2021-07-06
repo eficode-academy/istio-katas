@@ -8,11 +8,13 @@ import datetime, time
 import logging
 import random
 import re
+import sys
 
 random_app = flask.Flask('random')
 age_app = flask.Flask('age')
 name_app = flask.Flask('name')
 sentence_app = flask.Flask('sentence')
+api_app = flask.Flask('api')
 
 authentication_bug_probability = float(os.getenv('SENTENCE_AUTH_BUG_PROBABILITY', 0.0))
 min_age = int(os.getenv('SENTENCE_AGE_MIN', 0))
@@ -26,8 +28,9 @@ name_svc_url = os.getenv('SENTENCE_NAME_SVC_URL', 'http://name:5000')
 random_svc_url = os.getenv('SENTENCE_RANDOM_SVC_URL', '')
 random_svc_url2 = os.getenv('SENTENCE_RANDOM_SVC_URL2', '')
 random_svc2_probability = float(os.getenv('SENTENCE_RANDOM_SVC2_PROBABILITY', 0.0))
-
 auth_z_bug_value = '12345'
+api_svc_url = os.getenv('SENTENCE_API_SVC_URL', 'http://api:5000')
+api_switch = os.getenv('API_SWITCH', 'false')
 
 fwd_headers = ['x-request-id',
                'x-b3-traceid',
@@ -94,6 +97,15 @@ def get_fwd_headers():
     in_hdrs = flask_lc_headers()
     return { h: v for h,v in in_hdrs.items() if h.lower() in fwd_headers}
 
+@api_app.route('/')
+def call_api():
+    with timed('api') as t:
+        m_requests.labels('api').inc()
+        time.sleep(0.3)
+        response = requests.get("http://httpbin.org")
+        logging.warning("Response was: {}".format(response.status_code))
+    return response.text
+
 @random_app.route('/')
 def get_random():
     with timed('random') as t:
@@ -145,7 +157,9 @@ def get_sentence():
         name = requests.get(name_svc_url, timeout=1, headers=hdrs).text
         age = requests.get(age_svc_url, timeout=1, headers=hdrs).text
         m_requests.labels('sentence').inc()
-    return '{} is {} years'.format(name, age)
+        if api_switch=='true':
+            api = requests.get(api_svc_url, timeout=1, headers=hdrs)
+    return '{} is {} years.'.format(name, age)
 
 if __name__ == '__main__':
 
@@ -159,6 +173,8 @@ if __name__ == '__main__':
 
     if mode=='random':
         random_app.run(host=host, port=port)
+    elif mode=='api':
+        api_app.run(host=host, port=port)
     elif mode=='age':
         age_app.run(host=host, port=port)
     elif mode=='name':
