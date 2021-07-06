@@ -296,9 +296,9 @@ and destination rules. The `resolution` field is used to determine how the
 proxy will resolve IP addresses of the end points. The `exportTo` field scopes 
 the service entry to the namespace where it is defined.
 
-> :bulb: The `exportTo` field is important the exercises in this course. 
+> :bulb: The `exportTo` field is important for the exercises in this course. 
 > **Not** scoping the service entry to your namespace will open the external 
-> service **all** attendees. 
+> service for **all** attendees. 
 
 ### Overview
 
@@ -442,7 +442,7 @@ If you ask httpbin for a delay **under** 3 seconds you should get a 200 OK.
 
 </details>
 
-## Exercise 3 **DISREGARD/SKIP FOR NOW!!!***
+## Exercise 3 <------ **SKIP FOR NOW! WORK IN PROGRESS!**
 
 In a previous exercise you configured Istio to allow access to an external 
 service([httpbin](http://httpbin.org)). You then applied a simple virtual 
@@ -636,7 +636,20 @@ spec:
 
 # Summary
 
-XXX
+In exercise 1 you saw hot to route incoming traffic through an ingress gateway. 
+This allows you to apply istio traffic management features to the sentences 
+service. For example, you could do a blue/green deploy of two different versions 
+of the sentence service. 
+
+In exercise 2 you created a service entry to allow access to an external service. 
+This is a pretty common use case. A lot of service meshes will have a `REGISTRY_ONLY` 
+policy defined for security reasons. So you should be aware of what a service entry does.
+
+The important takeaway from these exercises is this.
+
+**If traffic is not flowing through the mesh, e.g through the envoy sidecars, 
+then you cannot leverage Istio features. Regardless of whether it is ingress or 
+egress traffic.**
 
 # Cleanup
 
