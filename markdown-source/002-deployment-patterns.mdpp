@@ -93,17 +93,19 @@ regular expression syntax
 
 - Deploy the sentences app and two versions of the name service
 
-- Run the `scripts/loop-query.sh`
+- Run the `./scripts/loop-query.sh`
 
 - Observe the traffic flow with Kiali
+
+- Stop the `loop-query.sh`
 
 - Add a match block with **header** condition `x-test` and a match type of **exact** with a value of `use-v2`
 
-- Run the `scripts/loop-query.sh` and pass the header `x-test: use-v2` to it
+- Run the with the header `./scripts/loop-query.sh 'x-test: use-v2'`
 
 - Observe the traffic flow with Kiali
 
-- Run the `scripts/loop-query.sh` **without** passing the `x-test` header
+- Stop `loop-query.sh` and run it **without** passing the `x-test` header
 
 - Observe the traffic flow with Kiali
 
@@ -140,9 +142,14 @@ the precedence of the routes in the name virtual service.
 
 ![Precedence routing](images/kiali-precedence-routing.png)
 
+Stop the `loop-query.sh` script. We don't want to send traffic to the 
+services until after we update the virtual service.
+
 **Update the `name-virtual-service.yaml` with an 
 [HTTPMatchRequest](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPMatchRequest) 
 and apply it**
+
+> :bulb: **Before** updating the virtual services **stop `scripts/loop-query.sh`**.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -183,7 +190,14 @@ match block is used.
 
 ![Header based routing](images/kiali-blue-green.png)
 
+**Stop the `loop-query.sh`**
+
 **Run the `scripts/loop-query.sh` without header**
+
+But what will happen if you don't pass the header? 
+
+**Stop** the `./scripts/loop-query.sh -h 'x-test: use-v2'` and run it without 
+the header.
 
 ```console
 ./scripts/loop-query.sh
