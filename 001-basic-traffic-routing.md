@@ -16,21 +16,25 @@ We are going to deploy all the services for our sentences application
 and a new version `v2` of the **name** service. This will demonstrate normal 
 kubernetes load balancing between services. 
 
-Then we are going to use two Istio custom resource definitions(CRD's) which are
+Then we are going to use two Istio custom resource definitions([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)) which are
 the building blocks of Istio's traffic routing functionality to route traffic to 
 the desired workloads.
 
-These are the VirtualService and the DestinationRule CRD's.
+These are the [VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service/) and the [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/) CRD's.
 
-## Exercise 1
+## VirtualService
 
-With Istio on kubernetes you use virtual services to route traffic to kubernetes 
-services. 
+You use virtual services to route traffic to kubernetes services. 
 
+VirtualService is used in addition to the normal Kubernetes service object.
 A VirtualService defines a set of traffic routing rules to apply when a host 
-is addressed. Each routing rule defines matching criteria for traffic of a 
+is addressed. 
+
+Each routing rule defines matching criteria for traffic of a 
 specific protocol. If the traffic is matched, then it is sent to a named 
 destination **service** or subset/version of it.
+
+An example of a VirtualService is seen below:
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -49,23 +53,30 @@ spec:
     - destination:
         host: my-service-v2
 ```
-The **http** block is an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute) 
+
+- The **http** block is an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute) 
 containing the routing rules for HTTP/1.1, HTTP/2 and gRPC traffic. 
 
 > You can also use [TCPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TCPRoute) 
 > and [TLSRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TLSRoute) 
 > blocks for configuring routing.
 
-The **hosts** field is the user addressable destination that the routing rules 
-apply to. This is **virtual** and doesn't actually have to exist. For example 
+- The **hosts** field is the user addressable destination that the routing rules 
+apply to. It is the address used by a client when attempting to connect to a service.
+This is **virtual** and doesn't actually have to exist. For example 
 You could use it for consolidating routes to all services for an application. 
 
-The **destination** field specifies the **actual** destination of the routing 
+- The **destination** field specifies the **actual** destination of the routing 
 rule and **must** exist. In kubernetes this is a **service** and generally 
 takes a form like `reviews`, `ratings`, etc.
 
-The `mesh` field in the gateways block is a reserved keyword used to imply 
+- The `mesh` field in the gateways block is a reserved keyword used to imply 
 **all** sidecars in the mesh. 
+
+## Exercise
+
+We will look a bit into how VirtualService can control the flow of traffic in your namespace.
+We spin two versions of the name application in the namespace, and use the VirtualService kind to control the traffic.
 
 ### Overview
 
@@ -256,7 +267,9 @@ Traffic should now be routed to the `name-v1` service.
 
 </details>
 
-## Exercise 2
+----
+
+## DestinationRule
 
 Destination rules configure **what** happens to traffic for a destination 
 defined in a virtual service.
@@ -291,6 +304,8 @@ spec:
 
 > Destination rules are applied **after** virtual service routing rules are evaluated, so they apply 
 > to the traffic’s “real” destination.
+
+## Exercise
 
 ### Overview
 
@@ -401,8 +416,6 @@ name service has no versions defined in the selector.
 
 In exercise 1 you learned what a virtual service is and how to route traffic 
 to a destination service in kubernetes with an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute). 
-You can also leverage [TLSRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TLSRoute) 
-and [TCPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#TCPRoute).
 
 There is a lot more virtual services can be do for traffic distribution like 
 match conditions for HTTPRoute on headers, uri, schemes, etc. HTTP redirects and 
