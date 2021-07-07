@@ -54,11 +54,26 @@ It provides four main graph renderings of the mesh telemetry.
 
 ## Exercise 1
 
-- Deploy the sentences application with kubectl. It is located under the `000-setup-introduction/` directory.
+- Deploy the sentences application with kubectl. It is located under the `000-setup-introduction/` directory
 
-- Observe the number of pods running.
+- Observe the number of pods running
 
-- Run the script `scripts/loop-query.sh` to produce traffic and observe the output.
+- Run the script `scripts/loop-query.sh` to produce traffic and observe the output
+
+- Open Kiali find the sentences application view and browse info
+
+> Even though traffic is flowing between the services it doesn't mean they are 
+> part of the service mesh...
+
+- Pull the sentences application down.
+
+- Enable automatic sidecar injection for **your** namespace, e.g. user1, user2, etc, with label `istio-injection=enabled`
+
+- Redeploy sentences application
+
+- Run the `loop-query.sh` script to produce traffic.
+
+- Investigate the different graphs provided by kiali.
 
 - Open Kiali find the sentences application view and browse info, traffic and metrics.
 
@@ -104,39 +119,30 @@ In another shell, run the following to continuously query the sentence service a
 ./scripts/loop-query.sh
 ```
 
-Traffic is now flowing between the services.
+You should see output from the shell that looks like this.
 
-**Browse to kiali and investigate the traffic flow**
+```console
+Using 10.0.36.130:30459, header ''
+Egon is 40 years.
+Ray is 16 years.
+Peter is 38 years.
+Peter is 19 years.
+Ray is 66 years.
+```
+
+Traffic is now flowing between the services. But that **doesn't** mean it is part of 
+the service mesh yet...
+
+**Browse to kiali and investigate the sentence application**
+
+You will see the application, workloads and services are discovered by Kiali. 
+But not much else.
+
+The red icons beside the workloads mean we have no istio sidecars deployed.
+Browse the different tabs to see that there is no traffic nor metrics being captured. 
+As there are no sidecars the traffic is not part of the istio service mesh.
 
 ![Sentences with no sidecars](images/kiali-no-sidecars.png)
-
-> :bulb:
-> The red icons beside the workloads mean we have no istio sidecars deployed.
-> Browse the different tabs to see that there is no traffic nor metrics being captured. 
-> As there are no sidecars the traffic is not part of the istio service mesh.
-> If there we sidecars you would see two containers per pod when you run `kubectl get pods`.
-
-</details>
-
-## Exercise 2
-
-- Pull the sentences application down.
-
-- Enable automtatic sidecar injection for **your** namespace, e.g. user1, user2, etc, with label `istio-injection=enabled`.
-
-- Redeploy sentences application.
-
-- Observe that an envoy sidecar proxy is deployed in the pod.
- 
-- Run the `loop-query.sh` script to produce traffic.
-
-- Open Kiali find the sentences application view and browse info, traffic and metrics.
-
-- Investigate the different graphs provided by kiali.
-
-### Step by Step
-<details>
-    <summary> More Details </summary>
 
 **Pull sentences application down**
 
@@ -209,15 +215,14 @@ Browse the different tabs to see the traffic and metrics being captured.
 
 **Investigate the different graphs**
 
-Browse to the graphs and investigate the **service**, **workload**, **app** 
-and **versioned app** graphs. 
+Browse to the **graphs** and investigate the service, workload, app 
+and versioned app graphs from the drop down at the top.
 
 > :bulb: Use the display options to modify what is shown in the 
 > different graphs. Showing request distribution is something
 > we will be using often.
 
 ![Graph Details](images/kiali-details.png)
-
 
 </details>
 
