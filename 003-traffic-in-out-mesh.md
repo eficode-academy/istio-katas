@@ -143,14 +143,14 @@ are not necessarily related one-to-one.
 <details>
     <summary> More Details </summary>
 
-**Deploy the sentences app**
+- **Deploy the sentences app**
 
 ```console
 kubectl apply -f 003-traffic-in-out-mesh/start/
 kubectl apply -f 003-traffic-in-out-mesh/start/name-v1/
 ```
 
-**Create an entry point for the sentences service**
+- **Create an entry point for the sentences service**
 
 Create a file called `sentences-ingressgateway.yaml` in 
 `003-traffic-in-out-mesh/start` directory.
@@ -185,7 +185,7 @@ Apply the resource:
 kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingressgateway.yaml
 ```
 
-**Create a route from the gateway to the sentences service**
+- **Create a route from the gateway to the sentences service**
 
 Create a file called `sentences-ingressgateway-vs.yaml` in 
 `003-traffic-in-out-mesh/start` directory.
@@ -216,7 +216,7 @@ Apply the resource:
 kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingressgateway-vs.yaml
 ```
 
-**Run the loop query script with the `hosts` entry**
+- **Run the loop query script with the `hosts` entry**
 
 The sentence service we deployed in the first step has a type of `ClusterIP` 
 now. In order to reach it we will need to go through the `istio-ingressgateway`. 
@@ -227,7 +227,7 @@ Run the `loop-query.sh` script with the option `-g` and pass it the `hosts` entr
 ./scripts/loop-query.sh -g <YOUR_NAMESPACE>.sentences.istio.eficode.academy
 ```
 
-**Observe the traffic flow with Kiali**
+- **Observe the traffic flow with Kiali**
 
 Now we can see that the traffic to the `sentences` service is no longer 
 **unknown** to the service mesh. 
@@ -318,7 +318,7 @@ the service entry to the namespace where it is defined.
 <details>
     <summary> More Details </summary>
 
-**Deploy multitool**
+- **Deploy multitool**
 
 We want to generate traffic **through** the service mesh. In order to do that 
 we will deploy an image we built for container/network testing and 
@@ -345,7 +345,7 @@ HTTP/1.1 502 Bad Gateway
 HTTP/1.1 502 Bad Gateway
 ```
 
-**Define a service entry for httpbin.org**
+- **Define a service entry for httpbin.org**
 
 Create a service entry called `httpbin-service-entry.yaml`in 
 `003-traffic-in-out-mesh/start/`.
@@ -374,7 +374,7 @@ Apply the service entry.
 kubectl apply -f 003-traffic-in-out-mesh/start/httpbin-service-entry.yaml
 ```
 
-**Run `./scripts/external-service-query.sh`**
+- **Run `./scripts/external-service-query.sh`**
 
 ```console
 ./scripts/external-service-query.sh http://httpbin.org
@@ -393,7 +393,7 @@ Basically all we have done so far is to add an entry for httpbin to Istio's
 internal service registry. But we can now apply some of the Istio features to 
 external service. 
 
-**Create a virtual service with a timeout of 3 seconds**
+- **Create a virtual service with a timeout of 3 seconds**
 
 Create a file called `httpbin-virtual-service.yaml` in 
 `003-traffic-in-out-mesh/start/`.
@@ -420,7 +420,7 @@ Apply the virtual service.
 kubectl apply -f 003-traffic-in-out-mesh/start/httpbin-virtual-service.yaml
 ```
 
-**Run `./scripts/external-service-query.sh http://httpbin.org/delay/5`**
+- **Run `./scripts/external-service-query.sh http://httpbin.org/delay/5`**
 
 We are going to ask httpbin to delay the response for 5 seconds.
 
