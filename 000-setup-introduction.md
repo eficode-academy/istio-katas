@@ -15,6 +15,14 @@
 This exercise introduces the sentences application which you will be using during the course.
 It also introduces you to the Kiali management console for the Istio service mesh.
 
+In the beginning of the exercise you will deploy the sentences application 
+and generate traffic between the services. But there will be no Envoy sidecars 
+injected and Kiali will not be able to observe the traffic.
+
+Later you will enable automatic sidecar injection for your namespace and 
+redeploy the sentences application. This will allow Kiali to observe the 
+traffic.
+
 <details>
     <summary> More Info </summary>
 
