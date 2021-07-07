@@ -29,4 +29,5 @@ spec:
         env:
         - name: "SENTENCE_MODE"
           value: "sentence"
-
+        - name: "API_SWITCH"
+          value: "true"
