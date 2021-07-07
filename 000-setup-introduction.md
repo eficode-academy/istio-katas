@@ -92,7 +92,7 @@ It provides four main graph renderings of the mesh telemetry.
 <details>
     <summary> More Details </summary>
 
-**Deploy version 1 of the sentences application**
+- **Deploy version 1 of the sentences application**
 
 Open a terminal in the root of the git repository (istio-katas) and use `kubectl` to deploy `v1` of the application.
 
@@ -100,7 +100,7 @@ Open a terminal in the root of the git repository (istio-katas) and use `kubectl
 kubectl apply -f 000-setup-introduction/
 ```
 
-**Observe the number of services and pods running**
+- **Observe the number of services and pods running**
 
 ```console
 kubectl get pod,svc
@@ -120,7 +120,7 @@ service/name        ClusterIP   172.20.108.51    <none>        5000/TCP         
 service/sentences   NodePort    172.20.168.218   <none>        5000:30326/TCP   2s
 ```
 
-**Run the `loop-query.sh` script** 
+- **Run the `loop-query.sh` script** 
 
 In another shell, run the following to continuously query the sentence service and observe the output:
 
@@ -142,7 +142,7 @@ Ray is 66 years.
 Traffic is now flowing between the services. But that **doesn't** mean it is part of 
 the service mesh yet...
 
-**Browse to kiali and investigate the sentence application**
+- **Browse to kiali and investigate the sentence application**
 
 You will see the application, workloads and services are discovered by Kiali. 
 But not much else.
@@ -153,25 +153,25 @@ As there are no sidecars the traffic is not part of the istio service mesh.
 
 ![Sentences with no sidecars](images/kiali-no-sidecars.png)
 
-**Pull sentences application down**
+- **Pull sentences application down**
 
 ```console
 kubectl delete -f 000-setup-introduction/
 ```
 
-**Enable automatic sidecar injection**
+- **Enable automatic sidecar injection**
 
 ```console
 kubectl label namespace <USERNAME HERE> istio-injection=enabled
 ```
 
-**Redeploy sentences application**
+- **Redeploy sentences application**
 
 ```console
 kubectl apply -f 000-setup-introduction/
 ```
 
-**Observe the number of services and pods running**
+- **Observe the number of services and pods running**
 
 ```console
 kubectl get pod,svc
@@ -191,7 +191,7 @@ service/name        ClusterIP   172.20.213.23    <none>        5000/TCP         
 service/sentences   NodePort    172.20.106.197   <none>        5000:32092/TCP   4m4s
 ```
 
-**Observe envoy proxy**
+- **Observe envoy proxy**
 
 ```console
 kubectl get pods -o=custom-columns=NAME:.metadata.name,CONTAINERS:.spec.containers[*].name
@@ -206,13 +206,13 @@ name-v1-587b56cdf4-6tnhs        name,istio-proxy
 sentences-v1-6ccc9fdcc5-fzt2g   sentences,istio-proxy
 ```
 
-**Run the loop-query.sh script**
+- **Run the loop-query.sh script**
 
 ```console
 ./scripts/loop-query.sh
 ```
 
-**Browse kiali and investigate the traffic flow**
+- **Browse kiali and investigate the traffic flow**
 
 Now you can see there are sidecars and the traffic is part of the mesh. 
 Browse the different tabs to see the traffic and metrics being captured.
@@ -222,7 +222,7 @@ Browse the different tabs to see the traffic and metrics being captured.
 
 ![Sentences with sidecars](images/kiali-with-sidecars.png)
 
-**Investigate the different graphs**
+- **Investigate the different graphs**
 
 Browse to the **graphs** and investigate the service, workload, app 
 and versioned app graphs from the drop down at the top.

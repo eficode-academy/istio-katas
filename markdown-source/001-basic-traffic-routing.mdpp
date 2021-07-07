@@ -85,7 +85,7 @@ The `mesh` field in the gateways block is a reserved keyword used to imply
 <details>
     <summary> More Details </summary>
 
-**Deploy sentences app and 2 versions of name services**
+- **Deploy sentences app and 2 versions of name services**
 
 ```console
 kubectl apply -f 001-basic-traffic-routing/start/
@@ -93,13 +93,13 @@ kubectl apply -f 001-basic-traffic-routing/start/name-v1
 kubectl apply -f 001-basic-traffic-routing/start/name-v2
 ```
 
-**Run loop-query.sh**
+- **Run loop-query.sh**
 
 ```console
 ./scripts/loop-query.sh
 ```
 
-**Observe the traffic in Kiali**
+- **Observe the traffic in Kiali**
 
 ![50/50 split of traffic](images/kiali-blue-green-anno.png)
 
@@ -116,7 +116,7 @@ So why is this happening?
 > :bulb: Take a look at the label selector for the name service.
 > It doesn't specify a version...
 
-**Route ALL traffic to version 1 of the name service** 
+- **Route ALL traffic to version 1 of the name service** 
 
 Create a new service called `name-svc-v1.yaml` in `001-basic-traffic-routing/start/` 
 and apply it. Make sure it has a version (`v1`) in the label selector.
@@ -182,7 +182,7 @@ drop down.
 
 ![Basic virtual service route](images/basic-route-vs.png)
 
-**Observe route precedence**
+- **Observe route precedence**
 
 Create a new service called `name-svc-v2.yaml` in `001-basic-traffic-routing/start/` 
 and apply it. Make sure it has a version (`v2`) in the label selector.
@@ -307,7 +307,7 @@ spec:
 <details>
     <summary> More Details </summary>
 
-**Create a destination rule and apply it**
+- **Create a destination rule and apply it**
 
 Create a destination rule called `name-destination-rule.yaml` in 
 `001-basic-traffic-routing/start/` and apply it.
@@ -339,7 +339,7 @@ service has not yet been updated to use the subsets.
 > :bulb: To avoid 503 errors **always** apply destination rules and changes to 
 > destination rules **prior** to changing virtual services.
 
-**Update the virtual service**
+- **Update the virtual service**
 
 Update the virtual service `001-basic-traffic-routing/start/name-virtual-service.yaml` 
 you created in exercise 1 and apply it.
@@ -376,14 +376,14 @@ the traffic is going to be directed to a workload based on version label.
 kubectl apply -f 001-basic-traffic-routing/start/name-virtual-service.yaml
 ```
 
-**Remove the un-needed services**
+- **Remove the un-needed services**
 
 ```console
 kubectl delete -f 001-basic-traffic-routing/start/name-svc-v1.yaml
 kubectl delete -f 001-basic-traffic-routing/start/name-svc-v2.yaml
 ```
 
-**Observe the traffic in Kiali**
+- **Observe the traffic in Kiali**
 
 You can see in Kiali that the virtual service combined with the destination 
 rule subsets routes traffic to the name workload labeled `v1` even though the 
