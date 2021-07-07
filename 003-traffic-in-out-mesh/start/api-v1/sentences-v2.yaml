@@ -4,21 +4,21 @@ metadata:
   labels:
     app: sentences
     mode: sentence
-    version: v1
-  name: sentences-v1
+    version: v2
+  name: sentences-v2
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: sentences
       mode: sentence
-      version: v1
+      version: v2
   template:
     metadata:
       labels:
         app: sentences
         mode: sentence
-        version: v1
+        version: v2
     spec:
       containers:
       - image: praqma/istio-sentences:v1
