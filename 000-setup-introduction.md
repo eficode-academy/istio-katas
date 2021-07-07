@@ -24,7 +24,7 @@ redeploy the sentences application. This will allow Kiali to observe the
 traffic.
 
 <details>
-    <summary> More Info </summary>
+    <summary> :bulb: More Info on the micro service application and Kiali </summary>
 
 ### Sentences application
 
@@ -39,6 +39,8 @@ return name + ' is ' + age + ' years'
 The application is made up of three services, one which can be queried for the
 random age, one which can be queried for a random name and a frontend sentence service, which
 calls the two other through HTTP requests and formats the final sentences.
+
+The source code for the application can be seen in the  [sentences-app/](sentences-app/) folder.
 
 ### Kiali
 
@@ -59,9 +61,19 @@ It provides four main graph renderings of the mesh telemetry.
 
 * The **service** graph provides a high-level view, which aggregates all traffic for defined services.
 
+![Kiali overview](images/kiali-overview.png)
+
+We are using Kiali to visualize the work done in Istio.
+
 </details>
 
-## Exercise 1
+## Exercise: getting familiar with Istio and Kiali.
+
+In this exercise, we are first deploying our application with vanilla Kubernetes.
+We then visit the Kiali website to see that without a sidecar, our service will not be included in istio.
+Final thing for the exercise is to enable Istio sidecar and see the traffic flowing in Kiali.
+
+### overview
 
 - Deploy the sentences application with kubectl. It is located under the `000-setup-introduction/` directory
 
@@ -71,7 +83,7 @@ It provides four main graph renderings of the mesh telemetry.
 
 - Open Kiali find the sentences application view and browse info
 
-> Even though traffic is flowing between the services it doesn't mean they are 
+> :bulb: Even though traffic is flowing between the services it doesn't mean they are 
 > part of the service mesh...
 
 - Pull the sentences application down.
@@ -94,7 +106,7 @@ It provides four main graph renderings of the mesh telemetry.
 
 - **Deploy version 1 of the sentences application**
 
-Open a terminal in the root of the git repository (istio-katas) and use `kubectl` to deploy `v1` of the application.
+- Open a terminal in the root of the git repository (istio-katas) and use `kubectl` to deploy `v1` of the application.
 
 ```console
 kubectl apply -f 000-setup-introduction/
@@ -122,7 +134,7 @@ service/sentences   NodePort    172.20.168.218   <none>        5000:30326/TCP   
 
 - **Run the `loop-query.sh` script** 
 
-In another shell, run the following to continuously query the sentence service and observe the output:
+- In another shell, run the following to continuously query the sentence service and observe the output:
 
 ```console
 ./scripts/loop-query.sh
@@ -215,7 +227,8 @@ sentences-v1-6ccc9fdcc5-fzt2g   sentences,istio-proxy
 - **Browse kiali and investigate the traffic flow**
 
 Now you can see there are sidecars and the traffic is part of the mesh. 
-Browse the different tabs to see the traffic and metrics being captured.
+
+- Browse the different tabs to see the traffic and metrics being captured.
 
 > :bulb: It may take a minute before Kiali starts showing the traffic and 
 > metrics. You can change the refresh rate in the top right hand corner.
@@ -224,7 +237,7 @@ Browse the different tabs to see the traffic and metrics being captured.
 
 - **Investigate the different graphs**
 
-Browse to the **graphs** and investigate the service, workload, app 
+- Browse to the **graphs** and investigate the service, workload, app 
 and versioned app graphs from the drop down at the top.
 
 > :bulb: Use the display options to modify what is shown in the 
@@ -237,14 +250,14 @@ and versioned app graphs from the drop down at the top.
 
 # Summary
 
-Exercise 1 introduced you to the sentences application and Kiali. There is not 
+This Exercise introduced you to the sentences application and Kiali. There is not 
 enough time in the course to go into much more details around Kiali. But it has 
 more features like the Istio Wizards feature which lets you create and delete 
 istio configuration on the fly. It can do validation on the most common Istio 
 objects and more. See the [documentation](https://kiali.io/documentation/latest/features/) 
 for a more complete overview.
 
-Exercise 2 uses automatic sidecar injection and this is what we will be using 
+Thereafter we enabled automatic sidecar injection and this is what we will be using 
 for the rest of the course. Most of the time this is what you want to do instead 
 manually injecting sidecars.
 
