@@ -8,7 +8,12 @@ spec:
   gateways:
   - mesh
   http:
-  - route:
+  - fault:
+      delay:
+        percent: 100
+        fixedDelay: 0.5s
+    route:
     - destination:
         host: name
         subset: name-v1
+ 

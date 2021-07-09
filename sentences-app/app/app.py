@@ -100,9 +100,10 @@ def get_fwd_headers():
 @api_app.route('/')
 def call_api():
     with timed('api') as t:
+        hdrs = get_fwd_headers()
         m_requests.labels('api').inc()
-        time.sleep(0.3)
-        response = requests.get("http://httpbin.org")
+        do_random_delay()
+        response = requests.get("http://httpbin.org",headers=hdrs)
         logging.warning("Response was: {}".format(response.status_code))
     return response.text
 
@@ -158,7 +159,7 @@ def get_sentence():
         age = requests.get(age_svc_url, timeout=1, headers=hdrs).text
         m_requests.labels('sentence').inc()
         if api_switch=='true':
-            api = requests.get(api_svc_url, timeout=1, headers=hdrs)
+            api = requests.get(api_svc_url, timeout=2, headers=hdrs).text
     return '{} is {} years.'.format(name, age)
 
 if __name__ == '__main__':

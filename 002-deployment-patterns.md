@@ -333,8 +333,6 @@ workload of `my-service` will receive 10% of **all** traffic.
 
 - Add `name-v3` subset in `name-destination-rule.yaml`
 
-- Deploy `name-v3` of the name service
-
 - Adjust the `match` field header in `name-virtual-service.yaml` to `use-v3`
 
 - Run the `scripts/loop-query.sh`
@@ -376,12 +374,6 @@ kubectl apply -f 002-deployment-patterns/start/name-v3/
 
 ```console
 kubectl apply -f 002-deployment-patterns/start/name-destination-rule.yaml
-```
-
-- **Deploy `name-v3` of the name service**
-
-```console
-kubectl apply -f 002-deployment-patterns/start/name-v3/
 ```
 
 - **Adjust the `match` field in `name-virtual-service.yaml` to `use-v3`**

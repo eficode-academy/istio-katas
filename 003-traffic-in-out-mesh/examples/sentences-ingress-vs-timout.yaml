@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: sentences
+spec:
+  hosts:
+  - "user1.sentences.istio.eficode.academy"
+  gateways:
+  - sentences
+  http:
+  - route:
+    - destination:
+        host: sentences
+    timeout: 1s

@@ -7,12 +7,10 @@ spec:
   - httpbin.org
   exportTo:
   - "."
+  location: MESH_EXTERNAL
   ports:
   - number: 80
     name: http-port
     protocol: HTTP
-  - number: 443
-    name: https-port
-    protocol: HTTPS
   resolution: DNS
   

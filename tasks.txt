@@ -1,3 +1,4 @@
-- Rebuild the custom sentence app and push it to praqma org on docker hub and change in all deployments.
+- Add a step showing how to disable istio-injection if the namespace is labeled.
+- Make sentence service more robust if api service doesn't exist.
 - Create an issue on the new sentence app implementation to support istio needs.
 - Add Grafana addon deployment and gateway
