@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin-route
+  namespace: istio-system
+spec:
+  hosts:
+  - httpbin.org
+  exportTo:
+  - "."
+  gateways:
+  - mesh
+  - httpbin-exit-gateway
+  http:
+  - match:
+    - port: 80
+      gateways:
+      - mesh
+    route:
+    - destination:
+        host: istio-egressgateway.istio-system.svc.cluster.local
+  - match:
+    - port: 80
+      gateways:
+      - httpbin-exit-gateway
+    route:
+    - destination:
+        host: httpbin.org
