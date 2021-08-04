@@ -37,7 +37,7 @@ destination **service** or subset/version of it.
 An example of a VirtualService is seen below:
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: my-service-route
@@ -162,7 +162,7 @@ Create a virtual service called `name-virtual-service.yaml` in
 `001-basic-traffic-routing/start/` and apply it.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route
@@ -228,7 +228,7 @@ Add a destination to the new service in the `name-virtual-service.yaml` you
 created before. But place it **before** the `name-v1` service and apply it.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route
@@ -284,7 +284,7 @@ For example, grouping all of a service instances **versions**. You can then
 use these **subsets** in a virtual service to control traffic to different versions.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: my-destination-rule
@@ -329,7 +329,7 @@ Create a destination rule called `name-destination-rule.yaml` in
 `001-basic-traffic-routing/start/` and apply it.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: name-destination-rule
@@ -361,7 +361,7 @@ Update the virtual service `001-basic-traffic-routing/start/name-virtual-service
 you created in exercise 1 and apply it.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route

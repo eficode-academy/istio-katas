@@ -26,7 +26,7 @@ allows the **client** to actively select version `v2` of the **name** service
 it will hit.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: my-service-route
@@ -158,7 +158,7 @@ and apply it**
 > until we have updated the virtual service.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route
@@ -219,7 +219,7 @@ To fix the problem we need to update the `name-virtual-service.yaml`file and
 give it a **default** route.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route
@@ -304,7 +304,7 @@ reduce risk by gradually introducing a new release.
 > design or whether features actually give the intended value.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: my-service-route
@@ -379,7 +379,7 @@ kubectl apply -f 002-deployment-patterns/start/name-destination-rule.yaml
 - **Adjust the `match` field in `name-virtual-service.yaml` to `use-v3`**
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route
@@ -436,7 +436,7 @@ which will direct traffic to `v1` workload.
 - **Add the `weight` fields in `name-virtual-service.yaml`**
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route
@@ -508,7 +508,7 @@ Stop sending traffic to `v3` with `./scripts/loop-query.sh.
 Remove the `name-v1` subset from `name-destination-rule.yaml` file and apply it.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: name-destination-rule
@@ -531,7 +531,7 @@ Remove the `name-v1` destination from `name-virtual-service.yaml` file, adjust
 the weight field to 100% on `name-v2` destination and apply it.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route
@@ -613,7 +613,7 @@ an order.
 </details>
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: my-service-route
@@ -674,7 +674,7 @@ routed to `v2`.
 - **Remove the `match` block from `name-virtual-service.yaml`**
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route
@@ -694,7 +694,7 @@ spec:
 - **Add the `mirror` blocks in `name-virtual-service.yaml`**
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: name-route

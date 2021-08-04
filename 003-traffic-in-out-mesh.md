@@ -12,13 +12,27 @@
 
 ## Introduction
 
-These exercises will introduce you to Istio concepts and CRD's for configuring 
-traffic **into** the service mesh (Ingress) and out of the service mesh (Egress). 
+These exercises will introduce you to Istio concepts 
+and ([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)) 
+for configuring traffic **into** the service mesh (Ingress) and **out** of the 
+service mesh (Egress). 
 
 You will use two Istio CRD's for this. The **Gateway** and the **ServiceEntry** 
 CRD's. 
 
-## Exercise 1
+In the first exercise you will deploy the sentences application and configure 
+traffic **into** the mesh and on to the sentences service **through** an 
+ingress gateway. You will also apply some Istio traffic management to 
+this route.
+
+In the next exercise you will deploy a **new** version (`v2`) of the sentences 
+application. This version talks to a **new** api service which communicates 
+to an api **outside** of the cluster, e.g. an external service.
+
+In the final exercise you will route the traffic from the **new** api service 
+through a common Egress gateway.
+
+## Exercise: Ingress Traffic
 
 The previous exercises used a Kubernetes **NodePort** service to get traffic 
 to the sentences service. E.g. the **ingress** traffic to `sentences` **was 
@@ -41,7 +55,7 @@ load balancer, etc.
 
 An Istio **Ingress** gateway in a Kubernetes cluster consists, at a minimum, of a 
 Deployment and a Service. Istio ingress gateways are based on the Envoy and have a 
-standalone Envoy proxy. 
+**standalone** Envoy proxy. 
 
 Inspecting our course environment would show something like:
 
@@ -272,7 +286,7 @@ When you create a service entry it is added to Istio's internal service
 registry.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
   name: external-api
@@ -351,7 +365,7 @@ Create a service entry called `httpbin-service-entry.yaml`in
 `003-traffic-in-out-mesh/start/`.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
   name: httpbin
@@ -399,7 +413,7 @@ Create a file called `httpbin-virtual-service.yaml` in
 `003-traffic-in-out-mesh/start/`.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: httpbin-ext
@@ -471,7 +485,7 @@ through the dedicated **egress** gateway provided by Istio `istio-egressgateway`
 You are going to do this by defining a gateway. 
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: myapp-egressgateway
@@ -498,7 +512,7 @@ is routed to it. In order to route the traffic we, of course, use a virtual
 service. 
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: external-api
@@ -560,7 +574,7 @@ from the egress gateway to the external service.
 **Create an exit point for httpbin traffic**
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: istio-egressgateway
@@ -597,7 +611,7 @@ kubectl apply -f 003-traffic-in-out-mesh/start/multitool/
 **Modify the `httpbin-virtual-service.yaml` from previous exercise**
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: httpbin-egress
