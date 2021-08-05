@@ -4,6 +4,8 @@ metadata:
   name: name-destination-rule
 spec:
   host: name
+  exportTo:
+  - "."
   subsets:
   - name: name-v2
     labels:

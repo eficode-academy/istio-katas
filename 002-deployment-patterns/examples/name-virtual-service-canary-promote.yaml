@@ -5,6 +5,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
