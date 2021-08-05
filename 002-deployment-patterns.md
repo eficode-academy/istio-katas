@@ -148,8 +148,7 @@ the precedence of the routes in the name virtual service.
 
 ![Precedence routing](images/kiali-precedence-routing.png)
 
-
-- **Update the `name-virtual-service.yaml` with an 
+- **Update the `name-vs.yaml` file with an 
 [HTTPMatchRequest](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPMatchRequest) 
 and apply it**
 
@@ -179,7 +178,7 @@ spec:
 ```
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 ```
 
 - **Run loop-query.sh with the `x-test` header**
@@ -215,7 +214,7 @@ match does not evaluate to true.
 
 - **Update the virtual service to fix the problem**
 
-To fix the problem we need to update the `name-virtual-service.yaml`file and 
+To fix the problem we need to update the `name-vs.yaml`file and 
 give it a **default** route.
 
 ```yaml
@@ -251,7 +250,7 @@ Apply the changes and run the `scripts/loop-query.sh` without header if not
 already running.
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 ```
 
 ```console
@@ -331,15 +330,15 @@ workload of `my-service` will receive 10% of **all** traffic.
 
 - Deploy the sentences app and version `name-v3` of the name service
 
-- Add `name-v3` subset in `name-destination-rule.yaml`
+- Add `name-v3` subset in `name-dr.yaml`
 
-- Adjust the `match` field header in `name-virtual-service.yaml` to `use-v3`
+- Adjust the `match` field header in `name-vs.yaml` to `use-v3`
 
 - Run the `scripts/loop-query.sh`
 
 - Observe the traffic flow with Kiali
 
-- Add the `weight` fields in in `name-virtual-service.yaml` to distribute traffic between `name-v1` and `name-v2`
+- Add the `weight` fields in in `name-vs.yaml` to distribute traffic between `name-v1` and `name-v2`
 
 - Observe the traffic flow with Kiali
 
@@ -364,7 +363,7 @@ kubectl apply -f 002-deployment-patterns/start/name-v2/
 kubectl apply -f 002-deployment-patterns/start/name-v3/
 ```
 
-- **Add `name-v3` in `name-destination-rule.yaml`**
+- **Add `name-v3` in `name-dr.yaml`**
 
 ```yaml
   - name: name-v3
@@ -373,10 +372,10 @@ kubectl apply -f 002-deployment-patterns/start/name-v3/
 ```
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-destination-rule.yaml
+kubectl apply -f 002-deployment-patterns/start/name-dr.yaml
 ```
 
-- **Adjust the `match` field in `name-virtual-service.yaml` to `use-v3`**
+- **Adjust the `match` field in `name-vs.yaml` to `use-v3`**
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -411,7 +410,7 @@ spec:
 > match is true. The other two routes are evaluated top down.
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 ```
 
 - **Run `scripts/loop-query.sh`**
@@ -433,7 +432,7 @@ which will direct traffic to `v1` workload.
 
 ![Precedence routing](images/kiali-precedence-routing.png)
 
-- **Add the `weight` fields in `name-virtual-service.yaml`**
+- **Add the `weight` fields in `name-vs.yaml`**
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -469,7 +468,7 @@ spec:
 > be under the same route block.
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 ```
 
 - **Observe the traffic flow with Kiali**
@@ -505,7 +504,7 @@ percentage of the **overall** traffic change to look more like the 90/10 weight.
 
 Stop sending traffic to `v3` with `./scripts/loop-query.sh.
 
-Remove the `name-v1` subset from `name-destination-rule.yaml` file and apply it.
+Remove the `name-v1` subset from `name-dr.yaml` file and apply it.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -524,10 +523,10 @@ spec:
 ```
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-destination-rule.yaml
+kubectl apply -f 002-deployment-patterns/start/name-dr.yaml
 ```
 
-Remove the `name-v1` destination from `name-virtual-service.yaml` file, adjust 
+Remove the `name-v1` destination from `name-vs.yaml` file, adjust 
 the weight field to 100% on `name-v2` destination and apply it.
 
 ```yaml
@@ -557,11 +556,11 @@ spec:
 ```
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 ```
 
 > :bulb: You could simply adjust the weight values in the 
-> `name-virtual-service.yaml` file. But for the next exercise it will cause 
+> `name-vs.yaml` file. But for the next exercise it will cause 
 > less confusion if the subsets and destinations are removed.
 
 Finally, delete the `name-v1` workload. 
@@ -655,11 +654,11 @@ routed to `v2`.
 
 ### Overview
 
-- Remove the `match` block from `name-virtual-service.yaml`
+- Remove the `match` block from `name-vs.yaml`
 
-- Add the `mirror` blocks to `name-virtual-service.yaml`
+- Add the `mirror` blocks to `name-vs.yaml`
 
-- Apply the changes to `name-virtual-service.yaml`
+- Apply the changes to `name-vs.yaml`
 
 - Run `scripts/loop-query.sh`
 
@@ -671,7 +670,7 @@ routed to `v2`.
 <details>
     <summary> More Details </summary>
 
-- **Remove the `match` block from `name-virtual-service.yaml`**
+- **Remove the `match` block from `name-vs.yaml`**
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -691,7 +690,7 @@ spec:
       weight: 100
 ```
 
-- **Add the `mirror` blocks in `name-virtual-service.yaml`**
+- **Add the `mirror` blocks in `name-vs.yaml`**
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -716,10 +715,10 @@ spec:
       value: 100.0
 ```
 
-- **Apply the changes to `name-virtual-service.yaml`**
+- **Apply the changes to `name-vs.yaml`**
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-virtual-service.yaml
+kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 ```
 
 - **Run `scripts/loop-query.sh`**
