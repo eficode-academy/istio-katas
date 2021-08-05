@@ -4,6 +4,7 @@ metadata:
   labels:
     app: sentences
     mode: name
+    version: v2
   name: name-v2
 spec:
   replicas: 1
