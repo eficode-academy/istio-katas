@@ -166,7 +166,7 @@ kubectl apply -f 001-basic-traffic-routing/start/name-v2
 
 - **Observe the traffic in Kiali**
 
-Go to Graph menu and select the **Versioned app graph** from the drop 
+Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu.
 
 ![50/50 split of traffic](images/kiali-blue-green-anno.png)
