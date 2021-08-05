@@ -331,7 +331,7 @@ to a destination service in kubernetes with an [HTTPRoute](https://istio.io/late
 
 > Kubernetes only supports traffic distribution based on instance scaling. 
 
-There is a lot more virtual services can be do for traffic distribution like 
+There is a lot more virtual services can do for traffic distribution like 
 match conditions for HTTPRoute on headers, uri, schemes, etc. HTTP redirects, 
 rewrites and more. We will looking at some of these in following exercises.
 
