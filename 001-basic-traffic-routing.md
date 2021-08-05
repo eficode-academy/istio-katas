@@ -196,6 +196,8 @@ metadata:
   name: name-destination-rule
 spec:
   host: name
+  exportTo:
+  - "."
   subsets:
   - name: name-v1
     labels:
@@ -230,6 +232,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
@@ -254,8 +258,8 @@ from the drop down menu and observe the traffic flow. It may take a minute
 before fully complete but you should see the traffic being routed to the 
 `name-v1` **service**.
 
-> :bulb: Make sure to select `Idle Edges` and `Service Nodes` in the Display 
-> drop down.
+> :bulb: Make sure to select `Idle Edges`, `Service Nodes` and 
+> `Virtual Services` in the Display drop down.
 
 ![Basic virtual service route](images/basic-route-vs.png)
 
@@ -276,13 +280,19 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
+  gateways:
+  - mesh
   http:
   - route:
     - destination:
-        host: name-v2
+        host: name
+        subset: name-v2
   - route:
     - destination:
-        host: name-v1
+        host: name
+        subset: name-v1
 ```
 
 ```console
@@ -308,10 +318,10 @@ kubectl apply -f 001-basic-traffic-routing/start/name-vs.yaml
 ```
 
 Go to **Graph** menu item in Kiali and select the **Versioned app graph** 
-from the drop down menu and observe the traffic flow.Traffic should now 
+from the drop down menu and observe the traffic flow.Traffic should once more  
 be routed to the `name-v1` service.
 
-![Virtual service and destination rule](images/kiali-vs-dr.png)
+![Virtual service and destination rule](images/basic-route-vs.png)
 
 </details>
 
@@ -323,7 +333,7 @@ to a destination service in kubernetes with an [HTTPRoute](https://istio.io/late
 > Kubernetes only supports traffic distribution based on instance scaling. 
 
 There is a lot more virtual services can be do for traffic distribution like 
-match conditions for HTTPRoute on headers, uri, schemes, etc. HTTP redirects,  
+match conditions for HTTPRoute on headers, uri, schemes, etc. HTTP redirects, 
 rewrites and more. We will looking at some of these in following exercises.
 
 See the [documentation](https://istio.io/latest/docs/reference/config/networking/virtual-service/#VirtualService) 
