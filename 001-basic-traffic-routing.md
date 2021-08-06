@@ -114,7 +114,7 @@ spec:
 > Destination rules are applied by Istio **after** virtual service routing 
 > rules are **evaluated**, so they apply to the traffic’s “real” destination.
 
-## Exercise
+## Exercise: Routing To Specific Version
 
 We will look a bit into how a VirtualService and a DestinationRule can control 
 the flow of traffic in your namespace. We spin up two versions of the name 

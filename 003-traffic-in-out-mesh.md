@@ -36,10 +36,11 @@ through a common Egress gateway.
 
 The previous exercises used a Kubernetes **NodePort** service to get traffic 
 to the sentences service. E.g. the **ingress** traffic to `sentences` **was 
-not** flowing through the Istio service mesh. From the `sentences` 
-service to the `age` and `name` services traffic **was** flowing through the 
-Istio service mesh. We know this to be true because we have applied virtual 
-services and destination rules to the `name` service.
+not** flowing through the Istio service mesh. 
+
+From the `sentences` service to the `age` and `name` services traffic **was** 
+flowing through the Istio service mesh. We know this to be true because we 
+have applied virtual services and destination rules to the `name` service.
 
 Ingressing traffic directly from the Kubernetes cluster network to a frontend
 service means that Istio features **cannot** be applied on this part of the 
@@ -75,9 +76,10 @@ istio-ingressgateway-69c77d896c-5vvjg   istio-proxy
 
 </details>
 
-In this exercise we are going rectify this by **configuring** ingress traffic 
-to the sentences service through a dedicated **ingress** 
-gateway provided by **Istio** `istio-ingressgateway`.
+In this exercise you are going rectify this by **configuring** 
+ingress traffic to the sentences service through a dedicated 
+**ingress** gateway (`istio-ingressgateway`) provided by 
+**Istio** instead of a Kubernetes NodePort.
 
 You are going to do this by defining a gateway.
 

@@ -14,14 +14,15 @@
 ## Introduction
 These exercises will introduce you to the match, weight and mirror fields of the 
 HTTPRoute. These fields and their combinations can be used to enable several 
-useful deployment patterns.
+useful deployment patterns like blue/green deployments, canary deployments and 
+shadow deployments.
 
 These exercises build on the [Basic traffic routing](001-basic-traffic-routing.md) exercises.
 
-## Exercise 1
+## Exercise: Blue/Green Deployment 
 
 This exercise is going to introduce you to the HTTPRoute `match` field in a 
-virtual service. We want to implement a Blue/Green deployment pattern which 
+virtual service. We want to implement a blue/green deployment pattern which 
 allows the **client** to actively select version `v2` of the **name** service 
 it will hit.
 
@@ -272,7 +273,7 @@ will directs traffic to version `v1` of the name workload.
 
 </details>
 
-## Exercise 2
+## Exercise: Canary Deployment
 
 This exercise is going to introduce you to the HTTPRoute `weight` field in a 
 virtual service. We want to implement a canary deployment pattern to the 
@@ -578,7 +579,7 @@ the weights gradually to expose `v2` to more and more users.
 
 </details>
 
-## Exercise 3
+## Exercise: Shadow Deployment
 
 This exercise will introduce you to the HTTPRoute `mirror` field in a virtual 
 service. We want to route traffic to the **name** service `v3` workload while 
