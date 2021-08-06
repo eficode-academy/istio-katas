@@ -789,17 +789,21 @@ WARNING:root:Operation 'name' took 0.238ms
 
 - **Observe the traffic in Kiali**
 
-If you look at the **version app graph** you will **not** see the mirrored 
-traffic being shown. 
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu.
+
+If you look at the **version app graph** you **will** see the mirrored 
+traffic being shown. But you know that the client is **not** getting 
+responses from `v3` from the terminals output.
 
 ![Graph with mirror](images/kiali-mirror-graph.png)
 
-But it is possible to see that there is inbound traffic for the `name-v3` 
-workload. There is obviously no outbound traffic.
+Go to the menu item **Workloads** and select `name-v3` and the **inbound** 
+metrics tab. 
 
-![Workload with mirror](images/kiali-mirrored-workload-inbound.png)
-
-Metrics are also collected for the **destination** traffic.
+Metrics are also collected for the **destination** traffic of `v3`. If you 
+select **Source** from the **Reported from** drop down you will **not** 
+see any metrics as responses are discarded. 
 
 ![Workload mirror metrics](images/kiali-mirrored-inbound-metrics.png)
 
