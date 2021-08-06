@@ -431,10 +431,8 @@ kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 
 - **Observe the traffic flow with Kiali**
 
-In Kiali go to **graphs**, select **your** namespace and the 
-**versioned app graph** with the display options shown below.
-
-![kiali-graph](images/kiali-graph-navigation.png)
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu.
 
 The traffic should still be routed to the `v1` workload as the match condition 
 did not evaluate to true and order of precedence dictates the first destination 
