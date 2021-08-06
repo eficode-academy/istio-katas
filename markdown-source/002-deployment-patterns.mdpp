@@ -792,10 +792,25 @@ Go to Graph menu item and select the **Versioned app graph** from the drop
 down menu.
 
 If you look at the **version app graph** you **will** see the mirrored 
-traffic being shown. But you know that the client is **not** getting 
-responses from `v3` from the terminals output.
+traffic being shown.
 
 ![Graph with mirror](images/kiali-mirror-graph.png)
+
+But you know that the client is **not** getting 
+responses from `v3` from the terminals output.
+
+```console
+Porthos (v2) is 82 years
+Athos (v2) is 42 years
+Athos (v2) is 85 years
+Athos (v2) is 16 years
+d'Artagnan (v2) is 57 years
+Porthos (v2) is 99 years
+Porthos (v2) is 34 years
+Athos (v2) is 92 years
+Porthos (v2) is 11 years
+Athos (v2) is 75 years
+```
 
 Go to the menu item **Workloads** and select `name-v3` and the **inbound** 
 metrics tab. 
