@@ -23,7 +23,7 @@ These exercises build on the [Basic traffic routing](001-basic-traffic-routing.m
 
 This exercise is going to introduce you to the HTTPRoute `match` field in a 
 virtual service. We want to implement a blue/green deployment pattern which 
-allows the **client** to actively select version `v2` of the **name** service 
+allows the **client** to actively select a version of the **name** service 
 it will hit.
 
 ```yaml
@@ -165,6 +165,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
@@ -173,9 +175,9 @@ spec:
         x-test:
           exact: use-v2
     route:
-      - destination:
-          host: name
-          subset: name-v2
+    - destination:
+        host: name
+        subset: name-v2
 ```
 
 ```console
@@ -196,15 +198,19 @@ match block is used.
 
 ![Header based routing](images/kiali-blue-green.png)
 
-Stop the `loop-query.sh -h 'x-test: use-v2'` execution.
-
 - **Run the `scripts/loop-query.sh` without header**
+
+Stop the `loop-query.sh -h 'x-test: use-v2'` execution and run it without 
+passing the header.
 
 ```console
 ./scripts/loop-query.sh
 ```
 
 - **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu.
 
 The problem we have here is that the match is evaluated first **before** any 
 destination's are applied. Since the match was not true the route defined under 
@@ -226,6 +232,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
@@ -234,9 +242,9 @@ spec:
         x-test:
           exact: use-v2
     route:
-      - destination:
-          host: name
-          subset: name-v2
+    - destination:
+        host: name
+        subset: name-v2
   - route:
     - destination:
         host: name
@@ -386,6 +394,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
@@ -443,6 +453,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
