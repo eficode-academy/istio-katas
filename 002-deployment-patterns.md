@@ -140,9 +140,7 @@ rule and virtual service as defined in a previous exercise.
 - **Observe the traffic flow with Kiali**
 
 In Kiali go to **graphs**, select **your** namespace and the 
-**versioned app graph** with the display options shown below.
-
-![kiali-graph](images/kiali-graph-navigation.png)
+**versioned app graph**.
 
 You should see the traffic being routed to the `name-v1` workload because of 
 the precedence of the routes in the name virtual service.
@@ -518,7 +516,7 @@ percentage of the **overall** traffic change to look more like the 90/10 weight.
 
 Stop sending traffic to `v3` with `./scripts/loop-query.sh.
 
-Remove the `name-v1` subset from `name-dr.yaml` file and apply it.
+Remove the `name-v1` subset from `name-dr.yaml` file.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -527,6 +525,8 @@ metadata:
   name: name-destination-rule
 spec:
   host: name
+  exportTo:
+  - "."
   subsets:
   - name: name-v2
     labels:
@@ -536,12 +536,8 @@ spec:
       version: v3
 ```
 
-```console
-kubectl apply -f 002-deployment-patterns/start/name-dr.yaml
-```
-
 Remove the `name-v1` destination from `name-vs.yaml` file, adjust 
-the weight field to 100% on `name-v2` destination and apply it.
+the weight field to 100% on `name-v2` destination and apply changes.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -551,6 +547,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
@@ -570,7 +568,9 @@ spec:
 ```
 
 ```console
+kubectl apply -f 002-deployment-patterns/start/name-dr.yaml
 kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
+
 ```
 
 > :bulb: You could simply adjust the weight values in the 
@@ -694,6 +694,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
@@ -714,6 +716,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
