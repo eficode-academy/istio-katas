@@ -483,6 +483,9 @@ kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 
 - **Observe the traffic flow with Kiali**
 
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu.
+
 You should see that the traffic is distributed approximately 90% to `v1` and 10% 
 to `v2`.
 
