@@ -127,6 +127,8 @@ metadata:
 spec:
   hosts:
   - "my-app.example.com"
+  exportTo:
+  - "."
   gateways:
   - my-app-gateway
   http:
@@ -214,6 +216,8 @@ metadata:
 spec:
   hosts:
   - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+  exportTo:
+  - "."
   gateways:
   - sentences
   http:
@@ -374,6 +378,8 @@ metadata:
 spec:
   hosts:
   - httpbin.org
+  exportTo:
+  - "."
   ports:
   - number: 80
     name: http-port
@@ -422,6 +428,8 @@ metadata:
 spec:
   hosts:
     - httpbin.org
+  exportTo:
+  - "."
   http:
   - timeout: 3s
     route:
@@ -521,6 +529,8 @@ metadata:
 spec:
   hosts:
   - external-api.example.com
+  exportTo:
+  - "."
   gateways:
   - istio-egressgateway
   - mesh
@@ -620,6 +630,8 @@ metadata:
 spec:
   hosts:
   - httpbin.org
+  exportTo:
+  - "."
   gateways:
   - istio-egressgateway
   - mesh
