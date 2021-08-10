@@ -24,9 +24,10 @@ traffic **into** the mesh and on to the sentences service **through** an
 ingress gateway. You will also apply some Istio traffic management to 
 this route.
 
-In the next exercise you will deploy a **new** version (`v2`) of the sentences 
-application. This version talks to a **new** api service which communicates 
-to an api **outside** of the cluster, e.g. an external service.
+In the next exercise you will deploy a **new** version (`v2`) of the 
+**sentences** application. This version talks to a **new** api service 
+which communicates to an api **outside** of the cluster, e.g. an 
+external service.
 
 In the final exercise you will route the traffic from the **new** api service 
 through a common Egress gateway.
@@ -86,7 +87,7 @@ You are going to do this by defining a gateway.
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: my-app-gateway
+  name: myapp-gateway
 spec:
   selector:
     app: istio-ingressgateway
@@ -97,7 +98,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "my-app.example.com"
+    - "myapp.example.com"
 ```
 
 The servers block is where you define the port configurations, protocol 
@@ -122,18 +123,18 @@ mesh. In order to route the traffic we, of course, use a virtual service.
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: my-app
+  name: myapp
 spec:
   hosts:
-  - "my-app.example.com"
+  - "myapp.example.com"
   exportTo:
   - "."
   gateways:
-  - my-app-gateway
+  - myapp-gateway
   http:
   - route:
     - destination:
-        host: my-app-frontend
+        host: myapp-frontend
 ```
 
 Note how it specifies the hostname and the name of the gateway 
@@ -169,7 +170,7 @@ kubectl apply -f 003-traffic-in-out-mesh/start/name-v1/
 
 - **Create an entry point for the sentences service**
 
-Create a file called `sentences-ingressgateway.yaml` in 
+Create a file called `sentences-ingress-gw.yaml` in 
 `003-traffic-in-out-mesh/start` directory.
 
 It should look like the below yaml. 
@@ -199,12 +200,12 @@ spec:
 Apply the resource:
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingressgateway.yaml
+kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingress-gw.yaml
 ```
 
 - **Create a route from the gateway to the sentences service**
 
-Create a file called `sentences-ingressgateway-vs.yaml` in 
+Create a file called `sentences-ingress-vs.yaml` in 
 `003-traffic-in-out-mesh/start` directory.
 
 ```yaml
@@ -232,7 +233,7 @@ to the `sentences` service (the two last lines specifying the Kubernetes
 Apply the resource:
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingressgateway-vs.yaml
+kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingress-vs.yaml
 ```
 
 - **Run the loop query script with the `hosts` entry**
@@ -247,6 +248,9 @@ Run the `loop-query.sh` script with the option `-g` and pass it the `hosts` entr
 ```
 
 - **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu.
 
 Now we can see that the traffic to the `sentences` service is no longer 
 **unknown** to the service mesh. 
