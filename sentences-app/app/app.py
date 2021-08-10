@@ -103,7 +103,7 @@ def call_api():
         hdrs = get_fwd_headers()
         m_requests.labels('api').inc()
         do_random_delay()
-        response = requests.get("http://httpbin.org",headers=hdrs)
+        response = requests.get("http://httpbin.org/delay/1",headers=hdrs)
         logging.warning("Response was: {}".format(response.status_code))
     return response.text
 

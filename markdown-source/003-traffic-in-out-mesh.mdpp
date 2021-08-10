@@ -32,7 +32,7 @@ external service.
 In the final exercise you will route the traffic from the **new** api service 
 through a common Egress gateway.
 
-## Exercise: Ingress Traffic
+## Exercise: Ingress Traffic With Gateway
 
 The previous exercises used a Kubernetes **NodePort** service to get traffic 
 to the sentences service. E.g. the **ingress** traffic to `sentences` **was 
@@ -79,7 +79,9 @@ istio-ingressgateway-69c77d896c-5vvjg   istio-proxy
 In this exercise you are going rectify this by **configuring** 
 ingress traffic to the sentences service through a dedicated 
 **ingress** gateway (`istio-ingressgateway`) provided by 
-**Istio** instead of a Kubernetes NodePort.
+**Istio** instead of a Kubernetes NodePort. Furthermore you 
+are going to introduce a fixed delay to demonstrate that you can 
+now apply Istio traffic management to the sentences service.
 
 You are going to do this by defining a gateway.
 
@@ -127,8 +129,6 @@ metadata:
 spec:
   hosts:
   - "myapp.example.com"
-  exportTo:
-  - "."
   gateways:
   - myapp-gateway
   http:
@@ -144,7 +144,7 @@ are not necessarily related one-to-one.
 
 ### Overview
 
-- Deploy the sentences app
+- Deploy the `sentences-v1` service with name and age services
 
 - Create an entry point for the sentences service
 
@@ -157,15 +157,19 @@ are not necessarily related one-to-one.
 
 - Observe the traffic flow with Kiali
 
+- Add a fixed delay to the sentences service
+
+- Observe the traffic flow with Kiali
+
 ### Step by Step
 <details>
     <summary> More Details </summary>
 
-- **Deploy the sentences app**
+- **Deploy the sentences-v1 service with name and age services**
 
 ```console
 kubectl apply -f 003-traffic-in-out-mesh/start/
-kubectl apply -f 003-traffic-in-out-mesh/start/name-v1/
+kubectl apply -f 003-traffic-in-out-mesh/start/sentences-v1/
 ```
 
 - **Create an entry point for the sentences service**
@@ -216,8 +220,6 @@ metadata:
 spec:
   hosts:
   - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
-  exportTo:
-  - "."
   gateways:
   - sentences
   http:
@@ -257,16 +259,58 @@ Now we can see that the traffic to the `sentences` service is no longer
 
 ![Ingress Gateway](images/kiali-ingress-gw.png)
 
+- **Add a fixed delay to the sentences service**
+
+To demonstrate that we can now apply Istio traffic management to the 
+sentences service. Add a fixed delay of 5 seconds to the 
+`sentences-ingress-vs.yaml` file you created.
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: sentences
+spec:
+  hosts:
+  - "user2.sentences.istio.eficode.academy"
+  gateways:
+  - sentences
+  http:
+  - fault:
+      delay:
+        fixedDelay: 5s
+        percentage:
+          value: 100
+    route:
+    - destination:
+        host: sentences
+```
+
+You should see that the response in the terminal are now taking 
+approximately five seconds each.
+
+- **Observe the traffic flow with Kiali**
+
+Go to **Workloads** menu item, select the **Inbound Metrics** tab, 
+**Reported from** in the **Source** drop down menu and select checkboxes 
+as shown in the below image. 
+
+![Sentences delay](images/kiali-sentences-fixed-delay.png)
+
+It may take a little bit before the graph updates bu you should see 
+that the request duration is trending towards fve seconds.
+
 </details>
 
-## Exercise 2
+## Exercise: Egress Traffic With Service Entry
 
-A ServiceEntry allows you to apply Istio traffic management for services 
-running **outside** of your mesh. Your service might use an external API 
-as an example. Once you have defined a service entry you can configure 
-virtual services and destination rules to apply Istio features like 
-redirecting or forwarding traffic to external destinations, defining 
-retries, timeouts and fault injection policies. 
+In this exercise you will deploy a **new** version of the **sentences** 
+service. This new version will use a new **API** service which does nothing 
+more than make a call to [httpbin](https://httpbin.org/). You will then 
+define a ServiceEntry to allow traffic to the external service.
+
+> :bulb: In our environment we have set the outBoundTrafficPolicy to 
+> `REGISTRY_ONLY`. See **More Info** below.
 
 <details>
     <summary> More Info </summary>
@@ -278,21 +322,30 @@ you can't apply Istio features.
 There is also the security aspect to consider. While securely controlling 
 ingress traffic is the highest priority, it is good policy to securely control 
 egress traffic also. As part of this many clusters will have the 
-`outBoundTrafficPolicy` set to `REGISTRY_ONLY`. This will force you to define 
-your external services with a service entry.
+`outBoundTrafficPolicy` set to `REGISTRY_ONLY` as is done in our cluster. 
+This will force you to define your external services with a service entry.
+
+When you create a service entry it is added to Istio's internal service 
+registry and traffic is allowed out of the mesh to the defined destination. 
+
+Istio maintains an internal service registry containing the set of services, 
+and their corresponding service endpoints, running in a service mesh. 
+Istio uses the service registry to generate Envoy configuration.
+
+Istio does not provide service discovery, although most services are 
+automatically added to the registry by Pilot adapters that reflect the 
+discovered services of the underlying platform (Kubernetes, Consul, plain DNS). 
+Additional services can also be registered manually using a ServiceEntry 
+configuration.
 
 </details>
 
-In this exercise we will define a service entry for [httpbin](https://httpbin.org/) 
-and create a virtual service with a timeout of 3 seconds to prove we can use 
-Istio features.
-
-> :bulb: In our environment we have set the outBoundTrafficPolicy to 
-> `REGISTRY_ONLY`. You will not be able to reach external services without 
-> defining a service entry.
-
-When you create a service entry it is added to Istio's internal service 
-registry.
+A ServiceEntry allows you to apply Istio traffic management for services 
+running **outside** of your mesh. Your service might use an external API 
+as an example. Once you have defined a service entry you can configure 
+virtual services and destination rules to apply Istio features like 
+redirecting or forwarding traffic to external destinations, defining 
+retries, timeouts and fault injection policies. 
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -319,65 +372,88 @@ and destination rules. The `resolution` field is used to determine how the
 proxy will resolve IP addresses of the end points. The `exportTo` field scopes 
 the service entry to the namespace where it is defined.
 
-> :bulb: The `exportTo` field is important for the exercises in this course. 
-> **Not** scoping the service entry to your namespace will open the external 
+> :bulb: The `exportTo` field is important for this exercise. **Not** 
+> scoping the service entry to your namespace will open the external 
 > service for **all** attendees. 
 
 ### Overview
 
-- Deploy multitool which will be used to reach httpbin from within the mesh
+- Delete the sentences `v1` deployment and deploy `v2` and api
 
-- Run `./scripts/external-service-query.sh` and observe response
+- Run the loop query script with the `hosts` entry
 
-- Define a service entry for httpbin.org
+- Observe the response for the external service
 
-- Run `./scripts/external-service-query.sh` and observe response
+- Observe the traffic flow with Kiali
+
+- Define a service entry for httpbin.org and apply it
+
+- Observe the traffic flow with Kiali
 
 - Create a virtual service with a timeout of 3 seconds
 
-- Run `./scripts/external-service-query.sh http://httpbin.org/delay/5`
+- Observe the traffic flow with Kiali
 
 ### Step by Step
 <details>
     <summary> More Details </summary>
 
-- **Deploy multitool**
+- **Delete the sentences `v1` deployment and deploy `v2` and api**
 
-We want to generate traffic **through** the service mesh. In order to do that 
-we will deploy an image we built for container/network testing and 
-troubleshooting. Our script will then use the `exec`command to have this 
-workload curl the external service.
+First stop the loop-query.sh execution. Then delete `v1` of sentences service 
+and deploy `v2` of the sentences service and `v1` of the api service.
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/multitool/
+kubectl delete -f 003-traffic-in-out-mesh/start/sentences-v1/
+kubectl apply -f 003-traffic-in-out-mesh/start/sentences-v2/
+kubectl apply -f 003-traffic-in-out-mesh/start/api-v1/
+kubectl apply -f 003-traffic-in-out-mesh/start/
 ```
 
-**Run `./scripts/external-service-query.sh`**
+- **Run the loop query script with the `hosts` entry**
 
 ```console
-./scripts/external-service-query.sh http://httpbin.org
+./scripts/loop-query.sh -g <YOUR_NAMESPACE>.sentences.istio.eficode.academy
 ```
 
-You should see something like below because the exists no service entry 
-for the external service httpbin.
+- **Observe the responses for the external service**
+
+Export the pod as an environment variable and tail the logs.
 
 ```console
-Using multitool-66d9d48d44-s7wcb to query http://httpbin.org
-HTTP/1.1 502 Bad Gateway
-HTTP/1.1 502 Bad Gateway
-HTTP/1.1 502 Bad Gateway
+export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
+kubectl logs "$API_POD" --tail=20 --follow
 ```
+
+You should see a response of 502(Bad Gateway) because there exists no service entry for 
+the external service httpbin.
+
+```console
+INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 12:07:41] "GET / HTTP/1.1" 200 -
+WARNING:root:Response was: 502                      <-------------------- Bad Gateway Response
+WARNING:root:Operation 'api' took 306.376ms
+```
+
+- **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu.
+
+![No Service Entry](images/kiali-api-no-se.png)
+
+As there is no service entry all traffic to the external service is blocked 
+and it is a **black hole** to the service mesh.
 
 - **Define a service entry for httpbin.org**
 
-Create a service entry called `httpbin-service-entry.yaml`in 
+Create a service entry called `api-egress-se.yaml`in 
 `003-traffic-in-out-mesh/start/`.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
-  name: httpbin
+  name: api-egress
 spec:
   hosts:
   - httpbin.org
@@ -396,31 +472,43 @@ spec:
 Apply the service entry.
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/httpbin-service-entry.yaml
+kubectl apply -f 003-traffic-in-out-mesh/start/api-egress-se.yaml
 ```
 
-- **Run `./scripts/external-service-query.sh`**
+- **Observe the responses for the external service**
+
+Export the pod as an environment variable and tail the logs.
 
 ```console
-./scripts/external-service-query.sh http://httpbin.org
+export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
+kubectl logs "$API_POD" --tail=20 --follow
 ```
 
-Now you should be getting a 200 OK response from httpbin. 
+Now you should be getting a 200(OK) response from the external service. 
 
 ```console
-Using multitool-66d9d48d44-s7wcb to query http://httpbin.org
-HTTP/1.1 200 OK
-HTTP/1.1 200 OK
-HTTP/1.1 200 OK
+INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 12:21:14] "GET / HTTP/1.1" 200 -
+WARNING:root:Response was: 200                <-------------------- OK Response
+WARNING:root:Operation 'api' took 374.259ms
 ```
+
+- **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu.
+
+![No Service Entry](images/kiali-api-se.png)
+
+Now Kiali recognizes the external service because of the service entry and it 
+is no longer a black hole.
+
+- **Create a virtual service with a timeout of 3 seconds**
 
 Basically all we have done so far is to add an entry for httpbin to Istio's 
 internal service registry. But we can now apply some of the Istio features to 
 external service. 
 
-- **Create a virtual service with a timeout of 3 seconds**
-
-Create a file called `httpbin-virtual-service.yaml` in 
+Create a file called `api-egress-vs.yaml` in 
 `003-traffic-in-out-mesh/start/`.
 
 ```yaml
@@ -434,7 +522,7 @@ spec:
   exportTo:
   - "."
   http:
-  - timeout: 3s
+  - timeout: 0.5s
     route:
       - destination:
           host: httpbin.org
@@ -444,7 +532,7 @@ spec:
 Apply the virtual service.
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/httpbin-virtual-service.yaml
+kubectl apply -f 003-traffic-in-out-mesh/start/api-egress-vs.yaml
 ```
 
 - **Run `./scripts/external-service-query.sh http://httpbin.org/delay/5`**
