@@ -44,7 +44,7 @@ retries, timeouts and fault injection policies.
 
 By default, Istio configures Envoy proxies to **passthrough** requests to 
 unknown services. So, technically service entries are not required. But 
-without them you can't apply Istio features as the external service will be  
+without them you can't apply Istio features as the external service will be 
 a black hole to the service mesh.
 
 There is also the security aspect to consider. While securely controlling 
@@ -63,11 +63,11 @@ Istio maintains an internal service registry containing the set of services,
 and their corresponding service endpoints, running in a service mesh. 
 Istio uses the service registry to generate Envoy configuration.
 
-Istio does not provide service discovery, although most services are 
-automatically added to the registry by Pilot adapters that reflect the 
-discovered services of the underlying platform (Kubernetes, Consul, plain DNS). 
-Additional services can also be registered manually using a ServiceEntry 
-configuration.
+> Istio does not provide service discovery, although most services are 
+> automatically added to the registry by Pilot adapters that reflect the 
+> discovered services of the underlying platform (Kubernetes, Consul, plain DNS). 
+> Additional services can also be registered manually using a ServiceEntry 
+> configuration.
 
 </details>
 
@@ -126,11 +126,10 @@ the service entry to the namespace where it is defined.
 
 - **Delete the sentences `v1` deployment and deploy `v2` and api**
 
-First stop the loop-query.sh execution. Then delete `v1` of sentences service 
-and deploy `v2` of the sentences service and `v1` of the api service.
+Deploy `v2` of the sentences service along with the age, name and api service.
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/
+kubectl apply -f 004-egress-traffic/start/
 ```
 
 - **Run the loop query script with the `hosts` entry**
@@ -170,7 +169,7 @@ and it is a **black hole** to the service mesh.
 - **Define a service entry for httpbin.org**
 
 Create a service entry called `api-egress-se.yaml`in 
-`003-traffic-in-out-mesh/start/`.
+`004-egress-traffic/start/`.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -195,7 +194,7 @@ spec:
 Apply the service entry.
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/api-egress-se.yaml
+kubectl apply -f 004-egress-traffic/start/api-egress-se.yaml
 ```
 
 - **Observe the responses for the external service**
@@ -235,7 +234,7 @@ traffic to httpbin with a timeout tof `0.5s`.
 > The api service asks httpbin.org for a response delay of 1 second.
 
 Create a file called `api-egress-vs.yaml` in 
-`003-traffic-in-out-mesh/start/`.
+`004-egress-traffic/start/`.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -258,7 +257,7 @@ spec:
 Apply the virtual service.
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/api-egress-vs.yaml
+kubectl apply -f 004-egress-traffic/start/api-egress-vs.yaml
 ```
 
 - **Observe the responses for the external service**
@@ -277,6 +276,8 @@ INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 13:29:11] "GET / HTTP/1.1" 200 -
 WARNING:root:Response was: 504                <-------------------- 504 Gateway Timeout
 WARNING:root:Operation 'api' took 504.809ms
 ```
+
+Change the timeout to something greater than 1 second and ensure that you get 200(OK) responses.
 
 </details>
 
@@ -428,16 +429,13 @@ from the egress gateway to the external service.
 Apply the yaml for the services if not already deployed.
 
 ```console
-kubectl delete -f 003-traffic-in-out-mesh/start/sentences-v1/
-kubectl apply -f 003-traffic-in-out-mesh/start/sentences-v2/
-kubectl apply -f 003-traffic-in-out-mesh/start/api-v1/
-kubectl apply -f 003-traffic-in-out-mesh/start/
+kubectl apply -f 004-egress-traffic/start/
 ```
 
 **Create an exit point for external service httpbin traffic**
 
 Create a file called `api-egress-gw.yaml` in 
-`003-traffic-in-out-mesh/start/`.
+`004-egress-traffic/start/`.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -513,6 +511,5 @@ egress traffic.**
 # Cleanup
 
 ```console
-kubectl delete -f 003-traffic-in-out-mesh/start/multitool/
 kubectl delete -f 003-traffic-in-out-mesh/start/
 ```
