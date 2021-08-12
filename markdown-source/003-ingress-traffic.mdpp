@@ -154,8 +154,7 @@ are not necessarily related one-to-one.
 - **Deploy the sentences-v1 service with name and age services**
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/
-kubectl apply -f 003-traffic-in-out-mesh/start/sentences-v1/
+kubectl apply -f 003-ingress-traffic/start/
 ```
 
 - **Create an entry point for the sentences service**
@@ -190,13 +189,13 @@ spec:
 Apply the resource:
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingress-gw.yaml
+kubectl apply -f 003-ingress-traffic/start/sentences-ingress-gw.yaml
 ```
 
 - **Create a route from the gateway to the sentences service**
 
 Create a file called `sentences-ingress-vs.yaml` in 
-`003-traffic-in-out-mesh/start` directory.
+`003-ingress-traffic/start` directory.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -221,7 +220,7 @@ to the `sentences` service (the two last lines specifying the Kubernetes
 Apply the resource:
 
 ```console
-kubectl apply -f 003-traffic-in-out-mesh/start/sentences-ingress-vs.yaml
+kubectl apply -f 003-ingress-traffic/start/sentences-ingress-vs.yaml
 ```
 
 - **Run the loop query script with the `hosts` entry**
@@ -272,6 +271,12 @@ spec:
         host: sentences
 ```
 
+Apply the changes.
+
+```console
+kubectl apply -f 003-ingress-traffic/start/sentences-ingress-vs.yaml
+```
+
 You should see that the response in the terminal are now taking 
 approximately five seconds each.
 
@@ -303,5 +308,5 @@ then you cannot leverage Istio features.**
 # Cleanup
 
 ```console
-kubectl delete -f 003-traffic-in-out-mesh/start/
+kubectl delete -f 003-ingress-traffic/start/
 ```
