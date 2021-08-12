@@ -306,8 +306,9 @@ that the request duration is trending towards fve seconds.
 
 In this exercise you will deploy a **new** version of the **sentences** 
 service. This new version will use a new **API** service which does nothing 
-more than make a call to [httpbin](https://httpbin.org/). You will then 
-define a ServiceEntry to allow traffic to the external service.
+more than make a call to [httpbin](https://httpbin.org/) asking for a delay 
+of 1 second for responses. You will then define a ServiceEntry to allow 
+traffic to the external service.
 
 > :bulb: In our environment we have set the outBoundTrafficPolicy to 
 > `REGISTRY_ONLY`. See **More Info** below.
@@ -453,7 +454,7 @@ Create a service entry called `api-egress-se.yaml`in
 apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
-  name: api-egress
+  name: api-egress-se
 spec:
   hosts:
   - httpbin.org
@@ -502,11 +503,14 @@ down menu.
 Now Kiali recognizes the external service because of the service entry and it 
 is no longer a black hole.
 
-- **Create a virtual service with a timeout of 3 seconds**
+- **Create a virtual service with a timeout of 0.5 seconds**
 
 Basically all we have done so far is to add an entry for httpbin to Istio's 
 internal service registry. But we can now apply some of the Istio features to 
-external service. 
+external service. To demonstrate this you will create a virtual service for 
+traffic to httpbin with a timeout tof `0.5s`.
+
+> The api service asks httpbin.org for a response delay of 1 second.
 
 Create a file called `api-egress-vs.yaml` in 
 `003-traffic-in-out-mesh/start/`.
@@ -515,7 +519,7 @@ Create a file called `api-egress-vs.yaml` in
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: httpbin-ext
+  name: api-egress-vs
 spec:
   hosts:
     - httpbin.org
@@ -535,53 +539,71 @@ Apply the virtual service.
 kubectl apply -f 003-traffic-in-out-mesh/start/api-egress-vs.yaml
 ```
 
-- **Run `./scripts/external-service-query.sh http://httpbin.org/delay/5`**
+- **Observe the responses for the external service**
 
-We are going to ask httpbin to delay the response for 5 seconds.
-
-```console
-./scripts/external-service-query.sh http://httpbin.org/delay/5
-```
-
-Since you have injected a timeout of 3 seconds on the virtual service you 
-should be seeing a 504 Gateway timeout.
+Export the pod as an environment variable and tail the logs.
 
 ```console
-Using multitool-66d9d48d44-s7wcb to query http://httpbin.org/delay/5
-HTTP/1.1 504 Gateway Timeout
-HTTP/1.1 504 Gateway Timeout
-HTTP/1.1 504 Gateway Timeout
+export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
+kubectl logs "$API_POD" --tail=20 --follow
 ```
 
-If you ask httpbin for a delay **under** 3 seconds you should get a 200 OK.
+Now you should be getting a 504(Gateway Timeout) response from the external service. 
+
+```console
+INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 13:29:11] "GET / HTTP/1.1" 200 -
+WARNING:root:Response was: 504                <-------------------- 504 Gateway Timeout
+WARNING:root:Operation 'api' took 504.809ms
+```
 
 </details>
 
-## Exercise 3 <------ **SKIP FOR NOW! WORK IN PROGRESS!**
+## Exercise: Egress Traffic With Gateway
 
 In a previous exercise you configured Istio to allow access to an external 
-service([httpbin](http://httpbin.org)). You then applied a simple virtual 
-service with a timeout to prove that Istio traffic management features can 
-be applied.
+service([httpbin](http://httpbin.org)). You then applied a service entry and 
+a simple virtual service with a timeout to prove that Istio traffic management 
+features can be applied.
 
-The traffic was flowing directly from the workloads Envoy sidecar to the 
-external service. 
+In the above case the traffic was flowing directly from the workloads Envoy 
+sidecar to the external service. 
 
 But there are use cases where you need to have traffic leaving the mesh 
 routed **via** a dedicated **egress** gateway.
 
-In this exercise we will route outbound traffic for [httpbin](https://httpbin.org/) 
-through the dedicated **egress** gateway provided by Istio `istio-egressgateway`.
+In this exercise we will route outbound traffic for api service through the 
+dedicated **egress** gateway(`istio-egressgateway`) provided by Istio in the 
+`istio-system` namespace.
 
 <details>
     <summary> More Info </summary>
 
+A Gateway **describes** a load balancer operating at the **edge** of the mesh 
+receiving incoming or outgoing **HTTP/TCP** connections. The specification 
+describes the ports to be expose, type of protocol, configuration for the 
+load balancer, etc.
+
+An Istio **Egress** gateway in a Kubernetes cluster consists, at a minimum, of a 
+Deployment and a Service. Istio egress gateways are based on Envoy and have a 
+**standalone** Envoy proxy. 
+
+Inspecting our course environment would show something like:
+
+```console
+NAME                                       TYPE                                   
+istio-egressgateway                        deployment  
+istio-egressgateway                        service
+istio-egressgateway-8679c48588-2p8vw       pod
+```
+
+Inspecting the POD would show something like:
+
+```console
+NAME                                    CONTAINERS
+istio-egressgateway-8679c48588-2p8vw    istio-proxy
+```
 
 </details>
-
-> :bulb: In our environment we have set the outBoundTrafficPolicy to 
-> `REGISTRY_ONLY`. You will not be able to reach external services without 
-> defining a service entry.
 
 You are going to do this by defining a gateway. 
 
@@ -604,13 +626,14 @@ spec:
 ```
 The fields are the same as for the gateway you defined for the sentences 
 service in a previous exercise. The notable difference being that the 
-**selectors** are now the labels on the `istio-egressgateway` POD. It also 
-is running a standalone Envoy proxy.
+**selectors** are now the labels on the **Egress** POD `istio-egressgateway`, 
+which is also running a standalone Envoy proxy just like the ingress gateway.
 
 The gateway defines an **exit point** to be exposed in the `istio-egressgateway`. 
-That is it. Nothing else. Again the exit point knows nothing about how traffic 
-is routed to it. In order to route the traffic we, of course, use a virtual 
-service. 
+That is it. Nothing else. Just like an ingress entry point it knows nothing 
+about how traffic is routed to it. 
+
+In order to route the traffic we, of course, use a virtual service. 
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -648,25 +671,27 @@ spec:
       weight: 100
 ```
 
-In order to get the outbound traffic **from** the workload to our external 
+> :bulb: Notice that there are **two** gateways and **two** matches/routes 
+> defined in the above yaml.
+
+The first route uses the reserved keyword `mesh` implying that this rule 
+applies to the sidecars in the mesh. E.g any sidecar wanting to hit the 
+external service will be routed to the `istio-egressgateway` in the 
+`istio-system` namespace.
+
+The second route is the one directing traffic from the egress gateway to 
+the external service.
+
+So, in order to get the outbound traffic **from** the workload to our external 
 service you need to define a route to the `istio-egressgateway`, which is 
 located in the `istio-system` namespace. Then you need to define a route 
 from the egress gateway to the external service. 
 
- The first route uses the reserved keyword `mesh` implying that this rule 
- applies to the sidecars in the mesh. E.g any sidecar wanting to hit the 
- external service will be routed to the `istio-egressgateway`.
+ ### Overview
 
- The second route is the one directing traffic from the egress gateway to 
- the external service.
+- Create an exit point(Gateway) for external service(httpbin.org) traffic
 
-### Overview
-
-- Create an exit point for httpbin traffic
-
-- Deploy multitool which will be used to reach httpbin from within the mesh
-
-- Modify the `httpbin-virtual-service.yaml` from previous exercise
+- Modify the `api-egress-vs.yaml` file from previous exercise
 
 - 
 
@@ -674,7 +699,10 @@ from the egress gateway to the external service.
 <details>
     <summary> More Details </summary>
 
-**Create an exit point for httpbin traffic**
+**Create an exit point for external service httpbin traffic**
+
+Create a file called `api-egress-gw.yaml` in 
+`003-traffic-in-out-mesh/start/`.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -694,24 +722,7 @@ spec:
     - httpbin.org
 ```
 
-**Deploy multitool**
-
-We want to generate traffic **through** the service mesh. In order to do that 
-we will deploy an image we built for container/network testing and 
-troubleshooting. Our script will then use the `exec`command to have this 
-workload curl the external service.
-
-```console
-kubectl apply -f 003-traffic-in-out-mesh/start/multitool/
-```
-
-**Run `./scripts/external-service-query.sh`**
-
-```console
-./scripts/external-service-query.sh http://httpbin.org
-```
-
-**Modify the `httpbin-virtual-service.yaml` from previous exercise**
+**Modify the `api-egress-vs.yaml` from previous exercise**
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -733,8 +744,7 @@ spec:
       port: 80
     route:
     - destination:
-        host: istio-egressgateway.istio-system.svc.cluster.local
-        #subset: httpbin
+        host: istio-egressgateway.istio-system.svc.cluster.local        
         port:
           number: 80
       weight: 100
