@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: name-route
+spec:
+  hosts:
+  - name
+  exportTo:
+  - "."
+  gateways:
+  - mesh
+  http:
+  - route:
+    - destination:
+        host: name
+        subset: name-v1

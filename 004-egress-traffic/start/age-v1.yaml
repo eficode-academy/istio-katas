@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: age
+    version: v1
+  name: age-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: age
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: age
+        version: v1
+    spec:
+      containers:
+      - image: praqma/istio-sentences:v1
+        name: age
+        ports:
+          - containerPort: 5000
+        env:
+        - name: "SENTENCE_MODE"
+          value: "age"

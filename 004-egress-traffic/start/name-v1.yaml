@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: name
+    version: v1
+  name: name-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: name
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: name
+        version: v1
+    spec:
+      containers:
+      - image: praqma/istio-sentences:v1
+        name: name
+        ports:
+          - containerPort: 5000
+        env:
+        - name: "SENTENCE_MODE"
+          value: "name"

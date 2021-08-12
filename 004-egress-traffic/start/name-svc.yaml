@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: name
+    version: v1
+  name: name
+spec:
+  ports:
+  - port: 5000
+    name: http-name
+    protocol: TCP
+    targetPort: 5000
+    appProtocol: http
+  selector:
+    app: sentences
+    mode: name
+  type: ClusterIP
