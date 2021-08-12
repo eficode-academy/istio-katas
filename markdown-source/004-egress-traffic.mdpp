@@ -1,18 +1,19 @@
 !INCLUDE "markdown-source/meta.md"
 [//]: # (Tags: #sentences #kiali)
 
-# Getting traffic out(Ingress) of the mesh
+# Getting traffic out of the mesh
 
 ## Learning goals
 
 - Understand how to access external services
-- Understand Istio gateways (egress)
+- Understand Istio gateways (Egress)
 
 ## Introduction
 
 These exercises will introduce you to Istio concepts 
 and ([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)) 
-for configuring traffic **out**(Egress) of the service mesh.
+for configuring traffic **out** of the service mesh. This is commonly 
+called Egress traffic.
 
 You will use two Istio CRD's for this. The [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway) 
 and the [ServiceEntry](https://istio.io/latest/docs/reference/config/networking/service-entry/#ServiceEntry) 

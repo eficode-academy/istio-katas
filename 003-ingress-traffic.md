@@ -2,7 +2,7 @@
 [//]: # (Origin: https://github.com/eficode-academy/istio-katas)
 [//]: # (Tags: #sentences #kiali)
 
-# Getting traffic into(Ingress) the mesh
+# Getting traffic into the mesh
 
 ## Learning goals
 
@@ -12,7 +12,8 @@
 
 These exercises will introduce you to Istio concepts 
 and ([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)) 
-for configuring traffic **into** the service mesh (Ingress). 
+for configuring traffic **into** the service mesh. This is commonly called 
+Ingress traffic. 
 
 You will use the Istio [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway) 
 CRD for this.
@@ -283,9 +284,9 @@ approximately five seconds each.
 
 - **Observe the traffic flow with Kiali**
 
-Go to **Workloads** menu item, select the **Inbound Metrics** tab, 
-**Reported from** in the **Source** drop down menu and select checkboxes 
-as shown in the below image. 
+Go to **Workloads** menu item, select `sentences-v1` workload and the 
+**Inbound Metrics** tab, **Reported from** in the **Source** drop down 
+menu and select checkboxes as shown in the below image. 
 
 ![Sentences delay](images/kiali-sentences-fixed-delay.png)
 
