@@ -145,6 +145,7 @@ Apply the changes.
 
 ```console
 kubectl apply -f 004-egress-traffic/start/sentences-ingress-gw.yaml
+kubectl apply -f 004-egress-traffic/start/sentences-ingress-vs.yaml
 ```
 
 - **Deploy sentences application in `004-egress-traffic/start`**
@@ -231,7 +232,7 @@ Create a service entry called `api-egress-se.yaml`in
 apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
-  name: api-egress-se
+  name: httpbin
 spec:
   hosts:
   - httpbin.org
@@ -296,7 +297,7 @@ Create a file called `api-egress-vs.yaml` in
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: api-egress-vs
+  name: httpbin
 spec:
   hosts:
     - httpbin.org
@@ -404,12 +405,13 @@ spec:
     - myapp.org
 ```
 The fields are the same as for the gateway you defined for the sentences 
-service in a previous exercise. The notable difference being that the 
-**selectors** are now the labels on the **Egress** POD `istio-egressgateway`, 
-which is also running a standalone Envoy proxy just like the ingress gateway.
+service in a previous exercise regarding Ingress traffic. The notable 
+difference being that the **selectors** are now the labels on the 
+**Egress** POD `istio-egressgateway`, which is also running a standalone 
+Envoy proxy just like the ingress gateway.
 
 The gateway defines an **exit point** to be exposed in the `istio-egressgateway`. 
-That is it. Nothing else. Just like an ingress entry point it knows nothing 
+That is it. Nothing else. Just like an ingress entry point it, knows nothing 
 about how traffic is routed to it. 
 
 In order to route the traffic we, of course, use a virtual service. 
@@ -515,7 +517,7 @@ spec:
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: httpbin-egress
+  name: httpbin
 spec:
   hosts:
   - httpbin.org
