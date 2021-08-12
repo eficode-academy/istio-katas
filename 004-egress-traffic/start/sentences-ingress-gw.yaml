@@ -12,4 +12,4 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "sentences.istio.eficode.academy"
+    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"

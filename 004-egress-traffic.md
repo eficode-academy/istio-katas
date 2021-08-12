@@ -24,6 +24,8 @@ You will route traffic **directly** to an external service from an internal
 service with a service entry. Then you will route traffic from an internal 
 service through a common egress gateway. 
 
+These exercises build on the [Getting Traffic Into The mesh](003-ingress-traffic.md) exercises.
+
 ## Exercise: Egress Traffic With Service Entry
 
 In this exercise you will deploy a **new** version of the **sentences** 
@@ -104,7 +106,9 @@ the service entry to the namespace where it is defined.
 
 ### Overview
 
-- Deploy sentences `v2` and the new api service
+- Modify `sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml` files with `<YOUR_NAMESPACE>`
+
+- Deploy sentences application
 
 - Run the loop query script with the `hosts` entry
 
@@ -124,12 +128,64 @@ the service entry to the namespace where it is defined.
 <details>
     <summary> More Details </summary>
 
-- **Delete the sentences `v1` deployment and deploy `v2` and api**
+- **Modify `sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml`**
+
+The `sentences-svc.yaml` is using a `ClusterIP` type as in exercise 
+[Getting Traffic Into The mesh](003-ingress-traffic.md). Modify the 
+`sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml files with 
+**your** namespace. E.g. user1, user2, etc.
+
+```yaml
+...
+    hosts:
+    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+```
+
+Apply the changes.
+
+```console
+kubectl apply -f 004-egress-traffic/start/sentences-ingress-gw.yaml
+```
+
+- **Deploy sentences application**
 
 Deploy `v2` of the sentences service along with the age, name and api service.
 
 ```console
 kubectl apply -f 004-egress-traffic/start/
+```
+
+Make sure everything is in ready state.
+
+```console
+kubectl get gateway,se,vs,dr,svc,pods -n <YOUR_NAMESPACE>
+```
+
+You should now see a gateway, two virtual services and a destination rule along 
+with four services and pods running. It should look something like below.
+
+```console
+NAME                                    AGE
+gateway.networking.istio.io/sentences   91m
+
+NAME                                            GATEWAYS        HOSTS                                       AGE
+virtualservice.networking.istio.io/name-route   ["mesh"]        ["name"]                                    91m
+virtualservice.networking.istio.io/sentences    ["sentences"]   ["user2.sentences.istio.eficode.academy"]   91m
+
+NAME                                                        HOST   AGE
+destinationrule.networking.istio.io/name-destination-rule   name   91m
+
+NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/age         ClusterIP   172.20.101.189   <none>        5000/TCP   91m
+service/api         ClusterIP   172.20.8.90      <none>        5000/TCP   91m
+service/name        ClusterIP   172.20.6.247     <none>        5000/TCP   91m
+service/sentences   ClusterIP   172.20.109.183   <none>        5000/TCP   91m
+
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/age-v1-7b9f67b7dc-gbftv         2/2     Running   0          91m
+pod/api-v1-75f5bd69f8-l7ndk         2/2     Running   0          91m
+pod/name-v1-795cf79f69-h4htd        2/2     Running   0          91m
+pod/sentences-v2-75c766ff6c-f68bw   2/2     Running   0          91m
 ```
 
 - **Run the loop query script with the `hosts` entry**
@@ -418,15 +474,13 @@ from the egress gateway to the external service.
 
 - Modify the `api-egress-vs.yaml` file from previous exercise
 
-- 
-
 ### Step by Step
 <details>
     <summary> More Details </summary>
 
 - **Make sure the sentence service `v2` with age,name and api services are deployed**
 
-Apply the yaml for the services if not already deployed.
+If you have not completed exercise [004]() Apply the yaml for the services if not already deployed.
 
 ```console
 kubectl apply -f 004-egress-traffic/start/
