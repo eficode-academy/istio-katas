@@ -689,6 +689,8 @@ from the egress gateway to the external service.
 
  ### Overview
 
+- Make sure the sentence service `v2` with age,name and api services are deployed
+
 - Create an exit point(Gateway) for external service(httpbin.org) traffic
 
 - Modify the `api-egress-vs.yaml` file from previous exercise
@@ -698,6 +700,17 @@ from the egress gateway to the external service.
 ### Step by Step
 <details>
     <summary> More Details </summary>
+
+- **Make sure the sentence service `v2` with age,name and api services are deployed**
+
+Apply the yaml for the services if not already deployed.
+
+```console
+kubectl delete -f 003-traffic-in-out-mesh/start/sentences-v1/
+kubectl apply -f 003-traffic-in-out-mesh/start/sentences-v2/
+kubectl apply -f 003-traffic-in-out-mesh/start/api-v1/
+kubectl apply -f 003-traffic-in-out-mesh/start/
+```
 
 **Create an exit point for external service httpbin traffic**
 
