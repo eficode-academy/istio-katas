@@ -160,7 +160,7 @@ kubectl apply -f 003-ingress-traffic/start/
 - **Create an entry point for the sentences service**
 
 Create a file called `sentences-ingress-gw.yaml` in 
-`003-traffic-in-out-mesh/start` directory.
+`003-ingress-traffic/start` directory.
 
 It should look like the below yaml. 
 
