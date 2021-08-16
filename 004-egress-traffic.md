@@ -553,5 +553,5 @@ service.
 # Cleanup
 
 ```console
-kubectl delete -f 003-traffic-in-out-mesh/start/
+kubectl delete -f 004-egress-traffic/start/
 ```
