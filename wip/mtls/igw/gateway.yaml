@@ -15,4 +15,4 @@ spec:
       mode: MUTUAL
       credentialName: sentences-tls-secret
     hosts:
-    - "sentences.istio.eficode.academy"
+    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"

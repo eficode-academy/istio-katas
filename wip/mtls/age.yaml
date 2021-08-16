@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: sentences-age
+    app: sentences
     mode: age
-    app.kubernetes.io/part-of: sentences
-  name: age
+    version: v1
+  name: age-v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sentences-age
+      app: sentences
       mode: age
-      app.kubernetes.io/part-of: sentences
+      version: v1
   template:
     metadata:
       labels:
-        app: sentences-age
+        app: sentences
         mode: age
-        app.kubernetes.io/part-of: sentences
+        version: v1
       annotations:
         dummy: '123'
         sidecar.istio.io/inject: 'false'
@@ -34,19 +34,18 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: sentences-age
+    app: sentences
     mode: age
-    app.kubernetes.io/part-of: sentences
   name: age
 spec:
   ports:
-  - name: api
+  - name: http-age
     port: 5000
     protocol: TCP
     targetPort: 5000
     appProtocol: http
   selector:
-    app: sentences-age
+    app: sentences
     mode: age
   type: ClusterIP
 ---

@@ -2,25 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: sentences-name
+    app: sentences
     mode: name
-    app.kubernetes.io/part-of: sentences
     version: v1
-  name: name
+  name: name-v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sentences-name
+      app: sentences
       mode: name
-      app.kubernetes.io/part-of: sentences
       version: v1
   template:
     metadata:
       labels:
-        app: sentences-name
-        mode: name
-        app.kubernetes.io/part-of: sentences
+        app: sentences
+        mode: name        
         version: v1
       annotations:
         dummy: '123'
@@ -37,18 +34,18 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: sentences-name
+    app: sentences
     mode: name
   name: name
 spec:
   ports:
-  - name: api
+  - name: http-name
     port: 5000
     protocol: TCP
     targetPort: 5000
     appProtocol: http
   selector:
-    app: sentences-name
+    app: sentences
     mode: name
   type: ClusterIP
 ---
@@ -56,25 +53,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: sentences-name
+    app: sentences
     mode: name
-    app.kubernetes.io/part-of: sentences
     version: v2
   name: name-v2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sentences-name
+      app: sentences
       mode: name
-      app.kubernetes.io/part-of: sentences
       version: v2
   template:
     metadata:
       labels:
-        app: sentences-name
+        app: sentences
         mode: name
-        app.kubernetes.io/part-of: sentences
         version: v2
       annotations:
         dummy: '123'

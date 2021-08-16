@@ -4,7 +4,9 @@ metadata:
   name: sentences
 spec:
   hosts:
-  - "sentences.istio.eficode.academy"
+  - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+  exportTo:
+  - "."
   gateways:
   - $SENTENCES_INGRESSGATEWAY_NS/sentences
   http:

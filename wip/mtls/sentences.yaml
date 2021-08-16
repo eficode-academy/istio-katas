@@ -4,21 +4,21 @@ metadata:
   labels:
     app: sentences
     mode: sentence
-    app.kubernetes.io/part-of: sentences
-  name: sentences
+    version: v1
+  name: sentences-v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: sentences
       mode: sentence
-      app.kubernetes.io/part-of: sentences
+      version: v1
   template:
     metadata:
       labels:
         app: sentences
         mode: sentence
-        app.kubernetes.io/part-of: sentences
+        version: v1
       annotations:
         dummy: '123'
         sidecar.istio.io/inject: 'false'
@@ -40,7 +40,7 @@ metadata:
   name: sentences
 spec:
   ports:
-  - name: api
+  - name: http-sentences
     port: 5000
     protocol: TCP
     targetPort: 5000
