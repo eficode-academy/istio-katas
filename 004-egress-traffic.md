@@ -6,33 +6,37 @@
 
 ## Learning goals
 
-- Understand how to access external services
-- Understand Istio gateways (Egress)
+- How to access external services
+- Ho to route external (Egress) traffic through Istio gateways
 
 ## Introduction
 
-These exercises will introduce you to Istio concepts 
+This exercise will introduce you to Istio concepts 
 and ([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)) 
 for configuring traffic **out** of the service mesh. This is commonly 
 called Egress traffic.
 
-You will use two Istio CRD's for this. The [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway) 
+There are two Istio CRD's in addition to a virtual service needed for this. 
+The [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway) 
 and the [ServiceEntry](https://istio.io/latest/docs/reference/config/networking/service-entry/#ServiceEntry) 
 CRD's. 
 
-You will route traffic **directly** to an external service from an internal 
+First you will route traffic **directly** to an external service from an internal 
 service with a service entry. Then you will route traffic from an internal 
 service through a common egress gateway. 
 
-These exercises build on the [Getting Traffic Into The mesh](003-ingress-traffic.md) exercises.
+This exercise build on the [Getting Traffic Into The mesh](003-ingress-traffic.md) exercises.
 
-## Exercise: Egress Traffic With Service Entry
+## Exercise: Egress Traffic
 
 In this exercise you will deploy a **new** version of the **sentences** 
 service. This new version will use a new **API** service which does nothing 
 more than make a call to an external service ([httpbin](https://httpbin.org/)) 
 asking for a delay of 1 second for responses. You will then define a ServiceEntry 
-to allow traffic to the external service.
+to allow traffic to the external service. After you have successfully reached 
+httpbin you will route the traffic through a common egress gateway.
+
+### Service Entry
 
 A ServiceEntry allows you to apply Istio traffic management for services 
 running **outside** of your mesh. Your service might use an external API 
@@ -104,6 +108,114 @@ the service entry to the namespace where it is defined.
 > scoping the service entry to your namespace will open the external 
 > service for **all** attendees. 
 
+### Gateway
+
+Once a service entry is defined the traffic flows **directly** from the 
+workloads Envoy sidecar to the external service. 
+
+But it is a pretty common use cases to have traffic leaving the mesh 
+routed **via** a common **egress** gateway.
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: myapp-egressgateway
+spec:
+  selector:
+    app: istio-egressgateway
+    istio: egressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - external-api.example.com
+```
+
+The fields are the same as for the gateway defined for Ingress traffic to 
+the sentences service in a previous exercise. The notable difference being 
+that the **selectors** are now the labels on the **Egress** POD 
+`istio-egressgateway`, which is also running a standalone Envoy proxy just like 
+the ingress gateway.
+
+The gateway defines an **exit point** to be exposed in the `istio-egressgateway`. 
+That is it. Nothing else. Just like an ingress entry point it, knows nothing 
+about how traffic is routed to it. 
+
+<details>
+    <summary> More Info </summary>
+
+A Gateway **describes** a load balancer operating at the **edge** of the mesh 
+receiving incoming or outgoing **HTTP/TCP** connections. The specification 
+describes the ports to be expose, type of protocol, configuration for the 
+load balancer, etc.
+
+An Istio **Egress** gateway in a Kubernetes cluster consists, at a minimum, of a 
+Deployment and a Service. Istio egress gateways are based on Envoy and have a 
+**standalone** Envoy proxy. 
+
+Inspecting our course environment would show something like:
+
+```console
+NAME                                       TYPE                                   
+istio-egressgateway                        deployment  
+istio-egressgateway                        service
+istio-egressgateway-8679c48588-2p8vw       pod
+```
+
+Inspecting the POD would show something like:
+
+```console
+NAME                                    CONTAINERS
+istio-egressgateway-8679c48588-2p8vw    istio-proxy
+```
+
+</details>
+
+In order to route the traffic we, of course, use a virtual service. 
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: external-api-route
+spec:
+  hosts:
+  - external-api.example.com
+  exportTo:
+  - "."
+  gateways:
+  - mesh
+  http:
+  - match:
+    - gateways:
+      - mesh
+      port: 80
+    route:
+    - destination:
+        host: istio-egressgateway
+        port:
+          number: 80
+      weight: 100
+```
+
+- The route uses the reserved keyword `mesh` implying that this rule applies 
+to the sidecars in the mesh. 
+
+- The scopeTo field ensures the virtual service is applied only to the present 
+namespace. 
+
+- The **full name** of the `istio-egressgateway` service is defined instead 
+of the shortname because the gateway is located in the `istio-system` namespace.
+
+> :bulb: Istio will translate a **short name**, e.g. `istio-egressgateway`, 
+> based one the **namespace** of the **rule**, e.g. if the virtual 
+> service is in the `default` namespace it will translate to 
+> `istio-egressgateway.default.svc.cluster.local`. So **full names** 
+> should be used when using a gateway in another namespace.
+
 ### Overview
 
 - Modify `sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml` files with `<YOUR_NAMESPACE>`
@@ -121,6 +233,16 @@ the service entry to the namespace where it is defined.
 - Observe the traffic flow with Kiali
 
 - Create a virtual service with a timeout of 3 seconds
+
+- Observe the traffic flow with Kiali
+
+- Modify the the virtual service to route traffic through the common gateway
+
+> :bulb: The exit point for [httpbin](http://httpbin.org) and needed routes to 
+> the `istio-egressgateway` have already been created in the `istio-system` 
+> namespace. The role based access control (RBAC) in our training environment 
+> does **not** permit attendees to create resources in the `istio-system` 
+> namespace.
 
 - Observe the traffic flow with Kiali
 
@@ -225,7 +347,7 @@ and it is a **black hole** to the service mesh.
 
 - **Define a service entry for httpbin.org**
 
-Create a service entry called `api-egress-se.yaml`in 
+Create a service entry called `api-egress-se.yaml` in 
 `004-egress-traffic/start/`.
 
 ```yaml
@@ -276,7 +398,7 @@ WARNING:root:Operation 'api' took 374.259ms
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu.
 
-![No Service Entry](images/kiali-api-se.png)
+![Service Entry](images/kiali-api-se.png)
 
 Now Kiali recognizes the external service because of the service entry and it 
 is no longer a black hole.
@@ -336,179 +458,10 @@ WARNING:root:Operation 'api' took 504.809ms
 
 Change the timeout to something greater than 1 second and ensure that you get 200(OK) responses.
 
-</details>
-
-## Exercise: Egress Traffic With Gateway
-
-In a previous exercise you configured Istio to allow access to an external 
-service([httpbin](http://httpbin.org)). You then applied a service entry and 
-a simple virtual service with a timeout to prove that Istio traffic management 
-features can be applied.
-
-In the above case the traffic was flowing directly from the workloads Envoy 
-sidecar to the external service. 
-
-But there are use cases where you need to have traffic leaving the mesh 
-routed **via** a dedicated **egress** gateway.
-
-In this exercise we will route outbound traffic for api service through the 
-dedicated **egress** gateway(`istio-egressgateway`) provided by Istio in the 
-`istio-system` namespace.
-
-<details>
-    <summary> More Info </summary>
-
-A Gateway **describes** a load balancer operating at the **edge** of the mesh 
-receiving incoming or outgoing **HTTP/TCP** connections. The specification 
-describes the ports to be expose, type of protocol, configuration for the 
-load balancer, etc.
-
-An Istio **Egress** gateway in a Kubernetes cluster consists, at a minimum, of a 
-Deployment and a Service. Istio egress gateways are based on Envoy and have a 
-**standalone** Envoy proxy. 
-
-Inspecting our course environment would show something like:
-
-```console
-NAME                                       TYPE                                   
-istio-egressgateway                        deployment  
-istio-egressgateway                        service
-istio-egressgateway-8679c48588-2p8vw       pod
-```
-
-Inspecting the POD would show something like:
-
-```console
-NAME                                    CONTAINERS
-istio-egressgateway-8679c48588-2p8vw    istio-proxy
-```
-
-</details>
-
-You are going to do this by defining a gateway. 
-
-```yaml
-apiVersion: networking.istio.io/v1beta1
-kind: Gateway
-metadata:
-  name: myapp-egressgateway
-spec:
-  selector:
-    app: istio-egressgateway
-    istio: egressgateway
-  servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-    - myapp.org
-```
-The fields are the same as for the gateway you defined for the sentences 
-service in a previous exercise regarding Ingress traffic. The notable 
-difference being that the **selectors** are now the labels on the 
-**Egress** POD `istio-egressgateway`, which is also running a standalone 
-Envoy proxy just like the ingress gateway.
-
-The gateway defines an **exit point** to be exposed in the `istio-egressgateway`. 
-That is it. Nothing else. Just like an ingress entry point it, knows nothing 
-about how traffic is routed to it. 
-
-In order to route the traffic we, of course, use a virtual service. 
-
-```yaml
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: external-api
-spec:
-  hosts:
-  - external-api.example.com
-  exportTo:
-  - "."
-  gateways:
-  - istio-egressgateway
-  - mesh
-  http:
-  - match:
-    - gateways:
-      - mesh
-      port: 80
-    route:
-    - destination:
-        host: istio-egressgateway.istio-system.svc.cluster.local
-        port:
-          number: 80
-      weight: 100
-  - match:
-    - gateways:
-      - istio-egressgateway
-      port: 80
-    route:
-    - destination:
-        host: external-api.example.com
-        port:
-          number: 80
-      weight: 100
-```
-
-> :bulb: Notice that there are **two** gateways and **two** matches/routes 
-> defined in the above yaml.
-
-The first route uses the reserved keyword `mesh` implying that this rule 
-applies to the sidecars in the mesh. E.g any sidecar wanting to hit the 
-external service will be routed to the `istio-egressgateway` in the 
-`istio-system` namespace.
-
-The second route is the one directing traffic from the egress gateway to 
-the external service.
-
-So, in order to get the outbound traffic **from** the workload to our external 
-service you need to define a route to the `istio-egressgateway`, which is 
-located in the `istio-system` namespace. Then you need to define a route 
-from the egress gateway to the external service. 
-
- ### Overview
-
-- Make sure the sentence service `v2` with age,name and api services are deployed
-
-- Create an exit point(Gateway) for external service(httpbin.org) traffic
-
-- Modify the `api-egress-vs.yaml` file from previous exercise
-
-### Step by Step
-<details>
-    <summary> More Details </summary>
-
-- **Make sure the sentence service `v2` with age,name and api services are deployed**
-
-If you have not completed exercise [004]() Apply the yaml for the services if not already deployed.
+ - **Modify the the virtual service to route traffic through the common gateway**
 
 ```console
 kubectl apply -f 004-egress-traffic/start/
-```
-
-**Create an exit point for external service httpbin traffic**
-
-Create a file called `api-egress-gw.yaml` in 
-`004-egress-traffic/start/`.
-
-```yaml
-apiVersion: networking.istio.io/v1beta1
-kind: Gateway
-metadata:
-  name: istio-egressgateway
-spec:
-  selector:
-    app: istio-egressgateway
-    istio: egressgateway
-  servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-    - httpbin.org
 ```
 
 **Modify the `api-egress-vs.yaml` from previous exercise**
@@ -524,7 +477,6 @@ spec:
   exportTo:
   - "."
   gateways:
-  - istio-egressgateway
   - mesh
   http:
   - match:
@@ -537,16 +489,6 @@ spec:
         port:
           number: 80
       weight: 100
-  - match:
-    - gateways:
-      - istio-egressgateway
-      port: 80
-    route:
-    - destination:
-        host: httpbin.org
-        port:
-          number: 80
-      weight: 100
 ```
 
 </details>
@@ -554,15 +496,28 @@ spec:
 
 # Summary
 
-In these exercises you created a service entry to allow access to an external service. 
-This is a pretty common use case. A lot of service meshes will have a `REGISTRY_ONLY` 
-policy defined for security reasons. So you should be aware of what a service entry does.
+In this exercise you created a service entry to allow access to an 
+external service. This is a pretty common use case. A lot of service 
+meshes will have a `REGISTRY_ONLY` policy defined for security reasons. 
+So you should be aware of what a service entry does.
 
-The important takeaway from these exercises is this.
+Afterwards you created a virtual service to demonstrate Istio traffic 
+management for traffic to an external service. Finally, you routed the 
+traffic to the external service through a common egress gateway. 
 
-**If traffic is not flowing through the mesh, e.g through the envoy sidecars, 
-then you cannot leverage Istio features. Regardless of whether it is ingress or 
-egress traffic.**
+The important takeaways from this exercise are.
+
+- If traffic is **not** flowing through the mesh, e.g through the 
+envoy sidecars, then you cannot leverage Istio features. Regardless 
+of whether it is ingress or egress traffic.
+
+- Service entries are need if the default passthrough logic to external 
+service is disabled.
+
+- Gateways define an exit point for load balancer operating at the edge of 
+the mesh. You still need to route traffic to the gateway and the external 
+service.
+
 
 # Cleanup
 
