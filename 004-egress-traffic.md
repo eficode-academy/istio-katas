@@ -522,7 +522,7 @@ down menu. Select the checkboxes as shown in the below image.
 
 You will see traffic to the sentences service entering through the ingress 
 gateway in the `istio-ingress` namespace. Traffic from the api service is now 
-leaving through the common egress gateway in the `istio-system`namespace.
+leaving through the common egress gateway in the `istio-system` namespace.
 
 ![API Egress](images/kiali-api-egress.png)
 
