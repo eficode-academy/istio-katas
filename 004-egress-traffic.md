@@ -210,10 +210,9 @@ namespace.
 - The **full name** of the `istio-egressgateway` service is defined instead 
 of the shortname because the gateway is located in the `istio-system` namespace.
 
-> :bulb: Istio will translate a **short name**, e.g. `istio-egressgateway`, 
-> based one the **namespace** of the **rule**, e.g. if the virtual 
-> service is in the `default` namespace it will translate to 
-> `istio-egressgateway.default.svc.cluster.local`. So **full names** 
+> :bulb: Istio will translate a **short name** based one the **namespace** of the 
+> **rule**, e.g. if the virtual service is in the `default` namespace it will 
+> translate to > `istio-egressgateway.default.svc.cluster.local`. So **full names** 
 > should be used when using a gateway in another namespace.
 
 ### Overview
@@ -493,6 +492,39 @@ spec:
 
 </details>
 
+Apply the changes.
+
+```console
+kubectl apply -f 004-egress-traffic/start/api-egress-vs.yaml
+```
+
+- **Observe the responses for the external service**
+
+Export the pod as an environment variable and tail the logs.
+
+```console
+export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
+kubectl logs "$API_POD" --tail=20 --follow
+```
+
+You should be getting a 200(OK) response from the external service. 
+
+```console
+INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 12:21:14] "GET / HTTP/1.1" 200 -
+WARNING:root:Response was: 200                <-------------------- OK Response
+WARNING:root:Operation 'api' took 374.259ms
+```
+
+- **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu. Select the checkboxes as shown in the below image.
+
+You will see traffic to the sentences service entering through the ingress 
+gateway in the `istio-ingress` namespace. Traffic from the api service is now 
+leaving through the common egress gateway in the `istio-system`namespace.
+
+![API Egress](images/kiali-api-egress.png)
 
 # Summary
 
@@ -503,7 +535,7 @@ So you should be aware of what a service entry does.
 
 Afterwards you created a virtual service to demonstrate Istio traffic 
 management for traffic to an external service. Finally, you routed the 
-traffic to the external service through a common egress gateway. 
+traffic to the external service through a **common** egress gateway. 
 
 The important takeaways from this exercise are.
 
@@ -511,13 +543,12 @@ The important takeaways from this exercise are.
 envoy sidecars, then you cannot leverage Istio features. Regardless 
 of whether it is ingress or egress traffic.
 
-- Service entries are need if the default passthrough logic to external 
-service is disabled.
+- Service entries are needed if the **default** passthrough logic to 
+external service is disabled.
 
 - Gateways define an exit point for load balancer operating at the edge of 
 the mesh. You still need to route traffic to the gateway and the external 
 service.
-
 
 # Cleanup
 
