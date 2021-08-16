@@ -25,7 +25,7 @@ First you will route traffic **directly** to an external service from an interna
 service with a service entry. Then you will route traffic from an internal 
 service through a common egress gateway. 
 
-This exercise build on the [Getting Traffic Into The mesh](003-ingress-traffic.md) exercises.
+This exercise builds on the [Getting Traffic Into The mesh](003-ingress-traffic.md) exercises.
 
 ## Exercise: Egress Traffic
 
@@ -141,7 +141,7 @@ that the **selectors** are now the labels on the **Egress** POD
 the ingress gateway.
 
 The gateway defines an **exit point** to be exposed in the `istio-egressgateway`. 
-That is it. Nothing else. Just like an ingress entry point it, knows nothing 
+That is it. Nothing else. Just like an ingress entry point, it knows nothing 
 about how traffic is routed to it. 
 
 <details>
@@ -195,7 +195,7 @@ spec:
       port: 80
     route:
     - destination:
-        host: istio-egressgateway
+        host: istio-egressgateway.istio-system.svc.cluster.local
         port:
           number: 80
       weight: 100
