@@ -5,8 +5,6 @@ metadata:
 spec:
   hosts:
   - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
-  exportTo:
-  - "."
   gateways:
   - sentences
   http:

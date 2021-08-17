@@ -5,10 +5,8 @@ metadata:
 spec:
   hosts:
   - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
-  exportTo:
-  - "."
   gateways:
-  - $SENTENCES_INGRESSGATEWAY_NS/sentences
+  - istio-ingress/user2-sentences   # Must point to the entry point (gateway) in the istio-ingress namespace
   http:
   - route:
     - destination:
