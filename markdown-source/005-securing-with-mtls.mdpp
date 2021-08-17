@@ -1,23 +1,80 @@
 !INCLUDE "markdown-source/meta.md"
 [//]: # (Tags: #TLS #mutual-tls #PKI-domains #ingress-gateway #VirtualService #Gateway #PeerAuthentication #DestinationRule)
 
-# Securing with Mutual TLS <--- Being Reformatted!
+# Securing with Mutual TLS <----- Under construction
+
+## Learning goals
+
+- Secure communication between services
+- Secure communication with mesh external services
+
+## Introduction
 
 This exercise will demonstrate how to use mutual TLS inside the mesh between
 PODs with the Istio sidecar injected and also from mesh-external services
 accessing the mesh through an ingress gateway.
 
-## Mutual TLS Inside the Mesh
+You will be using several Istio custom resource 
+definitions([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)) 
+for this. But the main two dealing with TLS are.
 
-Deploy the sentences application:
+- [PeerAuthentication](https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication-MutualTLS) - 
+Applies to requests that a service receives
+
+- [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/#DestinationRule) - 
+What type of TLS sidecar sends
+
+### PeerAuthentication
+
+
+### DestinationRule
+
+
+## Exercise: Mutual TLS Inside the Mesh
+
+You will deploy all the services for the sentences application to observe 
+the affects of mTLS configuration **without** sidecars. Afterwards you will 
+inject sidecars and observe the effects of the mTLS configuration.
+
+### Overview
+
+- Deploy the sentences application and observe sidecars
+
+- Run the script `./scripts/loop-query-mtls.sh`
+
+- Observe the traffic flow with Kiali
+
+- Create peer authentication requiring `STRICT` mTLS
+
+- Observe the traffic flow with Kiali
+
+- Enable sidecar for the age service 
+
+- Observe the traffic flow with Kiali
+
+- Allow un-encrypted and un-authenticated traffic using `PERMISSIVE` mTLS
+
+- Observe the traffic flow with Kiali
+
+- Inject sidecars for all services
+
+- Re-enabled `STRICT` mTLS
+
+- Observe the traffic flow with Kiali
+
+
+### Step by Step
+<details>
+    <summary> More Details </summary>
+
+- **Deploy the sentences application and observe sidecars**
 
 ```console
 kubectl apply -f 005-securing-with-mtls/
-kubectl apply -f 005-securing-with-mtls/igw/gateway-http.yaml
-kubectl apply -f 005-securing-with-mtls/igw/virtual-service-http.yaml
 ```
 
-Execute `kubectl get pods` and observe that we have one container per POD, i.e. no Istio sidecars injected:
+Execute `kubectl get pods` and observe that we have one container per POD, 
+i.e. **no Istio sidecars injected**.
 
 ```
 NAME                         READY   STATUS    RESTARTS   AGE
@@ -26,24 +83,53 @@ name-86969f7468-4qfmp        1/1     Running   0          3s
 sentences-779767c659-mlcm9   1/1     Running   0          4s
 ```
 
-Execute the following to retreive sentences and thus update Istio metrics.
+- **Run the script `./scripts/loop-query-mtls.sh`**
+
+Execute the following to retrieve sentences and thus update Istio metrics.
 
 ```console
-scripts/loop-query-loadbalancer-ep.sh
+./scripts/loop-query-mtls.sh
 ```
+
+- **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu. Select the checkboxes as shown in the below image.
 
 If we observe the result in Kiali, we will see that we only have information
 about traffic from the ingress gateway towards the frontend sentences service
 and that mTLS is not being used (later we will see how Kiali denotes that mTLS
 is in use and be able to see the difference from this view).:
 
+
+TODO: Update this image!
 ![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls-anno.png)
 
-We now create a PeerAuthentication settings that require `STRICT` mTLS:
+- **Create peer authentication requiring `STRICT` mTLS**
+
+Create a file called `peer-authentication.yaml` in 
+`005-securing-with-mtls/start/`.
+
+```yaml
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+spec:
+  mtls:
+    mode: STRICT
+```
+
+Apply the peer authentication.
 
 ```console
-kubectl apply -f 005-securing-with-mtls/peer-auth/strict.yaml
+kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 ```
+
+- **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu.
 
 We see, that traffic still flows, which is because the sentences services do not
 have an Istio sidecar and the strict peer-authentication policy we created only
@@ -52,40 +138,80 @@ validating requests made *towards* a workload with an Istio sidecar. I.e. even
 if we created a strict policy in the namespace of the ingress gateway, traffic
 would still flow.
 
-Istio lets us define mTLS settings using these resource types:
+TODO: Update this image!
+![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls-anno.png)
 
-- `PeerAuthentication` - What a sidecar accepts (ingress)
+- **Enable sidecar for the age service**
 
-- `DestinationRule` - what type of TLS sidecar sends (egress)
-
-Lets enable the Istio sidecar for the age service:
+Inject a sidecar for the **age** service.
 
 ```console
 cat 005-securing-with-mtls/age.yaml |grep -v inject | kubectl apply -f -
 ```
 
-After this we see, that traffic no longer flows. This is because the frontend
-sentences service do not have an Istio sidecar and hence do not use mTLS towards
-the `age` service which now require mTLS.
+Wait for the pod to be redeployed. 
+
+```console
+kubectl get pods
+```
+
+You should see it being terminated and new instantiated.
+
+```console
+Todo add some output here!
+```
+
+- **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu. Select the checkboxes as shown in the below image.
+
+After this we see, that traffic no longer flows. This is because the frontend 
+sentences service do not have an Istio sidecar and hence do not use mTLS 
+towards the `age` service which now require mTLS.
 
 Inspect the result in Kiali - we see 100% errors:
 
+TODO: Update this image!
 ![Kiali with no sidecars](images/kiali-mtls-error.png)
 
-While migrating an application to full mTLS, it may be useful to start with a
-`PERMISSIVE` mTLS mode which allow a mix of mTLS and un-encrypted and
-un-authenticated traffic.
+- **Allow un-encrypted and un-authenticated traffic using `PERMISSIVE` mTLS**
 
-Execute the following to restore traffic:
+Modify the `peer-authentication.yaml` in `005-securing-with-mtls/start/` 
+to use `PERMISSIVE` mode.
 
-```console
-kubectl apply -f 005-securing-with-mtls/peer-auth/permissive.yaml
+```yaml
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+spec:
+  mtls:
+    mode: PERMISSIVE
 ```
 
-Next, observe the traffic in Kiali and try to explain why we see the disjoint
-graph and what the source of the `unknown` traffic could be.
+> While migrating an application to full mTLS, it may be useful to start with 
+> a `PERMISSIVE` mTLS mode which allow a mix of mTLS and un-encrypted and 
+> un-authenticated traffic.
 
-Hint: Which services have sidecars providing metrics for Kiali?
+```console
+kubectl apply -f 005-securing-with-mtls/peer-authentication.yaml
+```
+
+- **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu. Select the checkboxes as shown in the below image.
+
+The traffic is now flowing but we see a disjointed graph and `unknown` 
+traffic. Think about why that is happening.
+
+TODO: Add needed image.
+![Disjointed graph](images/kiali-disjointed-graph.png)
+
+> Hint: Which services have sidecars providing metrics for Kiali?
+
+- **Inject sidecars for all services**
 
 Lets inject Istio sidecars into all sentences services:
 
@@ -93,17 +219,52 @@ Lets inject Istio sidecars into all sentences services:
 cat 005-securing-with-mtls/*.yaml |grep -v inject | kubectl apply -f -
 ```
 
-Since all services now have an Istio sidecar, we can enable strict mTLS:
+Wait for the pods to be redeployed.
 
 ```console
-kubectl apply -f 005-securing-with-mtls/peer-auth/strict.yaml
+kubectl get pods
 ```
+
+You should see them being terminated and new instantiated.
+
+```console
+Todo add some output here!
+```
+
+- **Re-enabled `STRICT` mTLS**
+
+Since **all** services now have an Istio sidecar, we can enable strict mTLS:
+
+Modify the `peer-authentication.yaml` in `005-securing-with-mtls/start/` 
+to use `STRICT` mode.
+
+```yaml
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+spec:
+  mtls:
+    mode: STRICT
+```
+
+```console
+kubectl apply -f 005-securing-with-mtls/peer-authentication.yaml
+```
+
+- **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu. Select the checkboxes as shown in the below image.
 
 Now we can see in Kiali, that mTLS is enabled between all services of the
 sentences application (in the view below, the link between the frontend and the
 `age` service has been selected):
 
+TODO: Update the below image
 ![Full mTLS](images/kiali-mtls-anno.png)
+
+----- FINISH BELOW -----
 
 To show how we can control egress mTLS settings with a DestinationRule, we
 create one that use mTLS towards `v2` of the `name` service and no mTLS for
@@ -122,12 +283,22 @@ Now we see a missing padlock on the traffic towards `v1`:
 
 ![No mTLS towards v1](images/kiali-mtls-destrule-anno.png)
 
+</details>
 
 ## Mutual TLS from External Clients through Ingress Gateways
 
 This exercise extends the server-side TLS we tried out in [exercise Multiple
 Teams and Separation of Duties](multi-teams.md). Create a Certificate authority
 and certificate as follows (or reuse the one from the previous exercise):
+
+### Overview
+
+- 
+- 
+
+### Step by Step
+<details>
+    <summary> More Details </summary>
 
 First, ensure that the gateway and virtual service from the first part of this
 exercise is removed - we re-create them later with TLS enabled:
@@ -188,7 +359,9 @@ Note the curl options (printed when the script starts) that specify the
 certificate authority and also the client certificate and key which is required
 for mTLS:
 
-### PKI Domains
+</details>
+
+### Summary
 
 PKI (Public Key Infrastructure) does not necessarily mean, that we are using
 internet-scoped public/private key encryption. In this exercise we have seen how
@@ -205,10 +378,6 @@ end-to-end protection of traffic.
 ## Cleanup
 
 ```console
-kubectl -n $SENTENCES_INGRESSGATEWAY_NS delete -f 005-securing-with-mtls/igw/gateway.yaml
-cat 005-securing-with-mtls/igw/virtual-service.yaml | envsubst | kubectl delete -f -
-kubectl delete -f 005-securing-with-mtls/peer-auth/permissive.yaml
-kubectl delete -f 005-securing-with-mtls/dest-rule/name.yaml
-kubectl delete -f 005-securing-with-mtls/
-kubectl -n $SENTENCES_INGRESSGATEWAY_NS delete secret sentences-tls-secret
+kubectl delete -f 005-securing-with-mtls/start/
+kubectl -n istio-ingress delete secret <YOUR_NAMESPACE>-sentences-tls-secret
 ```
