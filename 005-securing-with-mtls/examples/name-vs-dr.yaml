@@ -5,6 +5,8 @@ metadata:
 spec:
   hosts:
   - name
+  exportTo:
+  - "."
   gateways:
   - mesh
   http:
@@ -28,6 +30,8 @@ metadata:
   name: name
 spec:
   host: name
+  exportTo:
+  - "."
   subsets:
   - name: name-v1
     labels:
