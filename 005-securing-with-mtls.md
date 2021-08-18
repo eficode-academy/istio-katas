@@ -2,7 +2,7 @@
 [//]: # (Origin: https://github.com/eficode-academy/istio-katas)
 [//]: # (Tags: #TLS #mutual-tls #PKI-domains #ingress-gateway #VirtualService #Gateway #PeerAuthentication #DestinationRule)
 
-# Securing with Mutual TLS <----- Under construction
+# Securing with Mutual TLS <----- WIP (Work In Progress)
 
 ## Learning goals
 
@@ -41,7 +41,7 @@ inject sidecars and observe the effects of the mTLS configuration.
 
 - Deploy the sentences application and observe sidecars
 
-- Run the script `./scripts/loop-query-mtls.sh`
+- Run the script `./scripts/loop-query-mtls.sh` 
 
 - Observe the traffic flow with Kiali
 
