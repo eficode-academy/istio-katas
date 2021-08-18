@@ -315,9 +315,9 @@ name-v1-795cf79f69-clrw4        2/2     Running   0          8m41s
 sentences-v1-7cfbb658b6-rthxn   2/2     Running   0          8m41s
 ```
 
-Using automatic sidecar injection is the recommended way to add services 
-to the mesh as it is provides a more **pervasive** and homogenous approach. 
-If you do not want a sidecar for a service, use an **opt out** approach.
+> Using automatic sidecar injection is the recommended way to add services 
+> to the mesh as it is provides a more **pervasive** and homogenous approach. 
+> If you do not want a sidecar for a service, use an **opt out** approach.
 
 - **Inject sidecar for the `age` service**
 
