@@ -19,16 +19,163 @@ definitions([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-ex
 for this. But the main two dealing with TLS are.
 
 - [PeerAuthentication](https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication-MutualTLS) - 
-Applies to requests that a service receives
+Applies to requests that a service **receives**
 
 - [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/#DestinationRule) - 
-What type of TLS sidecar sends
+What type of TLS sidecar **sends**
 
 ### PeerAuthentication
 
+Istio provides two types of authentication policies of which *peer 
+authentication* is one of them. 
+
+Peer authentication is used for **service-to-service** authentication 
+to verify the client making the connection and secure the 
+service-to-service communication. Istio uses 
+[mutual TLS](https://en.wikipedia.org/wiki/Mutual_authentication)(mTLS) 
+for transport authentication. 
+
+This provides a **strong identity** for each workload. Peer authentication 
+is normally enabled at the `cluster/mesh` level, as is our training 
+infrastructure, which means traffic is secured by default for all services 
+in the cluster **without** requiring code changes. 
+
+> Istio has it's own certificate authority(CA) and securely provisions strong 
+> identities to every workload with X.509 certificates. Istio agents, running 
+> alongside each Envoy proxy, work together with istiod to automate key and 
+> certificate rotation at scale. 
+
+<details>
+    <summary> :bulb: More About Workload Identity </summary>
+
+Istio provisions keys and certificates through the following flow:
+
+- istiod offers a gRPC service to take certificate signing requests (CSRs).
+
+- When started, the Istio agent creates the private key and CSR, and then 
+sends the CSR with its credentials to istiod for signing.
+
+- The CA in istiod validates the credentials carried in the CSR. Upon 
+successful validation, it signs the CSR to generate the certificate.
+
+- When a workload is started, Envoy requests the certificate and key from 
+the Istio agent in the same container via the Envoy secret discovery 
+service (SDS) API.
+
+- The Istio agent sends the certificates received from istiod and the private 
+key to Envoy via the Envoy SDS API.
+
+- Istio agent monitors the expiration of the workload certificate. 
+
+The above process repeats periodically for certificate and key rotation.
+
+</details>
+
+There are four modes that can be set for mTLS.
+
+- UNSET - Modes is inherited from parent, defaults to PERMISSIVE
+
+- DISABLE - Connection is **not** tunneled 
+
+- PERMISSIVE - Connection can be either plaintext or mTLS tunnel
+
+- STRICT - Connection is an mTLS tunnel (TLS with client cert must be presented)
+
+> PeerAuthentication defines how traffic will be tunneled (or not) to the sidecar.
+
+The PeerAuthentication CRD is used to specify the mTLS settings for a workloads 
+**requests**.
+
+An example of a peer authentication policy is seen below:
+
+```yaml
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: foo
+spec:
+  mtls:
+    mode: PERMISSIVE
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: foo
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  mtls:
+    mode: STRICT
+```
+
+The above policy says to allow **both** plain-text and mTLS traffic for **all** 
+workloads in the `foo` namespace but **require** mTLS for the workload `myapp` 
+in the `foo` namespace.
+
+- The `namespace` definition scopes the policy to the defined namespace.
+
+> If a policy is **not** namespace scoped it applies to **all** workloads 
+> within the mesh. There can be only one mesh-wide peer authentication policy, 
+> and only one namespace-wide peer authentication policy per namespace. If you 
+> configure more then Istio will ignore the newer policies.
+
+- The `selector` determines the workload to apply the ChannelAuthentication to.
+
+You can also specify the mTLS mode at the **port** level **if** you specify 
+a `selector`. 
+
+```yaml
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  mtls:
+    mode: UNSET
+  portLevelMtls:      
+    9012:
+      mode: DISABLE
+```
 
 ### DestinationRule
 
+The DestinationRule CRD is used to specify the TLS settings for upstream 
+connections. E.g. traffic the workload sends. These settings are common for 
+both HTTP and TCP connections. 
+
+In a destination rule you use the `tls` keyword instead of the `mtls` keyword 
+under `spec.trafficPolicy`.
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: upstream-mtls
+spec:
+  host: upstream-app
+  trafficPolicy:
+    tls:                        # tls instead of mtls
+      mode: MUTUAL
+      clientCertificate: /etc/certs/myclientcert.pem
+      privateKey: /etc/certs/client_private_key.pem
+      caCertificates: /etc/certs/rootcacerts.pem
+```
+
+The modes are different also. 
+
+- DISABLE - Do not setup a TLS connection to the upstream endpoint.
+
+- SIMPLE - Originate a TLS connection to the upstream endpoint.
+
+- MUTUAL - Secure connections to the upstream using **mutual** TLS by 
+presenting client certificates for authentication.
+
+> You **must** specify the certificates when modes is set to MUTUAL.
+
+- ISTIO_MUTUAL - Same as MUTUAL except you do **not** specify the 
+client certificates as the certs generated for mTLS by Istio are used.
 
 ## Exercise: Mutual TLS Inside the Mesh
 
