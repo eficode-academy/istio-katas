@@ -294,13 +294,19 @@ spec:
           value: "age"
 ```
 
+Apply the changes to the `age.yaml` file.
+
+```console
+kubectl apply -f 000-setup-introduction/age.yaml
+```
+
 Use kubectl to see the number of pods running.
 
 ```console
 kubectl get pods
 ```
 
-You should now see that the `age` service has only **one** pod. E.g. it no 
+You should, eventually, see that the `age` service has only **one** pod. E.g. it no 
 longer has a sidecar and is **not** part of the service mesh.
 
 ```console
@@ -331,7 +337,7 @@ Use kubectl to see the number of pods running.
 kubectl get pods
 ```
 
-You should now see that the `age` service has only **two** pods. E.g. it has 
+You should now see that the `age` service has **two** pods. E.g. it has 
 a sidecar and is **again** part of the service mesh.
 
 ```console
