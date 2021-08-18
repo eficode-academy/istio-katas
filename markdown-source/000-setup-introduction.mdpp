@@ -280,8 +280,8 @@ spec:
         app: sentences
         mode: age
         version: v1
-      annotations:      
-        sidecar.istio.io/inject: 'false'
+      annotations:                          # Annotations block
+        sidecar.istio.io/inject: 'false'    # Enable or Disable sidecar injection
     spec:
       containers:
       - image: praqma/istio-sentences:v1
