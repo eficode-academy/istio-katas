@@ -12,10 +12,9 @@ The natural order would be:
 - [Traffic into the mesh](003-ingress-traffic.md)
 - [Traffic out of the mesh](004-egress-traffic.md)
 - [Securing with mutual TLS](005-securing-with-mtls.md)  - In Progress
-- [Controlling service to service communication]() - Todo
-- [Securing access to services]()  - Todo
+- [Service access control](006-service-access-control.md) - In Progress
 - [A tour of Istio's metrics]() - Todo
-- [??]()
+- [Observe network delays]() - Todo
 
 However each exercise, besides the setup introduction, has a 
 start folder located beneath it. E.g. `001-basic-traffic-routing/start` that 
