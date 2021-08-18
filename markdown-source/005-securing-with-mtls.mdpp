@@ -46,7 +46,7 @@ in the cluster **without** requiring code changes.
 > certificate rotation at scale. 
 
 <details>
-    <summary> :bulb: More About Workload Identity </summary>
+    <summary> More About Workload Identity </summary>
 
 Istio provisions keys and certificates through the following flow:
 
