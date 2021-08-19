@@ -91,6 +91,12 @@ There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`,
 
 </details>
 
+## Exercise: Mutual TLS Inside the Mesh
+
+You will deploy all the services for the sentences application to observe 
+the affects of mTLS configuration **without** sidecars. Afterwards you will 
+inject sidecars and observe the effects of the mTLS configuration.
+
 The PeerAuthentication CRD is used to specify the mTLS settings for a workloads 
 **requests**.
 
@@ -181,11 +187,6 @@ client certificates as the certs generated for mTLS by Istio are used.
 
 </details>
 
-## Exercise: Mutual TLS Inside the Mesh
-
-You will deploy all the services for the sentences application to observe 
-the affects of mTLS configuration **without** sidecars. Afterwards you will 
-inject sidecars and observe the effects of the mTLS configuration.
 
 ### Overview
 
