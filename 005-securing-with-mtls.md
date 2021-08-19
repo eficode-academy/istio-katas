@@ -17,13 +17,16 @@ accessing the mesh through an ingress gateway.
 
 You will be using several Istio custom resource 
 definitions([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)) 
-for this. But the main two dealing with TLS are.
+for this.
 
 - [PeerAuthentication](https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication-MutualTLS) - 
 Applies to requests that a service **receives**
 
 - [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/#DestinationRule) - 
 What type of TLS sidecar **sends**
+
+- [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings) 
+specifying TLS settings for external service
 
 ### PeerAuthentication
 
