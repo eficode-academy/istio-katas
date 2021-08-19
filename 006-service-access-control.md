@@ -2,7 +2,7 @@
 [//]: # (Origin: https://github.com/eficode-academy/istio-katas)
 [//]: # (Tags: #authorization #epehemeral-containers #NetworkPolicies #AuthorizationPolicy #workload-identity)
 
-# Service Access Control <----- WIP (Work In Progress)
+# Service Access Control
 
 ## Learning goal
 

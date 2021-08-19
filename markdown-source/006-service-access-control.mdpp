@@ -1,7 +1,7 @@
 !INCLUDE "markdown-source/meta.md"
 [//]: # (Tags: #authorization #epehemeral-containers #NetworkPolicies #AuthorizationPolicy #workload-identity)
 
-# Service Access Control <----- WIP (Work In Progress)
+# Service Access Control
 
 ## Learning goal
 
