@@ -27,16 +27,31 @@ to service access. The Istio CRD for this is the
 
 ### Overview
 
-- xxx
+- Deploy sentences application services
+
+- Test access to `name` service from the `age` service
+
+> Use kubectl to execute a curl command `curl name:5000/` from `age` service.
+
+- Restrict access to the name service with a kubernetes NetworkPolicy
+
+- Test access to `name` service from the `age` service
+
+- Test access to `name` service from the `sentences` service
+
+- Restrict access with an Istio AuthorizationPolicy
+
 
 ### Step by Step
 <details>
     <summary> More Details </summary>
 
+- **Deploy sentences application services**
+
 Deploy the sentences application:
 
 ```console
-kubectl apply -f 006-service-access-control/start/sentences.yaml
+kubectl apply -f 006-service-access-control/start/
 ```
 
 and test access:
@@ -45,44 +60,51 @@ and test access:
 scripts/loop-query.sh
 ```
 
-The sentences application is now deployed without any restrictions between components.
+- **Test access to `name` service from `age` service**
+
+The sentences application is now deployed without any restrictions between 
+components.
 
 To demonstrate that there are no restrictions between services, we access the
-`name` service from the `age` service - an access that is not necessary for the
-functioning of the sentences application. We use an ephemeral debug container as
-described in [Debugging with Ephemeral
-Containers](debugging-with-ephemeral-containers.md) to demonstrate this.
+`name` service from the `age` service - an access that is **not necessary** for the
+functioning of the sentences application. 
 
-Create a debug container attached to the `age` service as follows:
+Export `age` services POD name to an environment variable.
 
 ```console
-kubectl debug -it `kubectl get po -l mode=age -o jsonpath='{.items[0].metadata.name}'` --image praqma/network-multitool -- bash
+export AGE_POD=$(kubectl get pod -l app=sentences -l mode=age -o jsonpath="{.items[0].metadata.name}")
 ```
 
-First we access the primary endpoint of the `name` service. Run the following
-command in the debug container terminal:
+First we access the primary endpoint of the `name` service. Run the following 
+command.
 
 ```console
-curl name:5000/
+kubectl exec $AGE_POD -c age -- curl --silent name:5000/; echo "";
 ```
 
 Additionally, the `name` service have a few other ULRs/endpoints we can access:
 
 ```console
-curl name:5000/choices
-curl name:8000/metrics
+kubectl exec $AGE_POD -c age -- curl --silent name:5000/choices; echo "";
+```
+
+```console
+kubectl exec $AGE_POD -c age -- curl --silent name:8000/metrics; echo "";
 ```
 
 This shows, that we have wide access to the `name` service from the `age`
 service, which is not necessary for the functioning of the sentences
 application.
 
+- **Restrict access to the name service with a kubernetes NetworkPolicy**
+
 To restrict inter-service access to only what is necessary, we can use this
 Kubernetes-native NetworkPolicy:
 
 !INCLUDECODE "006-service-access-control/examples/networkpolicy.yaml" (yaml)
 
-> Note: Not all Kubernetes Network types implements NetworkPolicy. E.g. the *Flannel* network does not, whereas *Calico* and *WeaveNet* does.
+> Note: Not all Kubernetes Network types implements NetworkPolicy. 
+> E.g. the *Flannel* network does not, whereas *Calico* and *WeaveNet* does.
 
 This policy applies to the `name` service PODs due to the labels given in
 `spec.podSelector` and it allows ingress from the `sentence` service due to the
@@ -94,8 +116,14 @@ Apply this with:
 kubectl apply -f 006-service-access-control/examples/networkpolicy.yaml
 ```
 
+- **Test access to `name` service from `age` service**
+
 Retry the `curl` commands from previously and observe that this policy blocks
 access from the `age` service to the `name` service.
+
+```console
+kubectl exec $AGE_POD -c age -- curl --silent name:5000/; echo "";
+```
 
 <details>
   <summary>Why does applying an `ALLOW` policy between the `sentences` service and the `name` service block the `age` service?</summary>
@@ -114,13 +142,26 @@ is operating at the L3 and L4 networking layers.
 
 This is why allowing the `sentences` service access to the `name` service blocks
 all access from the `age` service.
+
 </details>
 
-The `sentences` service still have access to the `name` service, which we can
-test with an ephemeral debug container in the `sentences` service:
+- **Test access to `name` service from the `sentences` service**
+
+The `sentences` service still has access to the `name` service, which we can
+tested by executing a curl command from the container in the `sentences` 
+service as you have done fro the age container.
+
+Export `sentences` services POD name to an environment variable.
 
 ```console
-kubectl debug -it `kubectl get po -l mode=sentence -o jsonpath='{.items[0].metadata.name}'` --image praqma/network-multitool -- bash
+export SENTENCES_POD=$(kubectl get pod -l app=sentences -l mode=sentence -o jsonpath="{.items[0].metadata.name}")
+```
+
+Access the primary endpoint of the `name` service. by running the following 
+command.
+
+```console
+kubectl exec $SENTENCES_POD -c sentences -- curl --silent name:5000/; echo "";
 ```
 
 With this command, the previous URLs/endpoints for the `name` service towards
@@ -128,12 +169,21 @@ port 5000 will work. The NetworkPolicy did not allow access to port 8000, hence
 access the to the `name:8000/metrics` endpoint is no longer allowed.
 
 The `sentences` service can still access the `name:5000/choices` URL even though
-this is not needed by the `sentences` service. However, with a Kubernetes
-NetworkPolicy we cannot specify policies on URLs since these policies are
-operating at L3/L4 (IP addresses, L4 protocols and ports). For this we need an
-Istio
+this is not needed by the `sentences` service. 
+
+Execute the following command.
+
+```console
+kubectl exec $SENTENCES_POD -c sentences -- curl --silent name:5000/choices; echo "";
+```
+
+With a Kubernetes NetworkPolicy we cannot specify policies on URLs since these 
+policies are operating at L3/L4 (IP addresses, L4 protocols and ports). For this 
+we need an Istio
 [AuthorizationPolicy](https://istio.io/latest/docs/reference/config/security/authorization-policy/)
-which understand L7 (HTTP).
+which understands L7 (HTTP).
+
+- **Restrict access with an Istio AuthorizationPolicy**
 
 Before continuing, delete the Kubernetes NetworkPolicy:
 
@@ -148,26 +198,29 @@ identities to workloads within the mesh.
 **These identities are the foundation for authorization and mTLS between
   services.**
 
-Istio bootstraps trust through Kubernetes service accounts since these can be
-validated through the Kubernetes certificate authority. **This also means that
-there is a 1:1 link between Kubernetes service accounts and workload identities
-in Istio.** PODs in Kubernetes sharing a service account share a workload
-identity. It is therefore essential, that services to which we want to apply
-different policies are assigned different service accounts. For this purpose,
-the sentences application we deployed (`006-service-access-control/start/sentences.yaml`) created
-three different service accounts, one for each of the `sentences`, `age` and
+Istio bootstraps trust through Kubernetes service accounts since these can 
+be validated through the Kubernetes certificate authority. **This also means 
+that there is a 1:1 link between Kubernetes service accounts and workload 
+identities in Istio.** 
+
+PODs in Kubernetes sharing a service account share a workload identity. 
+It is therefore **essential**, that services to which we want to apply 
+different policies are assigned different service accounts. For this 
+purpose, the sentences application we deployed created **three** 
+different service accounts, one for each of the `sentences`, `age` and
 `name` service.
 
-With different identities assigned to the three services, we can create an
-`ALLOW` Istio
+With different identities assigned to the three services, 
+we can create an `ALLOW` Istio 
 [AuthorizationPolicy](https://istio.io/latest/docs/reference/config/security/authorization-policy/)
 that applies to the `name` service (due to the label selector in
-`spec.selector.matchLabels`):
+`spec.selector.matchLabels`).
 
 !INCLUDECODE "006-service-access-control/examples/authz-policy.yaml" (yaml)
 
-Note how the policy allow traffic from an workload identified as
-`cluster.local/ns/$NAMESPACE/sa/sentences`. This identifier should be interpreted as:
+Note how the policy allows traffic from a workload identified as
+`cluster.local/ns/$NAMESPACE/sa/sentences`. This identifier should be 
+interpreted like:
 
 ```
 cluster.local    - Identity within this cluster (identity can extend outside a Kubernetes cluster)
@@ -198,10 +251,11 @@ kubectl get po -l mode=sentence -o jsonpath='{.items[*].spec.serviceAccount}'
 
 To allow for running this exercise in different environments, the namespace name
 has been made configurable. To inspect the resulting AuthorizationPolicy use the
-following commands and change the value of `NAMESPACE` to suit your environment:
+following commands and change the value of `NAMESPACE` to `<YOUR_NAMESPACE>`, e.g 
+user1, user2, etc.
 
 ```console
-export NAMESPACE=default
+export NAMESPACE=<YOUR_NAMESPACE>
 cat deploy/authz/authz-policy.yaml | envsubst
 ```
 
@@ -217,11 +271,25 @@ the `sentences` service accessing the primary `name` endpoint and the
 `name:5000/choices` endpoint cannot be accessed either. This correlates with the
 AuthorizationPolicy only allowing `GET` towards `/`.
 
+```console
+kubectl exec $SENTENCES_POD -c sentences -- curl --silent name:5000/choices; echo "";
+```
+
 </details>
 
 ## Summary
 
-Istio AuthorizationPolicy also allow assigning conditions to policies and this
+The main takeaways from this exercise are.
+
+- Kubernetes NetworkPolicy's are operating at L3/L4 networking layers
+
+- Istio AuthorizationPolicy's understand L7 networking layer
+
+- Istio bootstraps trust through Kubernetes service accounts. This  means 
+that there is a 1:1 link between Kubernetes service accounts and workload 
+identities in Istio.
+
+Istio AuthorizationPolicy also allows assigning conditions to policies. This
 can be used to implement validation that e.g. only authenticated users access a
 given service.
 
