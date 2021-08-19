@@ -647,24 +647,11 @@ certificate.
 
 - Delete the gateway created in the previous exercise
 
-> You will modify and recreate it in a later step
-
 - Generate needed certificate authority(CA) and certificates 
-
-> Execute `./scripts/generate-certs.sh`. This will create a server side 
-> cert for the sentences front end service and store it in a kubernetes 
-> secret called `<YOUR_NAMESPACE>-tls-secret`. It will also create a client 
-> certificate which will be used by the `loop-query-mtls.sh` script.
 
 - Modify the gateway to configure `MUTUAL` TLS for port `443`
 
-> :bulb: This should be the `sentences-ingress-gw.yaml` you created in the 
-> previous exercise. It must be namespaced to the `istio-ingress`.
-
 - Modify the virtual service so point to the gateway in `istio-ingress` namespace
-
-> :bulb: As the gateway is scoped to the `istio-ingress` namespace it must be 
-> pre-pended to the gateway. E.g ` - istio-ingress/sentences`.
 
 - Apply the changes to the virtual service and gateway
 
