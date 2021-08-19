@@ -24,7 +24,7 @@ Applies to requests that a service **receives**
 - [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/#DestinationRule) - 
 What type of TLS sidecar **sends**
 
-- [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings) 
+- [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings) - 
 specifying TLS settings for external service
 
 ### PeerAuthentication
