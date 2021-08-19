@@ -298,15 +298,18 @@ Execute the following to retrieve sentences and thus update Istio metrics.
 - **Observe the traffic flow with Kiali**
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. Select the checkboxes as shown in the below image.
+down menu. 
+
+Select the `istio-ingress` namespace along with your namespace and select the
+display checkboxes as shown below.
+
+Select the **arrow** from the ingress gateway to the sentences service.
 
 If we observe the result in Kiali, we will see that we only have information
 about traffic from the ingress gateway towards the frontend sentences service
 and that mTLS is not being used (later we will see how Kiali denotes that mTLS
 is in use and be able to see the difference from this view).:
 
-
-TODO: Update this image!
 ![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls-anno.png)
 
 - **Create peer authentication requiring `STRICT` mTLS**
