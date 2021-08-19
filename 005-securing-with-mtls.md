@@ -28,8 +28,6 @@ What type of TLS sidecar **sends**
 - [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings) - 
 Specify TLS settings for external service
 
-### PeerAuthentication
-
 Istio provides two types of authentication policies of which *peer 
 authentication* is one of them. 
 
@@ -70,7 +68,7 @@ key to Envoy via the Envoy SDS API.
 
 </details>
 
-Peer authentication is normally enabled at the `mesh` level, as is our 
+Peer authentication is normally enabled at the `mesh` level, as in our 
 training infrastructure, which means traffic is secured by **default** 
 for all services in the cluster **without** requiring code changes. 
 
@@ -97,6 +95,8 @@ There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`,
 You will deploy all the services for the sentences application to observe 
 the affects of mTLS configuration **without** sidecars. Afterwards you will 
 inject sidecars and observe the effects of the mTLS configuration.
+
+### PeerAuthentication
 
 The PeerAuthentication CRD is used to specify the mTLS settings for a workloads 
 **requests**.
