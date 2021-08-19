@@ -310,7 +310,7 @@ about traffic from the ingress gateway towards the frontend sentences service
 and that mTLS is not being used (later we will see how Kiali denotes that mTLS
 is in use and be able to see the difference from this view).:
 
-![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls-anno.png)
+![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls.png)
 
 - **Create peer authentication requiring `STRICT` mTLS**
 
@@ -337,17 +337,22 @@ kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 - **Observe the traffic flow with Kiali**
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu.
+down menu. 
 
-We see, that traffic still flows, which is because the sentences services do not
+Select the `istio-ingress` namespace along with your namespace and select the
+display checkboxes as shown below.
+
+Select the **arrow** from the ingress gateway to the sentences service.
+
+We see, that traffic still flows. This is because the sentences services do not
 have an Istio sidecar and the strict peer-authentication policy we created only
 applies to the namespace where we created it and it is only applied when
-validating requests made *towards* a workload with an Istio sidecar. I.e. even
-if we created a strict policy in the namespace of the ingress gateway, traffic
-would still flow.
+validating requests made *towards* a workload with an Istio sidecar. 
 
-TODO: Update this image!
-![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls-anno.png)
+> Even if we created a strict policy in the namespace of the ingress gateway, 
+> traffic would still flow. No sidecar means no policy enforcement.
+
+![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls.png)
 
 - **Enable sidecar for the age service**
 
@@ -363,24 +368,32 @@ Wait for the pod to be redeployed.
 kubectl get pods
 ```
 
-You should see it being terminated and new instantiated.
+You should see it being terminated and new instantiated with a sidecar.
 
 ```console
-Todo add some output here!
+NAME                          READY   STATUS    RESTARTS   AGE
+age-v1-698cf6fd9d-kgvt2       2/2     Running   0          81s
+name-v1-6f44875ccd-bsnrm      1/1     Running   0          57m
+name-v2-7755ddbd74-mxlbt      1/1     Running   0          57m
+sentences-v1-fc7dbd55-9smjb   1/1     Running   0          57m
 ```
 
 - **Observe the traffic flow with Kiali**
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. Select the checkboxes as shown in the below image.
+down menu. 
 
-After this we see, that traffic no longer flows. This is because the frontend 
-sentences service do not have an Istio sidecar and hence do not use mTLS 
-towards the `age` service which now require mTLS.
+Select the `istio-ingress` namespace along with your namespace and select the
+display checkboxes as shown below.
+
+Select the **arrow** from the ingress gateway to the sentences service.
+
+After this we see, that traffic no longer flows. We have applied a `STRICT` 
+policy saying **all** traffic **must** be mTLS. But **only** the `age` service 
+has a sidecar and we therefor have **both** plain-text and mTLS traffic.
 
 Inspect the result in Kiali - we see 100% errors:
 
-TODO: Update this image!
 ![Kiali with no sidecars](images/kiali-mtls-error.png)
 
 - **Allow un-encrypted and un-authenticated traffic using `PERMISSIVE` mTLS**
@@ -410,15 +423,19 @@ kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 - **Observe the traffic flow with Kiali**
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. Select the checkboxes as shown in the below image.
+down menu. 
 
-The traffic is now flowing but we see a disjointed graph and `unknown` 
-traffic. Think about why that is happening.
+Select the `istio-ingress` namespace along with your namespace and select the
+display checkboxes as shown below.
 
-TODO: Add needed image.
+Select the **arrow** from the ingress gateway to the sentences service.
+
+The traffic is now flowing but you **may** see a disjointed graph and `unknown` 
+traffic.
+
 ![Disjointed graph](images/kiali-disjointed-graph.png)
 
-> Hint: Which services have sidecars providing metrics for Kiali?
+This is because the `age` service is the only service which has a sidecar.
 
 - **Inject sidecars for all services**
 
@@ -437,7 +454,14 @@ kubectl get pods
 You should see them being terminated and new instantiated.
 
 ```console
-Todo add some output here!
+NAME                            READY   STATUS        RESTARTS   AGE
+age-v1-698cf6fd9d-kgvt2         2/2     Running       0          35m
+name-v1-6f44875ccd-bsnrm        1/1     Terminating   0          91m
+name-v1-7f7bcf7fb8-btpff        2/2     Running       0          24s
+name-v2-6886569bfb-lxb9z        2/2     Running       0          24s
+name-v2-7755ddbd74-mxlbt        1/1     Terminating   0          91m
+sentences-v1-6f9578db77-xbbzf   2/2     Running       0          24s
+sentences-v1-fc7dbd55-9smjb     1/1     Terminating   0          91m
 ```
 
 - **Re-enabled `STRICT` mTLS**
@@ -471,7 +495,6 @@ Now we can see in Kiali, that mTLS is enabled between all services of the
 sentences application (in the view below, the link between the frontend and the
 `age` service has been selected):
 
-TODO: Update the below image
 ![Full mTLS](images/kiali-mtls-anno.png)
 
 - **Configure TLS to an upstream service**
