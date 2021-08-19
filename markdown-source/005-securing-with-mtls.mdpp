@@ -192,7 +192,7 @@ inject sidecars and observe the effects of the mTLS configuration.
 
 - Deploy the sentences application and observe sidecars
 
-- Run the script `./scripts/loop-query-mtls.sh` 
+- Run the script `./scripts/loop-query.sh` 
 
 - Observe the traffic flow with Kiali
 
@@ -286,12 +286,12 @@ name-86969f7468-4qfmp        1/1     Running   0          3s
 sentences-779767c659-mlcm9   1/1     Running   0          4s
 ```
 
-- **Run the script `./scripts/loop-query-mtls.sh`**
+- **Run the script `./scripts/loop-query.sh`**
 
 Execute the following to retrieve sentences and thus update Istio metrics.
 
 ```console
-./scripts/loop-query-mtls.sh
+./scripts/loop-query.sh
 ```
 
 - **Observe the traffic flow with Kiali**
@@ -306,8 +306,7 @@ Select the **arrow** from the ingress gateway to the sentences service.
 
 If we observe the result in Kiali, we will see that we only have information
 about traffic from the ingress gateway towards the frontend sentences service
-and that mTLS is not being used (later we will see how Kiali denotes that mTLS
-is in use and be able to see the difference from this view).:
+as none of the sentences services have sidecars, only the ingress gateway.
 
 ![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls.png)
 
@@ -349,7 +348,7 @@ applies to the namespace where we created it and it is only applied when
 validating requests made *towards* a workload with an Istio sidecar. 
 
 > Even if we created a strict policy in the namespace of the ingress gateway, 
-> traffic would still flow. No sidecar means no policy enforcement.
+> traffic would still flow. **No sidecar means no policy enforcement**.
 
 ![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls.png)
 
@@ -428,11 +427,10 @@ display checkboxes as shown below.
 Select the **arrow** from the ingress gateway to the sentences service.
 
 The traffic is now flowing but you **may** see a disjointed graph and `unknown` 
-traffic.
+traffic. This is because the `age` service is the **only** service which has a 
+sidecar.
 
 ![Disjointed graph](images/kiali-disjointed-graph.png)
-
-This is because the `age` service is the only service which has a sidecar.
 
 - **Inject sidecars for all services**
 
@@ -489,8 +487,9 @@ Go to Graph menu item and select the **Versioned app graph** from the drop
 down menu. Select the checkboxes as shown in the below image.
 
 Now we can see in Kiali, that mTLS is enabled between all services of the
-sentences application (in the view below, the link between the frontend and the
-`age` service has been selected)
+sentences application. Kiali will denote it with a **lock** icon on the graph. 
+In the view below, the link between the frontend and the `age` service has 
+been selected and you can see that mTLS is enabled in the details view.
 
 ![Full mTLS](images/kiali-mtls-anno.png)
 
