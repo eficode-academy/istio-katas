@@ -40,6 +40,9 @@ for transport authentication.
 
 This provides a **strong identity** for each workload. 
 
+> Istio has it's own certificate authority(CA) and securely provisions strong 
+> identities to every workload with X.509 certificates.
+
 <details>
     <summary> More About Workload Identity </summary>
 
@@ -69,9 +72,6 @@ The above process repeats periodically for certificate and key rotation.
 Peer authentication is normally enabled at the `mesh` level, as is our 
 training infrastructure, which means traffic is secured by **default** 
 for all services in the cluster **without** requiring code changes. 
-
-> Istio has it's own certificate authority(CA) and securely provisions strong 
-> identities to every workload with X.509 certificates.
 
 There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`, 
 `PERMISSIVE` and `STRICT`.
