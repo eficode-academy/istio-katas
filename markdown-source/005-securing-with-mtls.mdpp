@@ -139,7 +139,7 @@ within the mesh.
 
 - The `selector` determines the workload to apply the ChannelAuthentication to.
 
-You can also specify the mTLS mode at the **port** level **if** you specify 
+> You can also specify the mTLS mode at the **port** level **if** you specify 
 a `selector`. 
 
 ### DestinationRule
