@@ -639,7 +639,7 @@ certificate.
 
 > :bulb: The secret **must** be in the **same** namespace as the ingress gateway 
 > controller. The gateway must be **namespaced** to be in the same namespace as 
-> the kubernetes secret. So **both** must be in the `istio-ingress`namespace in 
+> the kubernetes secret. So **both** must be in the `istio-ingress` namespace in 
 > the above example and the gateway **must** be unique for this exercise.
 
 ### Overview
