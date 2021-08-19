@@ -66,7 +66,7 @@ key to Envoy via the Envoy SDS API.
 
 - Istio agent monitors the expiration of the workload certificate. 
 
-The above process repeats periodically for certificate and key rotation.
+> The above process repeats periodically for certificate and key rotation.
 
 </details>
 
