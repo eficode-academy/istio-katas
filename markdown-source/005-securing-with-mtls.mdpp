@@ -35,17 +35,48 @@ service-to-service communication. Istio uses
 [mutual TLS](https://en.wikipedia.org/wiki/Mutual_authentication)(mTLS) 
 for transport authentication. 
 
-This provides a **strong identity** for each workload. Peer authentication 
-is normally enabled at the `cluster/mesh` level, as is our training 
-infrastructure, which means traffic is secured by default for all services 
-in the cluster **without** requiring code changes. 
+This provides a **strong identity** for each workload. 
+
+<details>
+    <summary> More About Workload Identity </summary>
+
+Istio provisions keys and certificates through the following flow:
+
+- istiod offers a gRPC service to take certificate signing requests (CSRs).
+
+- When started, the Istio agent creates the private key and CSR, and then 
+sends the CSR with its credentials to istiod for signing.
+
+- The CA in istiod validates the credentials carried in the CSR. Upon 
+successful validation, it signs the CSR to generate the certificate.
+
+- When a workload is started, Envoy requests the certificate and key from 
+the Istio agent in the same container via the Envoy secret discovery 
+service (SDS) API.
+
+- The Istio agent sends the certificates received from istiod and the private 
+key to Envoy via the Envoy SDS API.
+
+- Istio agent monitors the expiration of the workload certificate. 
+
+The above process repeats periodically for certificate and key rotation.
+
+</details>
+
+Peer authentication is normally enabled at the `mesh` level, as is our 
+training infrastructure, which means traffic is secured by **default** 
+for all services in the cluster **without** requiring code changes. 
 
 > Istio has it's own certificate authority(CA) and securely provisions strong 
 > identities to every workload with X.509 certificates. Istio agents, running 
 > alongside each Envoy proxy, work together with istiod to automate key and 
 > certificate rotation at scale. 
 
-There are four modes that can be set for mTLS.
+There are four modes that can be set for mTLS. UNSET, DISABLE, PERMISSIVE and 
+STRICT.
+
+<details>
+    <summary> More About mTLS Modes </summary>
 
 - UNSET - Modes is inherited from parent, defaults to PERMISSIVE
 
@@ -56,6 +87,8 @@ There are four modes that can be set for mTLS.
 - STRICT - Connection is an mTLS tunnel (TLS with client cert must be presented)
 
 > PeerAuthentication defines how traffic will be tunneled (or not) to the sidecar.
+
+</details>
 
 The PeerAuthentication CRD is used to specify the mTLS settings for a workloads 
 **requests**.
@@ -102,41 +135,28 @@ within the mesh.
 You can also specify the mTLS mode at the **port** level **if** you specify 
 a `selector`. 
 
+<details>
+    <summary> More About Port Level mTLS </summary>
+
 ```yaml
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: foo
 spec:
   selector:
     matchLabels:
       app: myapp
   mtls:
-    mode: UNSET
-  portLevelMtls:      
-    9012:
+    mode: STRICT
+  portLevelMtls:
+    9215:
       mode: DISABLE
 ```
 
-<details>
-    <summary> More About Workload Identity </summary>
-
-Istio provisions keys and certificates through the following flow:
-
-- istiod offers a gRPC service to take certificate signing requests (CSRs).
-
-- When started, the Istio agent creates the private key and CSR, and then 
-sends the CSR with its credentials to istiod for signing.
-
-- The CA in istiod validates the credentials carried in the CSR. Upon 
-successful validation, it signs the CSR to generate the certificate.
-
-- When a workload is started, Envoy requests the certificate and key from 
-the Istio agent in the same container via the Envoy secret discovery 
-service (SDS) API.
-
-- The Istio agent sends the certificates received from istiod and the private 
-key to Envoy via the Envoy SDS API.
-
-- Istio agent monitors the expiration of the workload certificate. 
-
-The above process repeats periodically for certificate and key rotation.
+The above policy says that plain-text traffic is allowed for port 9215 but 
+mTLS is strictly required for all other traffic in the `foo`namespace.
 
 </details>
 
@@ -164,7 +184,11 @@ spec:
       caCertificates: /etc/certs/rootcacerts.pem
 ```
 
-The modes are different also. 
+The modes are DISABLE, SIMPLE, MUTUAL and ISTIO_MUTUAL. For services within 
+the mesh ISTIO_MUTUAL is the natural choice as it uses Istio's generated certs.
+
+<details>
+    <summary> More About TLS Modes </summary>
 
 - DISABLE - Do not setup a TLS connection to the upstream endpoint.
 
@@ -177,6 +201,8 @@ presenting client certificates for authentication.
 
 - ISTIO_MUTUAL - Same as MUTUAL except you do **not** specify the 
 client certificates as the certs generated for mTLS by Istio are used.
+
+</details>
 
 ## Exercise: Mutual TLS Inside the Mesh
 
