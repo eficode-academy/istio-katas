@@ -667,11 +667,12 @@ certificate.
 
 - **Delete the gateway created in the previous exercise**
 
-First, ensure that the gateway, destination rule and virtual service from the 
-first exercise is removed.
+First, ensure that the gateway and virtual service for the sentences 
+service from the first exercise is removed.
 
 ```console
 kubectl delete -f 005-securing-with-mtls/start/sentences-ingress-gw.yaml
+kubectl delete -f 005-securing-with-mtls/start/sentences-ingress-vs.yaml
 ```
 
 We must have the sentences application deployed with sidecars. This should 
@@ -688,7 +689,7 @@ Execute the `generate-certs.sh`script.
 ```console
 ./scripts/generate-certs.sh
 ```
-You should see namespace specific certs for both a the server side and 
+You should see namespace specific certs for both the server side and 
 client side in your workspace.
 
 There should also be a kubernetes secret in the `istio-ingress` namespace. 
@@ -705,11 +706,11 @@ user2-sentences-tls-secret        Opaque    3      112m
 ```
 > :bulb: DO NOT touch any other secrets in the `istio-ingress` namespace!
 
-- **Modify the gateway to configure `SIMPLE` TLS for port `443`**
+- **Modify the gateway to configure `MUTUAL` TLS for port `443`**
 
 Modify the file `005-securing-with-mtls/start/sentences-ingress-gw.yaml` so 
 that it will be namespaced to the `istio-ingress` namespace and configure it 
-for `SIMPLE` TLS on port 443.
+for `MUTUAL` TLS on port 443.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -727,7 +728,7 @@ spec:
       name: https
       protocol: HTTPS
     tls:                          # <----- Add the tls block
-      mode: SIMPLE                # <----- Use SIMPLE mode
+      mode: MUTUAL                # <----- mTLS mode
       credentialName: <YOUR_NAMESPACE>-sentences-tls-secret # <----- Add the kubernetes secret
     hosts:
     - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
@@ -735,10 +736,10 @@ spec:
 
 - **Modify the virtual service so point to the gateway in `istio-ingress` namespace**
 
+Modify the file `005-securing-with-mtls/start/sentences-ingress-vs.yaml`.
+
 The gateway is now namespaced to the `istio-ingress` namespace so you need 
 to tell the virtual service which namespace the gateway is located in.
-
-Modify the file `005-securing-with-mtls/start/sentences-ingress-vs.yaml`.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
