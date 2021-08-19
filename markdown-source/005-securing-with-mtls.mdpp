@@ -218,7 +218,7 @@ client certificates as the certs generated for mTLS by Istio are used.
 
 - Inject sidecars for all services
 
-- Re-enabled `STRICT` mTLS
+- Re-enable `STRICT` mTLS
 
 - Observe the traffic flow with Kiali
 
@@ -633,12 +633,12 @@ spec:
 
 ```
 
-The port and tls blocks define the protocol and TLS mode to apply the 
+- The port and tls blocks define the protocol and TLS mode to apply the 
 configuration to. In this exercise you will be using the `SIMPLE` and 
 the `MUTUAL` TLS modes. See this link for more information about 
 [Server TLS modes](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings-TLSmode).
 
-The credentialName represents a kubernetes secret containing the server side 
+- The credentialName represents a kubernetes secret containing the server side 
 certificate.
 
 > :bulb: The secret **must** be in the **same** namespace as the ingress gateway 
@@ -654,7 +654,7 @@ certificate.
 
 - Modify the gateway to configure `MUTUAL` TLS for port `443`
 
-- Modify the virtual service so point to the gateway in `istio-ingress` namespace
+- Modify the virtual service to point to the gateway in `istio-ingress` namespace
 
 - Apply the changes to the virtual service and gateway
 
