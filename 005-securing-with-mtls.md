@@ -497,11 +497,13 @@ been selected and you can see that mTLS is enabled in the details view.
 - **Configure TLS to an upstream service**
 
 To show how we can control upstream mTLS settings with a DestinationRule, we
-create one that use mTLS towards `v2` of the `name` service and no mTLS for
-`v1`. Note that we now need to use a `PERMISSIVE` PeerAuthentication:
+create one that uses mTLS towards `v2` of the `name` service and no mTLS for
+`v1`. 
+
+> :bulb: Note that we now need to use a `PERMISSIVE` Policy.
 
 Modify the `peer-authentication.yaml` in `005-securing-with-mtls/start/` 
-to use `STRICT` mode.
+to use `PERMISSIVE` mode.
 
 ```yaml
 apiVersion: security.istio.io/v1beta1
@@ -519,7 +521,7 @@ kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 ```
 
 Note, that a DestinationRule *will not* take effect until a route rule
-explicitly sends traffic to the subset. So you need both a virtual 
+explicitly sends traffic to a subset. So you need both a virtual 
 service and a destination rule. 
 
 Create a file called `name-vs-dr.yaml` in `005-securing-with-mtls/start/` 
@@ -588,7 +590,6 @@ down menu. Select the checkboxes as shown in the below image.
 
 Now we see a missing padlock on the traffic towards `v1`:
 
-TODO: Update this image!
 ![No mTLS towards v1](images/kiali-mtls-destrule-anno.png)
 
 </details>
