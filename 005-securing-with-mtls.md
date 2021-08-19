@@ -2,7 +2,7 @@
 [//]: # (Origin: https://github.com/eficode-academy/istio-katas)
 [//]: # (Tags: #TLS #mutual-tls #PKI-domains #ingress-gateway #VirtualService #Gateway #PeerAuthentication #DestinationRule)
 
-# Securing with Mutual TLS <----- WIP (Work In Progress)
+# Securing with Mutual TLS
 
 ## Learning goals
 
