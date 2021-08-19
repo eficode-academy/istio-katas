@@ -666,11 +666,12 @@ certificate.
 
 - **Delete the gateway created in the previous exercise**
 
-First, ensure that the gateway, destination rule and virtual service from the 
-first exercise is removed.
+First, ensure that the gateway and virtual service for the `sentences` 
+service from the first exercise is removed.
 
 ```console
 kubectl delete -f 005-securing-with-mtls/start/sentences-ingress-gw.yaml
+kubectl delete -f 005-securing-with-mtls/start/sentences-ingress-vs.yaml
 ```
 
 We must have the sentences application deployed with sidecars. This should 
@@ -704,11 +705,11 @@ user2-sentences-tls-secret        Opaque    3      112m
 ```
 > :bulb: DO NOT touch any other secrets in the `istio-ingress` namespace!
 
-- **Modify the gateway to configure `SIMPLE` TLS for port `443`**
+- **Modify the gateway to configure `MUTUAL` TLS for port `443`**
 
 Modify the file `005-securing-with-mtls/start/sentences-ingress-gw.yaml` so 
 that it will be namespaced to the `istio-ingress` namespace and configure it 
-for `SIMPLE` TLS on port 443.
+for `MUTUAL` TLS on port 443.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -726,7 +727,7 @@ spec:
       name: https
       protocol: HTTPS
     tls:                          # <----- Add the tls block
-      mode: SIMPLE                # <----- Use SIMPLE mode
+      mode: MUTUAL                # <----- TLS mode
       credentialName: <YOUR_NAMESPACE>-sentences-tls-secret # <----- Add the kubernetes secret
     hosts:
     - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
@@ -804,6 +805,10 @@ Using ingress gateway with label: app=istio-ingressgateway
 Using URL: https://user2.sentences.istio.eficode.academy:443/
 Using curl options: '--resolve user2.sentences.istio.eficode.academy:443 --cacert eficode.academy.crt'
 ```
+
+If you change the TLS mode to `SIMPLE` then plain `https` will work. You can 
+still pass the `https+mtls` argument to the script and a connection will be 
+made. Istio will simply ignore the client certs passed through the curl options.
 
 </details>
 

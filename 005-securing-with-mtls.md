@@ -667,7 +667,7 @@ certificate.
 
 - **Delete the gateway created in the previous exercise**
 
-First, ensure that the gateway and virtual service for the sentences 
+First, ensure that the gateway and virtual service for the `sentences` 
 service from the first exercise is removed.
 
 ```console
@@ -689,7 +689,7 @@ Execute the `generate-certs.sh`script.
 ```console
 ./scripts/generate-certs.sh
 ```
-You should see namespace specific certs for both the server side and 
+You should see namespace specific certs for both a the server side and 
 client side in your workspace.
 
 There should also be a kubernetes secret in the `istio-ingress` namespace. 
@@ -728,7 +728,7 @@ spec:
       name: https
       protocol: HTTPS
     tls:                          # <----- Add the tls block
-      mode: MUTUAL                # <----- mTLS mode
+      mode: MUTUAL                # <----- TLS mode
       credentialName: <YOUR_NAMESPACE>-sentences-tls-secret # <----- Add the kubernetes secret
     hosts:
     - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
@@ -736,10 +736,10 @@ spec:
 
 - **Modify the virtual service so point to the gateway in `istio-ingress` namespace**
 
-Modify the file `005-securing-with-mtls/start/sentences-ingress-vs.yaml`.
-
 The gateway is now namespaced to the `istio-ingress` namespace so you need 
 to tell the virtual service which namespace the gateway is located in.
+
+Modify the file `005-securing-with-mtls/start/sentences-ingress-vs.yaml`.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -806,6 +806,10 @@ Using ingress gateway with label: app=istio-ingressgateway
 Using URL: https://user2.sentences.istio.eficode.academy:443/
 Using curl options: '--resolve user2.sentences.istio.eficode.academy:443 --cacert eficode.academy.crt'
 ```
+
+If you change the TLS mode to `SIMPLE` then plain `https` will work. You can 
+still pass the `https+mtls` argument to the script and a connection will be 
+made. Istio will simply ignore the client certs passed through the curl options.
 
 </details>
 
