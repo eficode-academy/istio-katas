@@ -632,9 +632,7 @@ spec:
 
 The port and tls blocks define the protocol and TLS mode to apply the 
 configuration to. In this exercise you will be using the `SIMPLE` and 
-the `MUTUAL` TLS modes. 
-
-See this link for more information about 
+the `MUTUAL` TLS modes. See this link for more information about 
 [Server TLS modes](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings-TLSmode).
 
 The credentialName represents a kubernetes secret containing the server side 
