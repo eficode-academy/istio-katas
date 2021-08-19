@@ -69,12 +69,10 @@ training infrastructure, which means traffic is secured by **default**
 for all services in the cluster **without** requiring code changes. 
 
 > Istio has it's own certificate authority(CA) and securely provisions strong 
-> identities to every workload with X.509 certificates. Istio agents, running 
-> alongside each Envoy proxy, work together with istiod to automate key and 
-> certificate rotation at scale. 
+> identities to every workload with X.509 certificates.
 
-There are four modes that can be set for mTLS. UNSET, DISABLE, PERMISSIVE and 
-STRICT.
+There are four modes that can be set for mTLS. They are UNSET, DISABLE, 
+PERMISSIVE and STRICT.
 
 <details>
     <summary> More About mTLS Modes </summary>
@@ -135,31 +133,6 @@ within the mesh.
 
 You can also specify the mTLS mode at the **port** level **if** you specify 
 a `selector`. 
-
-<details>
-    <summary> More About Port Level mTLS </summary>
-
-```yaml
-apiVersion: security.istio.io/v1beta1
-kind: PeerAuthentication
-metadata:
-  name: default
-  namespace: foo
-spec:
-  selector:
-    matchLabels:
-      app: myapp
-  mtls:
-    mode: STRICT
-  portLevelMtls:
-    9215:
-      mode: DISABLE
-```
-
-The above policy says that plain-text traffic is allowed for port 9215 but 
-mTLS is strictly required for all other traffic in the `foo`namespace.
-
-</details>
 
 ### DestinationRule
 
