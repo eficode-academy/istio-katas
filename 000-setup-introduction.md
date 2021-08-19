@@ -52,9 +52,9 @@ to visualize the topology oy your service mesh.
 
 It provides four main graph renderings of the mesh telemetry.
 
-* The **workload** graph provides the a detailed view of communication between workloads.
+* The **workload** graph provides a detailed view of communication between workloads.
 
-* The **app** graph aggregates the workloads with the same app labeling, which provides a more logical view.
+* The **app** graph aggregates the workloads with the same `app` labeling, which provides a more logical view.
 
 * The **versioned app** graph aggregates by app, but breaks out the different versions providing traffic breakdowns that are version-specific.
 
@@ -101,7 +101,7 @@ Final thing for the exercise is to enable Istio sidecar and see the traffic flow
 
 - Disable automatic sidecar injection for the `age` service
 
-> In `spec.template.metadata.annotations` of the `age`services deployment 
+> In `spec.template.metadata.annotations` of the `age` service deployment 
 > add the annotation `sidecar.istio.io/inject: 'false'` and re-deploy the 
 > service.
 
