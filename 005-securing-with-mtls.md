@@ -11,7 +11,7 @@
 
 ## Introduction
 
-These exercise will demonstrate how to use mutual TLS inside the mesh between
+These exercises will demonstrate how to use mutual TLS inside the mesh between
 PODs with the Istio sidecar injected and also from mesh-external services
 accessing the mesh through an ingress gateway.
 
@@ -588,7 +588,7 @@ kubectl apply -f 005-securing-with-mtls/start/name-vs-dr.yaml
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. Select the checkboxes as shown in the below image.
 
-Now we see a missing padlock on the traffic towards `v1`:
+Now we see a missing padlock on the traffic towards `v1` of the name service.
 
 ![No mTLS towards v1](images/kiali-mtls-destrule-anno.png)
 
@@ -596,77 +596,230 @@ Now we see a missing padlock on the traffic towards `v1`:
 
 ## Exercise: Mutual TLS From External Clients
 
-This exercise extends the server-side TLS we tried out in [exercise Multiple
-Teams and Separation of Duties](multi-teams.md). Create a Certificate authority
-and certificate as follows (or reuse the one from the previous exercise):
+This exercise extends what we have done so far to demonstrate a common 
+use case of configuring mTLS with a service **external** to the mesh. A 
+service running in a different mesh for example. 
+
+In order to do this we will create a Certificate authority and certificates 
+to enable strong workload identity.
+
+The TLS settings to control this will be defined in the 
+[Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway) 
+CRD.
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: my-unique-gateway
+  namespace: istio-ingress
+spec:
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: MUTUAL
+      credentialName: server-side-tls-secret
+    hosts:
+    - "myapp.example.com"
+
+```
+
+The port and tls blocks define the protocol and TLS mode to apply the 
+configuration to. In this exercise you will be using the `SIMPLE` and 
+the `MUTUAL` TLS modes. 
+
+See this link for more information about 
+[Server TLS modes](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings-TLSmode).
+
+The credentialName represents a kubernetes secret containing the server side 
+certificate.
+
+> :bulb: The secret **must** be in the **same** namespace as the ingress gateway 
+> controller. The gateway must be **namespaced** to be in the same namespace as 
+> the kubernetes secret. So **both** must be in the `istio-ingress`namespace in 
+> the above example and the gateway **must** be unique for this exercise.
 
 ### Overview
 
-- 
-- 
+- Delete the gateway created in the previous exercise
+
+> You will modify and recreate it in a later step
+
+- Generate needed certificate authority(CA) and certificates 
+
+> Execute `./scripts/generate-certs.sh`. This will create a server side 
+> cert for the sentences front end service and store it in a kubernetes 
+> secret called `<YOUR_NAMESPACE>-tls-secret`. It will also create a client 
+> certificate which will be used by the `loop-query-mtls.sh` script.
+
+- Modify the gateway to configure `MUTUAL` TLS for port `443`
+
+> :bulb: This should be the `sentences-ingress-gw.yaml` you created in the 
+> previous exercise. It must be namespaced to the `istio-ingress`.
+
+- Modify the virtual service so point to the gateway in `istio-ingress` namespace
+
+> :bulb: As the gateway is scoped to the `istio-ingress` namespace it must be 
+> pre-pended to the gateway. E.g ` - istio-ingress/sentences`.
+
+- Apply the changes to the virtual service and gateway
+
+- Run `loop-query-mtls.sh https+mtls`
+
+- Run `loop-query-mtls.sh https`
+
+> What will happen and what can you change to allow simple TLS?
 
 ### Step by Step
 <details>
     <summary> More Details </summary>
 
-First, ensure that the gateway and virtual service from the first part of this
-exercise is removed - we re-create them later with TLS enabled:
+- **Delete the gateway created in the previous exercise**
+
+First, ensure that the gateway, destination rule and virtual service from the 
+first exercise is removed.
 
 ```console
-kubectl delete -f 005-securing-with-mtls/igw/gateway-http.yaml
-kubectl delete -f 005-securing-with-mtls/igw/virtual-service-http.yaml
+kubectl delete -f 005-securing-with-mtls/start/sentences-ingress-gw.yaml
 ```
 
-We must have the sentences application deployed with sidecars (this might
-already be the case, unless you skipped some of the first part of this
-exercise):
+We must have the sentences application deployed with sidecars. This should 
+already be the case, unless you skipped some of the first exercise.
 
 ```console
 cat 005-securing-with-mtls/*.yaml |grep -v inject | kubectl apply -f -
 ```
 
-Create the certificate authority:
+- **Generate needed certificate authority(CA) and certificates**
+
+Execute the `generate-certs.sh`script.
 
 ```console
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout example.com.key -out example.com.crt
-openssl req -out sentences.example.com.csr -newkey rsa:2048 -nodes -keyout sentences.example.com.key -subj "/CN=sentences.example.com/O=ACMEorg"
-openssl x509 -req -days 365 -CA example.com.crt -CAkey example.com.key -set_serial 0 -in sentences.example.com.csr -out sentences.example.com.crt
+./scripts/generate-certs.sh
 ```
+You should see namespace specific certs for both a the server side and 
+client side in your workspace.
 
-Also, since we will be using mTLS, we need to create a client certificate we can
-use when accessing the sentences application through the ingress gateway:
+There should also be a kubernetes secret in the `istio-ingress` namespace. 
 
 ```console
-openssl req -out client.example.com.csr -newkey rsa:2048 -nodes -keyout client.example.com.key -subj "/CN=client.example.com/O=ACMEorg"
-openssl x509 -req -days 365 -CA example.com.crt -CAkey example.com.key -set_serial 1 -in client.example.com.csr -out client.example.com.crt
+kubectl get secrets -n istio-ingress
 ```
 
-Create a kubernetes secret in the Kubernetes namespace in which the ingress
-gateway is defined (see [exercise Multiple Teams and Separation of
-Duties](multi-teams.md) for details on this):
+It should be pre-pended with your namespace and look something like below.
 
 ```console
-export SENTENCES_INGRESSGATEWAY_NS=istio-system
-kubectl -n $SENTENCES_INGRESSGATEWAY_NS create secret generic sentences-tls-secret --from-file=cert=sentences.example.com.crt --from-file=key=sentences.example.com.key --from-file=cacert=example.com.crt
+NAME                              TYPE      DATA   AGE
+user2-sentences-tls-secret        Opaque    3      112m
+```
+> :bulb: DO NOT touch any other secrets in the `istio-ingress` namespace!
+
+- **Modify the gateway to configure `SIMPLE` TLS for port `443`**
+
+Modify the file `005-securing-with-mtls/start/sentences-ingress-gw.yaml` so 
+that it will be namespaced to the `istio-ingress` namespace and configure it 
+for `SIMPLE` TLS on port 443.
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: <YOUR_NAMESPACE>-sentences # <----- Use your namespace to make it unique
+  namespace: istio-ingress         # <----- Must be in the istio-ingress namespace
+spec:
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+  servers:
+  - port:                         # <----- Add the port block with the port and protocol
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:                          # <----- Add the tls block
+      mode: SIMPLE                # <----- Use SIMPLE mode
+      credentialName: <YOUR_NAMESPACE>-sentences-tls-secret # <----- Add the kubernetes secret
+    hosts:
+    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
 ```
 
-Also create a new Gateway and VirtualService to use the secret for TLS:
+- **Modify the virtual service so point to the gateway in `istio-ingress` namespace**
+
+The gateway is now namespaced to the `istio-ingress` namespace so you need 
+to tell the virtual service which namespace the gateway is located in.
+
+Modify the file `005-securing-with-mtls/start/sentences-ingress-vs.yaml`.
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: sentences
+spec:
+  hosts:
+  - "<YOUR_USERNAME>.sentences.istio.eficode.academy"
+  gateways:
+  - istio-ingress/<YOUR_USERNAME>-sentences  # <----- Use the gateway in the istio-ingress namespace
+  http:
+  - route:
+    - destination:
+        host: sentences
+```
+
+- **Apply the changes to the virtual service and gateway**
+
+Once you have done the modifications to the gateway and virtual service, 
+apply the changes.
 
 ```console
-kubectl -n $SENTENCES_INGRESSGATEWAY_NS apply -f 005-securing-with-mtls/igw/gateway.yaml
-cat 005-securing-with-mtls/igw/virtual-service.yaml | envsubst | kubectl apply -f -
+kubectl apply -f 005-securing-with-mtls/start/sentences-ingress-gw.yaml
+kubectl apply -f 005-securing-with-mtls/start/sentences-ingress-vs.yaml
 ```
 
-Finally, we query the sentences application using HTTPS and mTLS with the
-following command:
+- **Run `loop-query-mtls.sh https+mtls`**
+
+The `loop-query-mtls.sh` script uses the `client` certificates that were 
+generated for the mtls connection. 
 
 ```console
-scripts/loop-query-loadbalancer-ep.sh https+mtls
+scripts/loop-query-mtls.sh https+mtls
 ```
 
-Note the curl options (printed when the script starts) that specify the
-certificate authority and also the client certificate and key which is required
-for mTLS:
+Note the curl options printed when the script starts. The certificate 
+authority **and** the client cert, which is required for mTLS, are specified.
+
+It will look *something* like below but with the CA and client certs that can 
+be found in your workspace as the below has been edited for simplicity.
+
+```console
+-------------------------------------
+Using ingress gateway with label: app=istio-ingressgateway
+Using URL: https://user2.sentences.istio.eficode.academy:443/
+Using curl options: '--resolve sentences.istio.eficode.academy:443 --cacert eficode.academy.crt --cert client.crt --key client.key'
+-------------------------------------
+```
+
+- **Run `loop-query-mtls.sh https`**
+
+```console
+scripts/loop-query-mtls.sh https
+```
+
+You should see an OpenSSL error. Note the curl options printed when the 
+script starts. **Only** the **certificate authority** is specified as 
+simple TLS only requires server side authentication.
+
+```console
+-------------------------------------
+Using ingress gateway with label: app=istio-ingressgateway
+Using URL: https://user2.sentences.istio.eficode.academy:443/
+Using curl options: '--resolve user2.sentences.istio.eficode.academy:443 --cacert eficode.academy.crt'
+```
 
 </details>
 
@@ -676,7 +829,17 @@ PKI (Public Key Infrastructure) does not necessarily mean, that we are using
 internet-scoped public/private key encryption. In this exercise we have seen how
 we can leverage the Istio-internal PKI to implement mTLS inside the Istio mesh
 between PODs with Istio sidecars. We have also seen how to setup mTLS for Istio
-ingress gateways. For internet-accessible traffic, a likely cloud architecture
+ingress gateways.
+
+The main takeaways from these exercises are the following.
+
+- Peer authentication policies apply to traffic a workload **receives**
+- Peer authentication policies only apply to workloads with a sidecar
+- The `STRICT` policy means strict and a `PERMISSIVE` policy is a good way to get started
+- Destination rules configure TLS for a workloads upstream traffic
+- When securing external traffic through ingress gateways you need to consider namespaces
+
+For internet-accessible traffic, a likely cloud architecture
 could be the following, where we have a load balancer in front of the ingress
 gateways that implement internet-trusted TLS termination and DoS protection and
 where we have mTLS between elements behind the load balancer. This provides

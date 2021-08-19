@@ -11,7 +11,7 @@ The natural order would be:
 - [Deployment patterns](002-deployment-patterns.md)
 - [Traffic into the mesh](003-ingress-traffic.md)
 - [Traffic out of the mesh](004-egress-traffic.md)
-- [Securing with mutual TLS](005-securing-with-mtls.md)  - In Progress
+- [Securing with mutual TLS](005-securing-with-mtls.md)
 - [Service access control](006-service-access-control.md) - In Progress
 - [A tour of Istio's metrics]() - Todo
 - [Observe network delays]() - Todo
