@@ -46,32 +46,6 @@ in the cluster **without** requiring code changes.
 > alongside each Envoy proxy, work together with istiod to automate key and 
 > certificate rotation at scale. 
 
-<details>
-    <summary> More About Workload Identity </summary>
-
-Istio provisions keys and certificates through the following flow:
-
-- istiod offers a gRPC service to take certificate signing requests (CSRs).
-
-- When started, the Istio agent creates the private key and CSR, and then 
-sends the CSR with its credentials to istiod for signing.
-
-- The CA in istiod validates the credentials carried in the CSR. Upon 
-successful validation, it signs the CSR to generate the certificate.
-
-- When a workload is started, Envoy requests the certificate and key from 
-the Istio agent in the same container via the Envoy secret discovery 
-service (SDS) API.
-
-- The Istio agent sends the certificates received from istiod and the private 
-key to Envoy via the Envoy SDS API.
-
-- Istio agent monitors the expiration of the workload certificate. 
-
-The above process repeats periodically for certificate and key rotation.
-
-</details>
-
 There are four modes that can be set for mTLS.
 
 - UNSET - Modes is inherited from parent, defaults to PERMISSIVE
@@ -117,11 +91,12 @@ workloads in the `foo` namespace but **require** mTLS for the workload `myapp`
 in the `foo` namespace.
 
 - The `namespace` definition scopes the policy to the defined namespace.
+If a policy is **not** namespace scoped it applies to **all** workloads 
+within the mesh.
 
-> If a policy is **not** namespace scoped it applies to **all** workloads 
-> within the mesh. There can be only one mesh-wide peer authentication policy, 
-> and only one namespace-wide peer authentication policy per namespace. If you 
-> configure more then Istio will ignore the newer policies.
+> There can be only one **mesh-wide** peer authentication policy, and only one 
+> **namespace-wide** peer authentication policy per namespace. If you configure 
+> more then Istio will **ignore the newer policies**.
 
 - The `selector` determines the workload to apply the ChannelAuthentication to.
 
@@ -139,6 +114,32 @@ spec:
     9012:
       mode: DISABLE
 ```
+
+<details>
+    <summary> More About Workload Identity </summary>
+
+Istio provisions keys and certificates through the following flow:
+
+- istiod offers a gRPC service to take certificate signing requests (CSRs).
+
+- When started, the Istio agent creates the private key and CSR, and then 
+sends the CSR with its credentials to istiod for signing.
+
+- The CA in istiod validates the credentials carried in the CSR. Upon 
+successful validation, it signs the CSR to generate the certificate.
+
+- When a workload is started, Envoy requests the certificate and key from 
+the Istio agent in the same container via the Envoy secret discovery 
+service (SDS) API.
+
+- The Istio agent sends the certificates received from istiod and the private 
+key to Envoy via the Envoy SDS API.
+
+- Istio agent monitors the expiration of the workload certificate. 
+
+The above process repeats periodically for certificate and key rotation.
+
+</details>
 
 ### DestinationRule
 
@@ -217,7 +218,7 @@ inject sidecars and observe the effects of the mTLS configuration.
 - Configure TLS to an upstream service
 
 > :bulb: You will need to create a destination rule **and** a virtual 
-> service to route traffic 
+> service to route the traffic.
 
 - Observe the traffic flow with Kiali
 
@@ -228,7 +229,7 @@ inject sidecars and observe the effects of the mTLS configuration.
 - **Deploy the sentences application and observe sidecars**
 
 ```console
-kubectl apply -f 005-securing-with-mtls/
+kubectl apply -f 005-securing-with-mtls/start
 ```
 
 Execute `kubectl get pods` and observe that we have one container per POD, 
@@ -305,7 +306,7 @@ TODO: Update this image!
 Inject a sidecar for the **age** service.
 
 ```console
-cat 005-securing-with-mtls/age.yaml |grep -v inject | kubectl apply -f -
+cat 005-securing-with-mtls/start/age.yaml |grep -v inject | kubectl apply -f -
 ```
 
 Wait for the pod to be redeployed. 
@@ -355,7 +356,7 @@ spec:
 > un-authenticated traffic.
 
 ```console
-kubectl apply -f 005-securing-with-mtls/peer-authentication.yaml
+kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 ```
 
 - **Observe the traffic flow with Kiali**
@@ -376,7 +377,7 @@ TODO: Add needed image.
 Lets inject Istio sidecars into all sentences services:
 
 ```console
-cat 005-securing-with-mtls/*.yaml |grep -v inject | kubectl apply -f -
+cat 005-securing-with-mtls/start/*.yaml |grep -v inject | kubectl apply -f -
 ```
 
 Wait for the pods to be redeployed.
@@ -410,7 +411,7 @@ spec:
 ```
 
 ```console
-kubectl apply -f 005-securing-with-mtls/peer-authentication.yaml
+kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 ```
 
 - **Observe the traffic flow with Kiali**
@@ -446,7 +447,7 @@ spec:
 ```
 
 ```console
-kubectl apply -f 005-securing-with-mtls/peer-authentication.yaml
+kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 ```
 
 Note, that a DestinationRule *will not* take effect until a route rule
