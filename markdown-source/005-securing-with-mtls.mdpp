@@ -186,8 +186,9 @@ inject sidecars and observe the effects of the mTLS configuration.
 
 ### Overview
 
-- Add `<YOUR_NAMESPACE>` to the gateway and virtual service in 
-`005-securing-with-mtls` directory
+- Modify the gateway and virtual files with your `<YOUR_NAMESPACE>`
+
+> The files are located in `005-securing-with-mtls/start/`.
 
 - Deploy the sentences application and observe sidecars
 
@@ -227,6 +228,47 @@ inject sidecars and observe the effects of the mTLS configuration.
 ### Step by Step
 <details>
     <summary> More Details </summary>
+
+- **Modify the gateway and virtual files with your `<YOUR_NAMESPACE>`**
+
+Modify `sentences-ingress-gw.yaml` file with your namespace.
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: sentences
+spec:
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"    # user1, user2, etc
+```
+
+Modify `sentences-ingress-vs.yaml` file with your namespace.
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: sentences
+spec:
+  hosts:
+  - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"      # user1, user2, etc
+  gateways:
+  - sentences
+  http:
+  - route:
+    - destination:
+        host: sentences
+
+```
 
 - **Deploy the sentences application and observe sidecars**
 
