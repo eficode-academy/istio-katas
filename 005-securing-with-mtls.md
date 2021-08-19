@@ -193,7 +193,7 @@ inject sidecars and observe the effects of the mTLS configuration.
 
 - Deploy the sentences application and observe sidecars
 
-- Run the script `./scripts/loop-query-mtls.sh` 
+- Run the script `./scripts/loop-query.sh` 
 
 - Observe the traffic flow with Kiali
 
@@ -287,12 +287,12 @@ name-86969f7468-4qfmp        1/1     Running   0          3s
 sentences-779767c659-mlcm9   1/1     Running   0          4s
 ```
 
-- **Run the script `./scripts/loop-query-mtls.sh`**
+- **Run the script `./scripts/loop-query.sh`**
 
 Execute the following to retrieve sentences and thus update Istio metrics.
 
 ```console
-./scripts/loop-query-mtls.sh
+./scripts/loop-query.sh
 ```
 
 - **Observe the traffic flow with Kiali**
