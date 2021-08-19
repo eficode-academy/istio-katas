@@ -820,7 +820,7 @@ made. Istio will simply ignore the client certs passed through the curl options.
 
 PKI (Public Key Infrastructure) does not necessarily mean, that we are using
 internet-scoped public/private key encryption. In this exercise we have seen how
-we can leverage the Istio-internal PKI to implement mTLS inside the Istio mesh
+we can leverage the Istio's **internal PKI** to implement mTLS inside the Istio mesh
 between PODs with Istio sidecars. We have also seen how to setup mTLS for Istio
 ingress gateways.
 
@@ -837,15 +837,8 @@ mesh if **not** namespaced
 
 - Destination rules configure TLS for a workloads upstream traffic
 
-- When securing external traffic through ingress gateways you need to consider namespaces
-
-For internet-accessible traffic, a likely cloud architecture
-could be the following, where we have a load balancer in front of the ingress
-gateways that implement internet-trusted TLS termination and DoS protection and
-where we have mTLS between elements behind the load balancer. This provides
-end-to-end protection of traffic.
-
-![Cloud infrastructure mTLS](images/istio-cloud-mtls.png)
+- When securing external traffic through ingress gateways you need to 
+consider namespaces in relation to kubernetes secrets and gateway controllers.
 
 ## Cleanup
 
