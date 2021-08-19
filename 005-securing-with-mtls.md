@@ -71,19 +71,19 @@ for all services in the cluster **without** requiring code changes.
 > Istio has it's own certificate authority(CA) and securely provisions strong 
 > identities to every workload with X.509 certificates.
 
-There are four modes that can be set for mTLS. They are UNSET, DISABLE, 
-PERMISSIVE and STRICT.
+There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`, 
+`PERMISSIVE` and `STRICT`.
 
 <details>
     <summary> More About mTLS Modes </summary>
 
-- UNSET - Modes is inherited from parent, defaults to PERMISSIVE
+- `UNSET` - Modes is inherited from parent, defaults to PERMISSIVE
 
-- DISABLE - Connection is **not** tunneled 
+- `DISABLE` - Connection is **not** tunneled 
 
-- PERMISSIVE - Connection can be either plaintext or mTLS tunnel
+- `PERMISSIVE` - Connection can be either plaintext or mTLS tunnel
 
-- STRICT - Connection is an mTLS tunnel (TLS with client cert must be presented)
+- `STRICT` - Connection is an mTLS tunnel (TLS with client cert must be presented)
 
 > PeerAuthentication defines how traffic will be tunneled (or not) to the sidecar.
 
@@ -158,22 +158,23 @@ spec:
       caCertificates: /etc/certs/rootcacerts.pem
 ```
 
-The modes are DISABLE, SIMPLE, MUTUAL and ISTIO_MUTUAL. For services within 
-the mesh ISTIO_MUTUAL is the natural choice as it uses Istio's generated certs.
+The modes are `DISABLE`, `SIMPLE`, `MUTUAL` and `ISTIO_MUTUAL`. For services 
+within the mesh `ISTIO_MUTUAL` is the natural choice as it uses Istio's 
+generated certs and they do not need to be specified in the destination rule.
 
 <details>
     <summary> More About TLS Modes </summary>
 
-- DISABLE - Do not setup a TLS connection to the upstream endpoint.
+- `DISABLE` - Do not setup a TLS connection to the upstream endpoint.
 
-- SIMPLE - Originate a TLS connection to the upstream endpoint.
+- `SIMPLE` - Originate a TLS connection to the upstream endpoint.
 
-- MUTUAL - Secure connections to the upstream using **mutual** TLS by 
+- `MUTUAL` - Secure connections to the upstream using **mutual** TLS by 
 presenting client certificates for authentication.
 
 > You **must** specify the certificates when modes is set to MUTUAL.
 
-- ISTIO_MUTUAL - Same as MUTUAL except you do **not** specify the 
+- `ISTIO_MUTUAL` - Same as MUTUAL except you do **not** specify the 
 client certificates as the certs generated for mTLS by Istio are used.
 
 </details>
@@ -833,9 +834,16 @@ ingress gateways.
 The main takeaways from these exercises are the following.
 
 - Peer authentication policies apply to traffic a workload **receives**
+
 - Peer authentication policies only apply to workloads with a sidecar
+
+- Peer authentication policies apply to the **all** workloads within the 
+mesh if **not** namespaced
+
 - The `STRICT` policy means strict and a `PERMISSIVE` policy is a good way to get started
+
 - Destination rules configure TLS for a workloads upstream traffic
+
 - When securing external traffic through ingress gateways you need to consider namespaces
 
 For internet-accessible traffic, a likely cloud architecture
