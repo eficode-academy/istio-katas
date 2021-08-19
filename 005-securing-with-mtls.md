@@ -187,6 +187,9 @@ inject sidecars and observe the effects of the mTLS configuration.
 
 ### Overview
 
+- Add `<YOUR_NAMESPACE>` to the gateway and virtual service in 
+`005-securing-with-mtls` directory
+
 - Deploy the sentences application and observe sidecars
 
 - Run the script `./scripts/loop-query-mtls.sh` 
