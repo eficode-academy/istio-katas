@@ -229,7 +229,7 @@ inject sidecars and observe the effects of the mTLS configuration.
 - **Deploy the sentences application and observe sidecars**
 
 ```console
-kubectl apply -f 005-securing-with-mtls/start
+kubectl apply -f 005-securing-with-mtls/start/
 ```
 
 Execute `kubectl get pods` and observe that we have one container per POD, 
