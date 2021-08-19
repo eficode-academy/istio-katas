@@ -391,8 +391,6 @@ After this we see, that traffic no longer flows. We have applied a `STRICT`
 policy saying **all** traffic **must** be mTLS. But **only** the `age` service 
 has a sidecar and we therefor have **both** plain-text and mTLS traffic.
 
-Inspect the result in Kiali - we see 100% errors:
-
 ![Kiali with no sidecars](images/kiali-mtls-error.png)
 
 - **Allow un-encrypted and un-authenticated traffic using `PERMISSIVE` mTLS**
@@ -492,7 +490,7 @@ down menu. Select the checkboxes as shown in the below image.
 
 Now we can see in Kiali, that mTLS is enabled between all services of the
 sentences application (in the view below, the link between the frontend and the
-`age` service has been selected):
+`age` service has been selected)
 
 ![Full mTLS](images/kiali-mtls-anno.png)
 
