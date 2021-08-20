@@ -20,9 +20,8 @@ However each exercise, besides the setup introduction, has a
 start folder located beneath it. E.g. `001-basic-traffic-routing/start` that 
 allows you to do them in **your** preferred order. 
 
-> :bulb: If you do **not** start with do 
-> [Introducing the setup](000-setup-introduction.md) you will need to enable 
-> automatic sidecar injection.
+> :bulb: If you do **not** start with [Introducing the setup](000-setup-introduction.md) 
+> you will need to enable automatic sidecar injection.
 
 Do note that there can be multiple exercises per exercise file. 
 
