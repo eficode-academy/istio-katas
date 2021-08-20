@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: sentence
+  name: sentences
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: sentence
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: sentence
+    spec:
+      containers:
+      - image: michaelvl/sentences:v1 # Todo use new repo
+        name: sentences
+        env:
+        - name: "SENTENCE_MODE"
+          value: "sentence"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: sentence
+  name: sentences
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+    #appProtocol: http
+  selector:
+    app: sentences
+    mode: sentence
+  type: NodePort
+
