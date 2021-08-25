@@ -21,11 +21,6 @@ Therefor we will introduce a *slightly* more complex delay. If the delay was
 caused by something more complicated it would be difficult to diagnose purely 
 from metrics due to their statistical nature.
 
-- The misbehaving service might be owned by another team
-
-- The misbehaving application might not be the immediate one from which you are
-  observing a delay. In fact, it might be deep in the application tree
-
 Besides metrics, Istio generates another type of telemetry, 
 [distributed trace](https://istio.io/latest/docs/concepts/observability/#distributed-traces) 
 **spans**, which can help solve these more complex scenarios. This allows 
@@ -84,6 +79,11 @@ Then we are going to deploy a three tiered setup for the sentences application,
 introduce a version with a simulated bug that causes large delays on the 
 combined service and see how Jaeger can help find the delay using spans 
 provided by the envoy sidecar.
+
+- The misbehaving service might be owned by another team
+
+- The misbehaving application might not be the immediate one from which you are
+  observing a delay. In fact, it might be deep in the application tree
 
 ### Overview
 
