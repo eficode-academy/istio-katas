@@ -25,22 +25,4 @@ spec:
         env:
         - name: "SENTENCE_MODE"
           value: "name"
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: sentences
-    mode: name
-    version: v1
-  name: name-v1
-spec:
-  ports:
-  - port: 5000
-    protocol: TCP
-    targetPort: 5000
-  selector:
-    app: sentences
-    mode: name
-    version: v1
-  type: ClusterIP
+

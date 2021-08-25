@@ -31,22 +31,3 @@ spec:
           value: "0.4"
         - name: "SENTENCE_NAMES"
           value: "Pappa Carlo (v3),Flora (v3),Dorabella (v3),Granny Caramella (v3)"
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: sentences
-    mode: name
-    version: v3
-  name: name-v3
-spec:
-  ports:
-  - port: 5000
-    protocol: TCP
-    targetPort: 5000
-  selector:
-    app: sentences
-    mode: name
-    version: v3
-  type: ClusterIP
