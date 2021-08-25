@@ -319,6 +319,9 @@ metrics and control plane metrics.
 annotations and this method is enabled by default. When enabled, appropriate 
 prometheus annotations will be added to all data plane pods. 
 
+For an overview of the standard Istio **service-level** metrics see this 
+[documentation](https://istio.io/latest/docs/reference/config/metrics/).
+
 ## Cleanup
 
 ```console
