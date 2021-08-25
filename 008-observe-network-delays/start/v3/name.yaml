@@ -20,7 +20,7 @@ spec:
         version: v3
     spec:
       containers:
-      - image: michaelvl/sentences:v1
+      - image: praqma/istio-sentences:v1
         name: name
         env:
         - name: "SENTENCE_MODE"

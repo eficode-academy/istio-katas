@@ -26,9 +26,10 @@ metrics due to their statistical nature.
   observing a delay. In fact, it might be deep in the application tree
 
 Besides metrics, Istio generates another type of telemetry, 
-**distributed trace spans**, which can help solve these more complex scenarios. 
-This allows for a detailed understanding of call flows and service dependencies 
-within a mesh. We will look at a simple scenario 
+[distributed trace](https://istio.io/latest/docs/concepts/observability/#distributed-traces) 
+**spans**, which can help solve these more complex scenarios. This allows 
+for a detailed understanding of call flows and service dependencies within 
+a mesh. 
 
 <details>
     <summary> More About Spans </summary>
@@ -45,10 +46,11 @@ life of a request as it moves through a distributed system.
 </details>
 
 Istio supports distributed tracing through the envoy proxy sidecar. The proxies 
-**automatically** generate trace spans on behalf applications they proxy. The 
-sidecar proxy will send the tracing information directly to the tracing backends 
-on **behalf** of the application(s) being proxied. So the application developer 
-does **not** know or worry about a distributed tracing backend. 
+**automatically** generate trace spans on **behalf** applications they proxy. 
+
+The sidecar proxy will send the tracing information directly to the tracing 
+backends. So the application developer does **not** know or worry about a 
+distributed tracing backend. 
 
 Istio supports a number of tracing backend, Zipkin, Jaeger, Lightstep, and Datadog. 
 We will be using 
@@ -59,6 +61,9 @@ Istio, however, **does** rely on the application to propagate some headers for s
 outgoing requests so it can stitch together a complete view of the traffic. 
 Specifically the [B3 trace headers](https://github.com/openzipkin/b3-propagation).
 
+<details>
+    <summary> Required Tracing Headers </summary>
+
 - x-request-id
 - x-b3-traceid
 - x-b3-spanid
@@ -67,14 +72,18 @@ Specifically the [B3 trace headers](https://github.com/openzipkin/b3-propagation
 - x-b3-flags
 - b3
 
+</details>
+
 ## Exercise
 
-First we are going to deploy the sentences application with three versions of the 
-name service. One of these has introduced a delay which we can fairly easily find 
-with the standard Istio metrics. 
+First we are going to deploy the sentences application with three versions of 
+the name service. One of these has introduced a delay which we can fairly 
+easily find with the standard Istio metrics. 
 
-The we are going to deploy a three tiered setup for the sentences application and 
-see how Jaeger can help find the delay using spans provided by the envoy sidecar.
+Then we are going to deploy a three tiered setup for the sentences application, 
+introduce a version with a simulated bug that causes large delays on the 
+combined service and see how Jaeger can help find the delay using spans 
+provided by the envoy sidecar.
 
 ### Overview
 
@@ -86,7 +95,18 @@ see how Jaeger can help find the delay using spans provided by the envoy sidecar
 
 - Deploy a three tiered version of the sentences application
 
+- Run the script `scripts/loop-query.sh`
 
+- Observe the traffic flow with Kiali
+
+- Deploy version two of the sentences service
+
+> :bulb: This version introduces a simulated bug which will cause delays 
+> for the combined service.
+
+- Observe the traffic flow with Kiali
+
+- 
 
 ### Step by Step
 <details>
@@ -148,12 +168,19 @@ three tiers to simulate a slightly more complex application:
 kubectl apply -f 008-observe-network-delays/start/three-tiers/
 ```
 
+- Run the script `scripts/loop-query.sh`
+
 In another shell, run the following to continuously query the sentence service
 and observe the effect of deployment changes:
 
 ```console
 ./scripts/loop-query.sh
 ```
+
+- **Observe the traffic flow with Kiali**
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu. 
 
 ![No delays with v1](images/kiali-three-tiers-1.png)
 

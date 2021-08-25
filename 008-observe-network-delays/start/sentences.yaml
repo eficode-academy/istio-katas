@@ -18,7 +18,7 @@ spec:
         mode: sentence
     spec:
       containers:
-      - image: michaelvl/sentences:v1 # Todo use new repo
+      - image: praqma/istio-sentences:v1
         name: sentences
         env:
         - name: "SENTENCE_MODE"
