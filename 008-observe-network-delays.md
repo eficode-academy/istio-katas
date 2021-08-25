@@ -10,15 +10,16 @@
 
 ## Introduction
 
-This exercise will show that some forms of delays can be observed with the
-**metrics** that Istio tracks. Metrics are statistical and not specific to
-e.g. a certain request, i.e. we can only observe statistical data about
-observations like sums and averages. This is quite useful but a quite limited in 
-a true service based architecture. 
+In this exercise will introduce some network delays to the sentences application. 
+Some forms of delays can be observed with the **metrics** that Istio tracks. 
 
-If the delay was caused by something more complicated, e.g. an unforeseen 
-interaction between services, it would be difficult to diagnose purely from 
-metrics due to their statistical nature.
+> Metrics are statistical and not specific to a certain request, i.e. we can 
+> only observe statistical data about observations like sums and averages. 
+
+This is quite useful but a quite limited in a true service based architecture. 
+Therefor we will introduce a *slightly* more complex delay. If the delay was 
+caused by something more complicated it would be difficult to diagnose purely 
+from metrics due to their statistical nature.
 
 - The misbehaving service might be owned by another team
 
@@ -52,8 +53,7 @@ The sidecar proxy will send the tracing information directly to the tracing
 backends. So the application developer does **not** know or worry about a 
 distributed tracing backend. 
 
-Istio supports a number of tracing backend, Zipkin, Jaeger, Lightstep, and Datadog. 
-We will be using 
+Istio supports a number of tracing backends but we will be using 
 [Jaeger](https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/) 
 as the backend for this exercise.
 
@@ -215,4 +215,5 @@ trace, we will find that the top-level service is indeed `sentences` version
 
 ```console
 kubectl delete -f 008-observe-network-delays/start/three-tiers/
+kubectl delete -f 008-observe-network-delays/start/three-tiers/v2/
 ```
