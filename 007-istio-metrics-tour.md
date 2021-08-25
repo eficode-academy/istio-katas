@@ -233,8 +233,6 @@ the primary information Kiali use to dynamically build application graphs and
 versioned graphs. See this link for more information on how [Kiali use
 Prometheus metrics](https://kiali.io/documentation/latest/faq/#prom-metrics)
 
-</details>
-
 - **Browse Istio Metrics in Prometheus**
 
 Istio makes the base monitoring data available but you still need something 
@@ -248,8 +246,9 @@ Although not part of our course setup you can also visualize metrics using
 [Grafana](https://istio.io/latest/docs/ops/integrations/grafana/) to create 
 Dashboards.
 
+TODO:  define some queries to éxecute in prometheus!
 
-
+</details>
 
 ## Summary
 
