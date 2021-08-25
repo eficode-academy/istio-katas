@@ -121,7 +121,7 @@ the output for `sentence_requests_total`. E.g from the above example this
 would be `curl -s 10.0.44.91:8000/metrics | grep sentence_requests_total`
 
 ```console
-curl -s <Any node IP>:<node port for POD port 8000>/metrics | grep sentence_requests_total
+curl -s <Any node IP>:8000/metrics | grep sentence_requests_total
 ```
 
 This will return something like the following.
@@ -163,7 +163,9 @@ cat 007-istio-metrics-tour/start/sentences.yaml |grep -v inject | kubectl apply 
 ```
 
 If we run `kubectl get pods` now, we will see that we have two containers per
-POD (it may take a few seconds for the old PODs to terminate).
+POD. 
+
+> :bulb: It may take a few seconds for the old PODs to terminate.
 
 Next, observe the values of the Prometheus annotations:
 
@@ -194,7 +196,7 @@ annotation `prometheus.istio.io/merge-metrics`.
 Re-deploy the sentences application with this annotation removed as well:
 
 ```console
-cat deploy/metrics/sentences.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
+cat 007-istio-metrics-tour/start/sentences.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
 ```
 
 If we now inspect the POD annotations as above, we see the metrics scrape 
