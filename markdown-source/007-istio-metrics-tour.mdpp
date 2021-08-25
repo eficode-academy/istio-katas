@@ -76,7 +76,7 @@ metrics in Prometheus.
 kubectl apply -f 007-istio-metrics-tour/start/sentences.yaml
 ```
 
-Execute `kubectl get pods` and observe that we have one container per POD:
+Execute `kubectl get pods` and observe that we have one container per POD.
 
 ```
 NAME                         READY   STATUS    RESTARTS   AGE
@@ -90,17 +90,40 @@ sentences-779767c659-mlcm9   1/1     Running   0          4s
 Execute `scripts/loop-query.sh` to see the application is running. This will also
 update both Istio and sentences application metrics.
 
+```console
+./scripts/loop-query.sh
+```
+
 - **Inspect available metrics on sentences POD port `8000/metrics`**
 
 To retrieve metrics from a POD in the sentences application we can query the
-**NodePort** mapped to the metrics port 8000:
+**NodePort** mapped to the metrics port 8000. 
 
-TODO: export pod name
+Execute kubectl to get pods and find a node ip.
+
+
+```console
+kubectl get pods -o wide
+```
+
+This should produce output that looks like the following.
+
+```console
+NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE                                        NOMINATED NODE   READINESS GATES
+age-7584598b58-zv4wb         1/1     Running   0          14m   10.0.52.63    ip-10-0-57-188.eu-west-1.compute.internal   <none>           <none>
+name-7cbf469c96-l2x42        1/1     Running   0          14m   10.0.42.100   ip-10-0-32-58.eu-west-1.compute.internal    <none>           <none>
+sentences-5576c79877-vpgmq   1/1     Running   0          14m   10.0.44.91    ip-10-0-32-58.eu-west-1.compute.internal    <none>           <none>
+```
+
+Run curl with `IP` of one of the nodes on port `8000` for `/metrics` and grep 
+the output for `sentence_requests_total`. E.g from the above example this 
+would be `curl -s 10.0.44.91:8000/metrics | grep sentence_requests_total`
+
 ```console
 curl -s <Any node IP>:<node port for POD port 8000>/metrics | grep sentence_requests_total
 ```
 
-This will return something like:
+This will return something like the following.
 
 ```
 # HELP sentence_requests_total Number of requests
