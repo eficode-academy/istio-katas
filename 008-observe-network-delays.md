@@ -27,8 +27,20 @@ Besides metrics, Istio generates another type of telemetry,
 for a detailed understanding of call flows and service dependencies within 
 a mesh. 
 
+Istio supports distributed tracing through the envoy proxy sidecar. The proxies 
+**automatically** generate trace **spans** on **behalf** applications they proxy. 
+
+The sidecar proxy will send the tracing information directly to the tracing 
+backends. So the application developer does **not** know or worry about a 
+distributed tracing backend. 
+
+Istio, **does** rely on the application to propagate some headers for subsequent 
+outgoing requests so it can stitch together a complete view of the traffic. 
+Specifically the [B3 trace headers](https://github.com/openzipkin/b3-propagation). 
+See more **More Istio Distributed Tracing** below for a list of the required headers.
+
 <details>
-    <summary> More About Spans </summary>
+    <summary> More Istio Distributed Tracing </summary>
 
 The “span” is the primary building block of a distributed trace, representing 
 an individual unit of work done in a distributed system. Each component of the 
@@ -39,25 +51,11 @@ Spans can (and generally do) contain “References” to other spans, which allo
 multiple Spans to be assembled into one complete Trace - a visualization of the 
 life of a request as it moves through a distributed system.
 
-</details>
-
-Istio supports distributed tracing through the envoy proxy sidecar. The proxies 
-**automatically** generate trace spans on **behalf** applications they proxy. 
-
-The sidecar proxy will send the tracing information directly to the tracing 
-backends. So the application developer does **not** know or worry about a 
-distributed tracing backend. 
-
 Istio supports a number of tracing backends but we will be using 
 [Jaeger](https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/) 
 as the backend for this exercise.
 
-Istio, however, **does** rely on the application to propagate some headers for subsequent 
-outgoing requests so it can stitch together a complete view of the traffic. 
-Specifically the [B3 trace headers](https://github.com/openzipkin/b3-propagation).
-
-<details>
-    <summary> Required Tracing Headers </summary>
+Istio Requires the following B3 tracing headers to be propagated across the services.
 
 - x-request-id
 - x-b3-traceid
