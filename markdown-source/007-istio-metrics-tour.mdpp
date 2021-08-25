@@ -96,8 +96,8 @@ update both Istio and sentences application metrics.
 
 - **Inspect available metrics on sentences POD port `8000/metrics`**
 
-To retrieve metrics from a POD in the sentences application we can query the
-**NodePort** mapped to the metrics port 8000. 
+To retrieve metrics from a POD in the sentences application we can query 
+the metrics port 8000. 
 
 Execute kubectl to get pods and find a node ip.
 
@@ -137,12 +137,14 @@ script when we fetched metrics.
 - **Inject Istio sidecar to sentences services**
 
 The deployed version of the sentences application have Istio sidecar injection 
-**disabled**. This is done through annotations - investigate the yaml file and 
-observe the use of the `sidecar.istio.io/inject` annotation:
+**disabled**. This is done through annotations.
 
-```
+You can investigate the yaml file `007-istio-metrics-tour/start/sentences.yaml` 
+and observe the use of the `sidecar.istio.io/inject` annotation:
+
+```yaml
       annotations:
-        sidecar.istio.io/inject: 'false'
+        sidecar.istio.io/inject: 'false'    # Sidecar injection is disabled
         prometheus.io/scrape: 'true'
         prometheus.io/port: '8000'
         prometheus.io/path: '/metrics'
