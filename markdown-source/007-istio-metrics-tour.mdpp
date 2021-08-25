@@ -282,7 +282,7 @@ going through the ingress gateway.
 
 If you want narrow the results down to the traffic between the sentences 
 services you could replace the expression with 
-`istio_requests_total{app="sentences"}`. This would give results for **all**  
+`istio_requests_total{app="sentences"}`. This would give results for **all** 
 the services labelled with `app=sentences` across all namespaces.
 
 If you wanted the results for a specific service, say the `age` service, in a 
