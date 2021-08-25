@@ -13,7 +13,7 @@ The natural order would be:
 - [Traffic out of the mesh](004-egress-traffic.md)
 - [Securing with mutual TLS](005-securing-with-mtls.md)
 - [Service access control](006-service-access-control.md)
-- [A tour of Istio's metrics](007-istio-metrics-tour.md) - In Progress
+- [A tour of Istio's metrics](007-istio-metrics-tour.md)
 - [Observe network delays](008-observe-network-delays.md) - In Progress
 
 However each exercise, besides the setup introduction, has a 
