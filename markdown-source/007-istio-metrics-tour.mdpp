@@ -3,13 +3,74 @@
 
 # A Tour of the Istio Metrics
 
+## Learning goals
+
+- Basic overview of the metrics Istio provides
+- Enabling Prometheus scraping of Istio and application metrics
+
+## Introduction
+
 This exercise will demonstrate how to use metrics from Istio together with
 Prometheus. We will also see how application metrics and Istio metrics work
 together.
 
-Note: This exercise assumes an Istio deployment with `enablePrometheusMerge` enabled.
+> This exercise assumes an Istio deployment with `enablePrometheusMerge` 
+> enabled.
 
-Deploy the sentences application:
+Istio provides telemetry for all service communication within the mesh. 
+This telemetry provides **observability** of service behavior such as 
+overall traffic volume, error rates in traffic and response times. 
+All without any additional effort needed by the developer of a service. 
+
+One of the types of telemetry Istio generates is metrics. This is done 
+for **all** service traffic in the mesh. Both inbound and outbound. 
+
+Istio provides three levels of metrics. 
+
+- Proxy-level: Standard metrics about all pass-through traffic along with 
+detailed statistics about the administrative functions of the proxy itself.
+
+- Service-level: Service oriented metrics for monitoring the service 
+communication.
+
+- Control-plane: A collection of self monitoring metrics.
+
+See the [documentation](https://istio.io/latest/docs/concepts/observability/#metrics) 
+for more details.
+
+## Exercise
+
+First you will deploy the sentences service without sidecars and inspect 
+the metrics provided by application. Afterwards you will inject sidecars 
+and inspect the Istio metrics. Then you will enable a single scrape endpoint 
+for both the Istio and application metrics. Finally you view and query Istio 
+metrics in Prometheus.
+
+### Overview
+
+- Deploy the sentences application services
+
+- Run the script `scripts/loop-query.sh`
+
+- Inspect available metrics on sentences POD port `8000/metrics`
+
+- Inject Istio sidecar to sentences services
+
+- Merge Istio and application metrics to one scrape endpoint
+
+> Istio supports merging Prometheus metrics from the application and the sidecar
+> into a single scrape endpoint, however this has been disabled with the
+> annotation `prometheus.istio.io/merge-metrics`
+
+- Fetch Istio Metrics
+
+- Browse Istio Metrics in Prometheus
+
+### Step by Step
+<details>
+    <summary> More Details </summary>
+
+- **Deploy the sentences application services**
 
 ```console
 kubectl apply -f 007-istio-metrics-tour/start/sentences.yaml
@@ -24,12 +85,17 @@ name-86969f7468-4qfmp        1/1     Running   0          3s
 sentences-779767c659-mlcm9   1/1     Running   0          4s
 ```
 
-Next, execute `scripts/loop-query.sh` to see the application is running. This will also
+- **Run the script `scripts/loop-query.sh`**
+
+Execute `scripts/loop-query.sh` to see the application is running. This will also
 update both Istio and sentences application metrics.
 
-To retrieve metrics from a POD in the sentences application we can query the
-nodeport mapped to the metrics port 8000:
+- **Inspect available metrics on sentences POD port `8000/metrics`**
 
+To retrieve metrics from a POD in the sentences application we can query the
+**NodePort** mapped to the metrics port 8000:
+
+TODO: export pod name
 ```console
 curl -s <Any node IP>:<node port for POD port 8000>/metrics | grep sentence_requests_total
 ```
@@ -45,8 +111,10 @@ sentence_requests_total{type="name"} 584.0
 This shows that the POD had received `584` requests from the `loop-query.sh`
 script when we fetched metrics.
 
-The deployed version of the sentences application have Istio sidecar injection
-disabled. This is done through annotations - investigate the yaml file and
+- **Inject Istio sidecar to sentences services**
+
+The deployed version of the sentences application have Istio sidecar injection 
+**disabled**. This is done through annotations - investigate the yaml file and 
 observe the use of the `sidecar.istio.io/inject` annotation:
 
 ```
@@ -61,10 +129,8 @@ Also note the Prometheus annotations that informs Prometheus, that this POD can
 be scraped for metrics on port `8000` and path `/metrics` - similar to what we
 just did manually.
 
-## Enable Sidecar Injection
-
-Next, we will allow Istio to inject a sidecar. Re-deploy the sentences
-application without the annotation that disables sidecar injection:
+Re-deploy the sentences application without the annotation that disables 
+sidecar injection.
 
 ```console
 cat 007-istio-metrics-tour/start/sentences.yaml |grep -v inject | kubectl apply -f -
@@ -91,11 +157,13 @@ Annotations:  prometheus.io/path: /metrics
 So there is no change in how Prometheus will scrape POD metrics - it will still
 use port `8000` which is handled by the sentences application container.
 
+- **Merge Istio and application metrics to one scrape point**
+
 What about the Istio metrics from the sidecar?
 
 Istio supports merging Prometheus metrics from the application and the sidecar
 into a single scrape endpoint, however this has been disabled with the
-annotation `prometheus.istio.io/merge-metrics` (see above).
+annotation `prometheus.istio.io/merge-metrics`.
 
 Re-deploy the sentences application with this annotation removed as well:
 
@@ -103,7 +171,8 @@ Re-deploy the sentences application with this annotation removed as well:
 cat deploy/metrics/sentences.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
 ```
 
-If we now inspect the POD annotations as above, we see:
+If we now inspect the POD annotations as above, we see the metrics scrape 
+endpoint has moved from the application to the sidecar.
 
 ```
 Annotations:  prometheus.io/path: /stats/prometheus
@@ -111,13 +180,11 @@ Annotations:  prometheus.io/path: /stats/prometheus
               prometheus.io/scrape: true
 ```
 
-i.e. the metrics scrape endpoint has moved from the application to the sidecar.
+- **Fetch Istio Metrics**
 
-## Fetch Istio Metrics
-
-> The following illustrate how to fetch the merged metrics using the command
-> line. If you have Prometheus or e.g. Grafana deployed, you could also use one of
-> those to do the queries shown here.
+The following illustrate how to fetch the merged metrics using the command
+line. If you have Prometheus or e.g. Grafana deployed, you could also use one of
+those to do the queries shown here.
 
 First, list PODs to get their cluster IP:
 
@@ -125,7 +192,8 @@ First, list PODs to get their cluster IP:
 kubectl get pods -o wide
 ```
 
-Next, deploy a test tool (if you prefer, you can use any other tool that have `curl` and `grep`):
+Next, deploy a test tool (if you prefer, you can use any other tool that 
+have `curl` and `grep`).
 
 ```console
 kubectl create deploy multitool --image praqma/network-multitool
@@ -139,7 +207,8 @@ the POD annotations - insert the <POD IP> found above:
 curl -s <POD IP>:15020/stats/prometheus | grep requests_total
 ```
 
-the result of which should look somewhat like the following for e.g. the `name` service (output slightly edited for clarity):
+the result of which should look somewhat like the following for e.g. 
+the `name` service (output slightly edited for clarity):
 
 ```
 istio_requests_total{response_code="200",
@@ -163,9 +232,48 @@ the primary information Kiali use to dynamically build application graphs and
 versioned graphs. See this link for more information on how [Kiali use
 Prometheus metrics](https://kiali.io/documentation/latest/faq/#prom-metrics)
 
+</details>
+
+- **Browse Istio Metrics in Prometheus**
+
+Istio makes the base monitoring data available but you still need something 
+to analyze and put the data to use. 
+[Prometheus](https://istio.io/latest/docs/ops/integrations/prometheus/) is 
+an open source monitoring system and time series database. You can use 
+Prometheus with Istio to record metrics that track the health of Istio and 
+of applications within the service mesh. 
+
+Although not part of our course setup you can also visualize metrics using 
+[Grafana](https://istio.io/latest/docs/ops/integrations/grafana/) to create 
+Dashboards.
+
+
+
+
+## Summary
+
+In this exercise you have inspected some of the metrics Istio provides along 
+with how to enable for Prometheus.
+
+Important takeaways are the following. 
+
+- Istio metrics begin with the sidecar. **Each** proxy generates metrics for 
+**all** traffic passing through the sidecar proxy. Both inbound and outbound.
+
+- By **default** Istio enables only a small subset of envoy generated 
+statistics to avoid overwhelming the metrics backend.
+
+- Istio provides three sets of metrics. Proxy-level metrics, service-level 
+metrics and control plane metrics.
+
+- Istio has the ability to control scraping **entirely** by prometheus 
+annotations and this method is enabled by default. When enabled, appropriate 
+prometheus annotations will be added to all data plane pods. 
+
+
 ## Cleanup
 
 ```console
-kubectl delete -f deploy/metrics/sentences.yaml
+kubectl delete -f 007-istio-metrics-tour/start/sentences.yaml
 kubectl delete deploy multitool
 ```
