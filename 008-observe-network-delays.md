@@ -42,6 +42,7 @@ See more **More Istio Distributed Tracing** below for a list of the required hea
 <details>
     <summary> More Istio Distributed Tracing </summary>
 
+
 The “span” is the primary building block of a distributed trace, representing 
 an individual unit of work done in a distributed system. Each component of the 
 distributed system contributes a span - a named, timed operation representing 
@@ -50,10 +51,6 @@ a piece of the workflow.
 Spans can (and generally do) contain “References” to other spans, which allows 
 multiple Spans to be assembled into one complete Trace - a visualization of the 
 life of a request as it moves through a distributed system.
-
-Istio supports a number of tracing backends but we will be using 
-[Jaeger](https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/) 
-as the backend for this exercise.
 
 Istio Requires the following B3 tracing headers to be propagated across the services.
 
@@ -66,6 +63,10 @@ Istio Requires the following B3 tracing headers to be propagated across the serv
 - b3
 
 </details>
+
+Istio supports a number of tracing backends but we will be using 
+[Jaeger](https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/) 
+as the backend for this exercise.
 
 ## Exercise
 
