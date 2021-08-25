@@ -323,5 +323,4 @@ prometheus annotations will be added to all data plane pods.
 
 ```console
 kubectl delete -f 007-istio-metrics-tour/start/sentences.yaml
-kubectl delete deploy multitool
 ```
