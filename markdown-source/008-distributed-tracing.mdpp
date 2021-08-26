@@ -290,9 +290,14 @@ The main takeaways from this exercise are.
 
 - Istio's envoy proxies generate the distributed trace spans for the services.
 
-- If a service has no proxy sidecar are, distributed trace telemetry will not be generated.
+- If a service has no proxy sidecar, distributed trace telemetry will not 
+be generated.
 
-- The only requirement for the service is to propagate the **required** B3 trace headers.
+- Istio's envoy proxies provide the distributed trace telemetry to the 
+supported backends integrated with the mesh.
+
+- The only requirement for the service is to propagate the **required** 
+B3 trace headers.
 
 ## Cleanup
 
