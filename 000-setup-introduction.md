@@ -356,7 +356,8 @@ and versioned app graphs from the drop down at the top.
 
 > :bulb: Use the display options to modify what is shown in the 
 > different graphs. Showing request distribution is something
-> we will be using often.
+> we will be using often. Also ensure you are running the 
+> `loop-query.sh` script to generate traffic.
 
 ![Graph Details](images/kiali-details.png)
 
