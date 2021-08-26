@@ -14,7 +14,7 @@ The natural order would be:
 - [Securing with mutual TLS](005-securing-with-mtls.md)
 - [Service access control](006-service-access-control.md)
 - [A tour of Istio's metrics](007-istio-metrics-tour.md)
-- [Istio and distributed tracing](008-distributed-tracing.md) - In Progress
+- [Istio and distributed tracing](008-distributed-tracing.md)
 
 However each exercise, besides the setup introduction, has a 
 start folder located beneath it. E.g. `001-basic-traffic-routing/start` that 
