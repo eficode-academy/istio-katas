@@ -350,7 +350,7 @@ sentences-v1-7cfbb658b6-rthxn   2/2     Running   0          16m
 
 - **Investigate the different graphs**
 
-- Browse to the **graphs** and investigate the service, workload, app 
+Browse to the **graphs** and investigate the service, workload, app 
 and versioned app graphs from the drop down at the top.
 
 > :bulb: Use the display options to modify what is shown in the 
