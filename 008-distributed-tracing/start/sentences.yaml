@@ -4,18 +4,21 @@ metadata:
   labels:
     app: sentences
     mode: sentence
-  name: sentences
+    version: v1
+  name: sentences-v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: sentences
       mode: sentence
+      version: v1
   template:
     metadata:
       labels:
         app: sentences
         mode: sentence
+        version: v1
     spec:
       containers:
       - image: praqma/istio-sentences:v1
@@ -36,7 +39,6 @@ spec:
   - port: 5000
     protocol: TCP
     targetPort: 5000
-    #appProtocol: http
   selector:
     app: sentences
     mode: sentence
