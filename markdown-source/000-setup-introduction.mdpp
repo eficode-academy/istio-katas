@@ -142,6 +142,8 @@ service/sentences   NodePort    172.20.168.218   <none>        5000:30326/TCP   
 
 Run the following to continuously query the sentence service and observe the output.
 
+Do this is a **new** terminal.
+
 ```console
 ./scripts/loop-query.sh
 ```
