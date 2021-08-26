@@ -164,7 +164,12 @@ about where the request was sent and the response status.
 
 ![Kiali Span Details](images/kiali-span-details.png)
 
-> TODO!: Some explanation about the color schemes and how they are applied.
+> The colors on the span and trace details is controlled by Kiali so it 
+> is easier to see problems. The colors are based on an average of 
+> comparisons of each span duration vs the metrics for the same 
+> source/destination services. See this 
+> [blog](https://medium.com/kialiproject/trace-my-mesh-part-2-3-13cd6ccae1de) 
+> for a more detailed dive into how Kiali does this.
 
 - **Observe the distributed tracing telemetry in Jaeger**
 
