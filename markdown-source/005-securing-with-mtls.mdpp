@@ -152,7 +152,7 @@ In a destination rule you use the `tls` keyword instead of the `mtls` keyword
 under `spec.trafficPolicy`.
 
 ```yaml
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: upstream-mtls
