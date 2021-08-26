@@ -14,7 +14,7 @@ The natural order would be:
 - [Securing with mutual TLS](005-securing-with-mtls.md)
 - [Service access control](006-service-access-control.md)
 - [A tour of Istio's metrics](007-istio-metrics-tour.md)
-- [Observe network delays](008-observe-network-delays.md) - In Progress
+- [Istio and distributed tracing](008-distributed-tracing.md) - In Progress
 
 However each exercise, besides the setup introduction, has a 
 start folder located beneath it. E.g. `001-basic-traffic-routing/start` that 
@@ -23,7 +23,7 @@ allows you to do them in **your** preferred order.
 > :bulb: If you do **not** start with [Introducing the setup](000-setup-introduction.md) 
 > you will need to enable automatic sidecar injection.
 
-Do note that there can be multiple exercises per exercise file. 
+Do note that there **can be multiple exercises** per exercise file. 
 
 ## How to Read Exercise Files
 
