@@ -2,7 +2,7 @@
 [//]: # (Origin: https://github.com/eficode-academy/istio-katas)
 [//]: # (Tags: #delay #network-delay #kiali)
 
-# Observing Network Delays
+# Istio - Distributed Tracing
 
 ## Learning goal
 
@@ -15,7 +15,7 @@ This exercise will introduce some network delays and *slightly* more
 complex deployment of the sentences application to **introduce** you to 
 another type of telemetry Istio generates. 
 
-[distributed trace](https://istio.io/latest/docs/concepts/observability/#distributed-traces) 
+- [Distributed trace](https://istio.io/latest/docs/concepts/observability/#distributed-traces) 
 **spans**. 
 
 It will also introduce you to **one** of the distributed tracing backends 
@@ -25,16 +25,14 @@ Istio integrates with.
 
 Istio supports distributed tracing through the envoy proxy sidecar. The proxies 
 **automatically** generate trace **spans** on **behalf** applications they proxy. 
-
 The sidecar proxy will send the tracing information directly to the tracing 
 backends. So the application developer does **not** know or worry about a 
 distributed tracing backend. 
 
 However, Istio **does** rely on the application to propagate some headers for 
 subsequent outgoing requests so it can stitch together a complete view of the 
-traffic. Specifically the [B3 trace headers](https://github.com/openzipkin/b3-propagation). 
-
-See more **More Istio Distributed Tracing** below for a list of the required headers.
+traffic. See more **More Istio Distributed Tracing** below for a list of the 
+required headers.
 
 <details>
     <summary> More Istio Distributed Tracing </summary>
@@ -62,7 +60,8 @@ travels across multiple hosts and service.
 > life of a request as it moves through a distributed system.
 
 In order for Istio to stitch together the spans and provide this view of the life 
-of a request. Istio Requires the following B3 tracing headers to be propagated 
+of a request. Istio Requires the following 
+[B3 trace headers](https://github.com/openzipkin/b3-propagation) to be propagated 
 across the services.
 
 - x-request-id
