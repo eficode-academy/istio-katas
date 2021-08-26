@@ -256,7 +256,7 @@ kubectl apply -f 008-distributed-tracing/start/sentences-ingress-vs.yaml
 - **Route traffic through the ingress gateway**
 
 Now instead of hitting the NodePort of the sentences service use the 
-`:scripts/loop-query.sh` with the `-g` option and the entry point of 
+`./scripts/loop-query.sh` with the `-g` option and the entry point of 
 the gateway you just created.
 
 ```console
