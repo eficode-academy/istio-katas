@@ -256,7 +256,7 @@ Now you can see there are sidecars and the traffic is part of the mesh.
 
 - **Disable automatic sidecar injection for the `age` service**
 
-Edit the file `000-setup-introduction/age.yaml` and add the annotation 
+Edit the file `000-setup-introduction/age-v1.yaml` and add the annotation 
 `sidecar.istio.io/inject: 'false'`.
 
 ```yaml
@@ -294,10 +294,10 @@ spec:
           value: "age"
 ```
 
-Apply the changes to the `age.yaml` file.
+Apply the changes to the `age-v1.yaml` file.
 
 ```console
-kubectl apply -f 000-setup-introduction/age.yaml
+kubectl apply -f 000-setup-introduction/age-v1.yaml
 ```
 
 Use kubectl to see the number of pods running.
@@ -328,7 +328,7 @@ annotated.
 Run the following command to inject a sidecar for the `age` service.
 
 ```console
-cat 000-setup-introduction/age.yaml |grep -v inject | kubectl apply -f -
+cat 000-setup-introduction/age-v1.yaml |grep -v inject | kubectl apply -f -
 ```
 
 Use kubectl to see the number of pods running.

@@ -21,7 +21,7 @@ start folder located beneath it. E.g. `001-basic-traffic-routing/start` that
 allows you to do them in **your** preferred order. 
 
 > :bulb: If you do **not** start with [Introducing the setup](000-setup-introduction.md) 
-> you will need to enable automatic sidecar injection.
+> you will need to enable automatic sidecar injection prior to doing the exercise.
 
 Do note that there **can be multiple exercises** per exercise file. 
 
