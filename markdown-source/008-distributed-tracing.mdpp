@@ -5,26 +5,22 @@
 
 ## Learning goal
 
-- Introduction to Jaeger and distributed tracing
+- Understand how Istio supports distributed tracing
+- Introduction to Jaeger
 
 ## Introduction
 
-In this exercise will introduce some network delays to the sentences application. 
-Some forms of delays can be observed with the **metrics** that Istio tracks. 
+This exercise will introduce some network delays and *slightly* more 
+complex deployment of the sentences application to **introduce** you to 
+another type of telemetry Istio generates. 
 
-> Metrics are statistical and not specific to a certain request, i.e. we can 
-> only observe statistical data about observations like sums and averages. 
-
-This is quite useful but a quite limited in a true service based architecture. 
-Therefor we will introduce a *slightly* more complex delay. If the delay was 
-caused by something more complicated it would be difficult to diagnose purely 
-from metrics due to their statistical nature.
-
-Besides metrics, Istio generates another type of telemetry, 
 [distributed trace](https://istio.io/latest/docs/concepts/observability/#distributed-traces) 
-**spans**, which can help solve these more complex scenarios. This allows 
-for a detailed understanding of call flows and service dependencies within 
-a mesh. 
+**spans**. 
+
+It will also introduce you to **one** of the distributed tracing backends 
+Istio integrates with.
+
+- [Jaeger](https://istio.io/latest/docs/ops/integrations/jaeger/).
 
 Istio supports distributed tracing through the envoy proxy sidecar. The proxies 
 **automatically** generate trace **spans** on **behalf** applications they proxy. 
@@ -33,25 +29,40 @@ The sidecar proxy will send the tracing information directly to the tracing
 backends. So the application developer does **not** know or worry about a 
 distributed tracing backend. 
 
-Istio, **does** rely on the application to propagate some headers for subsequent 
-outgoing requests so it can stitch together a complete view of the traffic. 
-Specifically the [B3 trace headers](https://github.com/openzipkin/b3-propagation). 
+However, Istio **does** rely on the application to propagate some headers for 
+subsequent outgoing requests so it can stitch together a complete view of the 
+traffic. Specifically the [B3 trace headers](https://github.com/openzipkin/b3-propagation). 
+
 See more **More Istio Distributed Tracing** below for a list of the required headers.
 
 <details>
     <summary> More Istio Distributed Tracing </summary>
 
+Some forms of delays can be observed with the **metrics** that Istio tracks. 
 
-The “span” is the primary building block of a distributed trace, representing 
-an individual unit of work done in a distributed system. Each component of the 
-distributed system contributes a span - a named, timed operation representing 
-a piece of the workflow.
+> Metrics are statistical and not specific to a certain request, i.e. we can 
+> only observe statistical data about observations like sums and averages. 
 
-Spans can (and generally do) contain “References” to other spans, which allows 
-multiple Spans to be assembled into one complete Trace - a visualization of the 
-life of a request as it moves through a distributed system.
+This is quite useful but quite limited in a true service based architecture. 
+Therefor we will introduce a *slightly* more complex delay. If the delay was 
+caused by something more complicated it would be difficult to diagnose purely 
+from metrics due to their statistical nature.
 
-Istio Requires the following B3 tracing headers to be propagated across the services.
+Distributed traces with spans provide a view of the life of a request as it 
+travels across multiple hosts and service.
+
+> The “span” is the primary building block of a distributed trace, representing 
+> an individual unit of work done in a distributed system. Each component of the 
+> distributed system contributes a span - a named, timed operation representing 
+> a piece of the workflow.
+> 
+> Spans can (and generally do) contain “References” to other spans, which allows 
+> multiple Spans to be assembled into one complete Trace - a visualization of the 
+> life of a request as it moves through a distributed system.
+
+In order for Istio to stitch together the spans and provide this view of the life 
+of a request. Istio Requires the following B3 tracing headers to be propagated 
+across the services.
 
 - x-request-id
 - x-b3-traceid
@@ -62,10 +73,6 @@ Istio Requires the following B3 tracing headers to be propagated across the serv
 - b3
 
 </details>
-
-Istio supports a number of tracing backends but we will be using 
-[Jaeger](https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/) 
-as the backend for this exercise.
 
 ## Exercise
 
