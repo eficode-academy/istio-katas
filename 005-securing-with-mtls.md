@@ -683,7 +683,7 @@ We must have the sentences application deployed with sidecars. This should
 already be the case, unless you skipped some of the first exercise.
 
 ```console
-cat 005-securing-with-mtls/*.yaml |grep -v inject | kubectl apply -f -
+cat 005-securing-with-mtls/start/*.yaml |grep -v inject | kubectl apply -f -
 ```
 
 - **Generate needed certificate authority(CA) and certificates**
