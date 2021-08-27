@@ -258,7 +258,7 @@ metadata:
   name: sentences
 spec:
   hosts:
-  - "user2.sentences.istio.eficode.academy"
+  - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
   gateways:
   - sentences
   http:
