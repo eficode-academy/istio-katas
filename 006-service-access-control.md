@@ -305,7 +305,7 @@ cat 006-service-access-control/examples/authz-policy.yaml | envsubst
 And apply the policy:
 
 ```console
-cat 006-service-access-control/start/authz-policy.yaml | envsubst | kubectl apply -f -
+cat 006-service-access-control/examples/authz-policy.yaml | envsubst | kubectl apply -f -
 ```
 
 If we retry the curl commands from previously from both the `age` and
@@ -340,5 +340,5 @@ given service.
 
 ```console
 kubectl delete -f 006-service-access-control/start/sentences.yaml
-cat 006-service-access-control/start/authz-policy.yaml | envsubst | kubectl delete -f -
+cat 006-service-access-control/examples/authz-policy.yaml | envsubst | kubectl delete -f -
 ```
