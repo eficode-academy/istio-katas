@@ -197,7 +197,7 @@ client certificates as the certs generated for mTLS by Istio are used.
 
 - Deploy the sentences application and observe sidecars
 
-- Run the script `./scripts/loop-query.sh` 
+- Run the script `./scripts/loop-query.sh` with `-g` and the gateway 
 
 - Observe the traffic flow with Kiali
 
@@ -296,7 +296,7 @@ sentences-779767c659-mlcm9   1/1     Running   0          4s
 Execute the following to retrieve sentences and thus update Istio metrics.
 
 ```console
-./scripts/loop-query.sh
+./scripts/loop-query.sh -g <YOUR_NAMEPSACE>.sentences.istio.eficode.academy
 ```
 
 - **Observe the traffic flow with Kiali**
