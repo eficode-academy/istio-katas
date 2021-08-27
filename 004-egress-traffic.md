@@ -490,8 +490,6 @@ spec:
       weight: 100
 ```
 
-</details>
-
 Apply the changes.
 
 ```console
@@ -525,6 +523,8 @@ gateway in the `istio-ingress` namespace. Traffic from the api service is now
 leaving through the common egress gateway in the `istio-system` namespace.
 
 ![API Egress](images/kiali-api-egress.png)
+
+</details>
 
 # Summary
 
