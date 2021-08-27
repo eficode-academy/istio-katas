@@ -299,7 +299,7 @@ user1, user2, etc.
 
 ```console
 export NAMESPACE=<YOUR_NAMESPACE>
-cat deploy/authz/authz-policy.yaml | envsubst
+cat 006-service-access-control/examples/authz-policy.yaml | envsubst
 ```
 
 And apply the policy:
