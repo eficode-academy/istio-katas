@@ -430,7 +430,7 @@ Main takeaways are:
 an onboarding process for Istio and to force a sidecar if needed.
 
 * Annotations can be used to control sidecar injection. Both enabling for an 
-onboarding process oor disabling if needed.
+onboarding process or disabling if needed.
 
 * Automatic sidecar injections is recommended. Automatic sidecar injection 
 ensures a more **pervasive** and homogenous approach for traffic management 
