@@ -90,6 +90,10 @@ There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`,
 
 </details>
 
+> :bulb: If you have not completed exercise 
+> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> your namespace with `istio-injection=enabled`.
+
 ## Exercise: Mutual TLS Inside the Mesh
 
 You will deploy all the services for the sentences application to observe 

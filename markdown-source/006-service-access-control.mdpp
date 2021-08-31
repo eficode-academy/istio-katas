@@ -23,6 +23,10 @@ to understand what Istio functionality can be used to control service
 to service access. The Istio CRD for this is the 
 [AuthorizationPolicy](https://istio.io/latest/docs/reference/config/security/authorization-policy/).
 
+> :bulb: If you have not completed exercise 
+> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> your namespace with `istio-injection=enabled`.
+
 ## Exercise
 
 Expand the overview below to get an idea of what you will be doing in the 

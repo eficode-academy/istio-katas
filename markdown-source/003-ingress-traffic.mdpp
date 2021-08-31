@@ -53,6 +53,10 @@ This is the IngressGateway which we configured with the Gateway CRD.
 
 </details>
 
+> :bulb: If you have not completed exercise 
+> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> your namespace with `istio-injection=enabled`.
+
 ## Exercise: Ingress Traffic With Gateway
 
 The previous exercises used a Kubernetes **NodePort** service to get traffic 

@@ -74,6 +74,10 @@ across the services.
 
 </details>
 
+> :bulb: If you have not completed exercise 
+> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> your namespace with `istio-injection=enabled`.
+
 ## Exercise
 
 You are going to deploy a *slightly* more complex version of the sentences 

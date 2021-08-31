@@ -27,6 +27,10 @@ service through a common egress gateway.
 
 This exercise builds on the [Getting Traffic Into The mesh](003-ingress-traffic.md) exercises.
 
+> :bulb: If you have not completed exercise 
+> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> your namespace with `istio-injection=enabled`.
+
 ## Exercise: Egress Traffic
 
 In this exercise you will deploy a **new** version of the **sentences** 

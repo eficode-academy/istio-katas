@@ -39,6 +39,10 @@ communication.
 See the [documentation](https://istio.io/latest/docs/concepts/observability/#metrics) 
 for more details.
 
+> :bulb: If you have not completed exercise 
+> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> your namespace with `istio-injection=enabled`.
+
 ## Exercise
 
 First you will deploy the sentences service without sidecars and inspect 
