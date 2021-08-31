@@ -67,12 +67,15 @@ We are using Kiali to visualize the work done in this Istio course.
 
 ## Exercise: Get Familiar with Istio and Kiali.
 
-In this exercise, we are first deploying our application with vanilla Kubernetes.
-We then visit the Kiali website to see that without a sidecar, our service will not be included in istio.
+In this exercise, we are first deploying our application with vanilla 
+Kubernetes. We then visit the Kiali website to see that without a 
+sidecar, our service will not be included in istio.
 
-Final thing for the exercise is to enable Istio sidecar and see the traffic flowing in Kiali.
+Then you will be using a few different techniques to enable Istio sidecars 
+and see the traffic flowing in Kiali.
 
-Expand the overview below to see the steps in the exercise.
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
 
 <details>
     <summary> Overview Of Steps </summary>
@@ -111,9 +114,6 @@ Expand the overview below to see the steps in the exercise.
 - Inject sidecar for the `age` service
 
 </details>
-
-The overview above is just to give an idea about what you will be doing in the 
-**step by step** section below.
 
 It is **recommended** to follow the step by step **tasks** below.
 

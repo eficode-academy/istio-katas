@@ -124,7 +124,8 @@ the flow of traffic in your namespace. We spin up two versions of the name
 service in the namespace, and use the VirtualService and DestinationRule kinds 
 to control the traffic.
 
-Expand the overview below to see the steps in the exercise.
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
 
 <details>
     <summary> Overview Of Steps </summary>
@@ -153,9 +154,6 @@ service
 - Use the **Versioned app graph** in Kiali to observe the traffic flow
 
 </details>
-
-The overview above is just to give an idea about what you will be doing in the 
-**step by step** section below.
 
 It is **recommended** to follow the step by step tasks below.
 

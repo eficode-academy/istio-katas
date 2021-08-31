@@ -95,7 +95,8 @@ You can have multiple conditions in a match block and multiple match blocks.
 
 **NOTE:** Matches are evaluated **prior** to any destination's being applied.
 
-Expand the overview below to see the steps in the exercise.
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
 
 <details>
     <summary> Overview Of Steps </summary>
@@ -132,9 +133,6 @@ Expand the overview below to see the steps in the exercise.
 - Add the default route and use a different header
 
 </details>
-
-The overview above is just to give an idea about what you will be doing in the 
-**step by step** section below.
 
 It is **recommended** to follow the step by step tasks below.
 
@@ -441,7 +439,8 @@ In the above example we define a traffic distribution percentage with the
 `my-service` destination will receive 90% of **all** traffic while the `v2` 
 workload of `my-service` will receive 10% of **all** traffic.
 
-Expand the overview below to see the steps in the exercise.
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
 
 <details>
     <summary> Overview Of Steps </summary>
@@ -469,9 +468,6 @@ Expand the overview below to see the steps in the exercise.
 - Observe the traffic flow with Kiali
 
 </details>
-
-The overview above is just to give an idea about what you will be doing in the 
-**step by step** section below.
 
 It is **recommended** to follow the step by step tasks below.
 
@@ -814,6 +810,8 @@ will be mirrored to the `v3` subset.
 If the field is not defined then the `v3` subset will get 100% of the traffic 
 routed to `v2`.
 
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
 
 <details>
     <summary> Overview Of Steps </summary>
@@ -831,9 +829,6 @@ routed to `v2`.
 - Observe the traffic in Kiali
 
 </details>
-
-The overview above is just to give an idea about what you will be doing in the 
-**step by step** section below.
 
 It is **recommended** to follow the step by step tasks below.
 
