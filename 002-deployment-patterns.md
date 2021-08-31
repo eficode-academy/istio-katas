@@ -806,10 +806,9 @@ traffic `v2` receives to the `v3` subset.
 
 Adjusting the `mirrorPercentage` value will adjust how much of the traffic 
 routed to `v2` will be mirrored to the `v3` subset. E.g, if set to 50.0 then 
-50% percent of traffic routed to the `v2` subset will be mirrored to the `v3` subset. 
-
-If the field is not defined then the `v3` subset will get 100% of the traffic 
-routed to `v2`.
+50% percent of traffic routed to the `v2` subset will be mirrored to the `v3` 
+subset. If the field is not defined then the `v3` subset will get 100% of the 
+traffic routed to `v2`.
 
 Expand the overview below to get an idea of what you will be doing in the 
 **Step By Step** section.
