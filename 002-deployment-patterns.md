@@ -552,6 +552,7 @@ kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 
 ___
 
+If not already running, execute the `loop-query.sh` script.
 
 ```console
 ./scripts/loop-query.sh
@@ -569,7 +570,7 @@ The traffic should still be routed to the `v1` workload as the match condition
 did not evaluate to true and order of precedence dictates the first destination 
 which will direct traffic to `v1` workload.
 
-![Precedence routing](images/kiali-precedence-routing.png)
+![Precedence routing](images/kiali-bad-header.png)
 
 #### Task: Add the `weight` fields in `name-vs.yaml`
 
