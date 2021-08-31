@@ -80,6 +80,8 @@ Expand the overview below to get an idea of what you will be doing in the
 <details>
     <summary> Overview Of Steps </summary>
 
+- Inspect you namespace
+
 - Deploy the sentences application with kubectl 
 
 > :bulb: It is located under the `000-setup-introduction/` directory.
@@ -121,6 +123,24 @@ It is **recommended** to follow the step by step **tasks** below.
 
 <details>
     <summary> Tasks </summary>
+
+#### Task: Inspect you namespace
+
+___
+
+You will need to know your namespace for later exercises. Find it with the 
+following command.
+
+```console
+kubectl config view --output 'jsonpath={..namespace}'; echo
+```
+
+You should see something like below depending on your namespace. E.g. user1, 
+user2, user3, etc.
+
+```console
+user1
+```
 
 #### Task: Deploy the sentences application
 

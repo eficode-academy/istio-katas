@@ -180,6 +180,16 @@ It is **recommended** to follow the step by step **tasks** below.
 ___
 
 
+> :bulb: This exercise **requires** that you know the namespace you are 
+> working in. If you do not know you can inspect your namespace with the 
+> following command.
+
+```console
+kubectl config view --output 'jsonpath={..namespace}'; echo
+```
+
+Deploy the sentences application services.
+
 ```console
 kubectl apply -f 003-ingress-traffic/start/
 ```

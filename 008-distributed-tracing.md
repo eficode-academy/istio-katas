@@ -229,6 +229,13 @@ also see that the version of the sentences service is `v2`.
 
 ___
 
+> :bulb: This exercise **requires** that you know the namespace you are 
+> working in. If you do not know you can inspect your namespace with the 
+> following command.
+
+```console
+kubectl config view --output 'jsonpath={..namespace}'; echo
+```
 
 The traffic flow in our sentences application is pretty simple with low 
 complexity. But in much more complex system with a much more complicated 

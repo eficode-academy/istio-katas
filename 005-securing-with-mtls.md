@@ -251,6 +251,14 @@ It is **recommended** to follow the step by step **tasks** below.
 ___
 
 
+> :bulb: This exercise **requires** that you know the namespace you are 
+> working in. If you do not know you can inspect you namespace with the 
+> following command.
+
+```console
+kubectl config view --output 'jsonpath={..namespace}'; echo
+```
+
 Modify `sentences-ingress-gw.yaml` file with your namespace.
 
 ```yaml
@@ -786,6 +794,14 @@ user2-sentences-tls-secret        Opaque    3      112m
 
 ___
 
+
+> :bulb: This exercise **requires** that you know the namespace you are 
+> working in. If you do not know you can inspect your namespace with the 
+> following command.
+
+```console
+kubectl config view --output 'jsonpath={..namespace}'; echo
+```
 
 Modify the file `005-securing-with-mtls/start/sentences-ingress-gw.yaml` so 
 that it will be namespaced to the `istio-ingress` namespace and configure it 

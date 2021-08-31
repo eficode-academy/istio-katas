@@ -284,6 +284,13 @@ has been made configurable. To inspect the resulting AuthorizationPolicy use the
 following commands and change the value of `NAMESPACE` to `<YOUR_NAMESPACE>`, e.g 
 user1, user2, etc.
 
+If you do not know what your namespace is you can inspect it with the following 
+command.
+
+```console
+kubectl config view --output 'jsonpath={..namespace}'; echo
+```
+
 ```console
 export NAMESPACE=<YOUR_NAMESPACE>
 cat 006-service-access-control/examples/authz-policy.yaml | envsubst

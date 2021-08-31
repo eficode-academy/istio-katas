@@ -118,6 +118,10 @@ spec:
 > Destination rules are applied by Istio **after** virtual service routing 
 > rules are **evaluated**, so they apply to the traffic’s “real” destination.
 
+> :bulb: If you have not completed exercise 
+> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> your namespace with `istio-injection=enabled`.
+
 ## Exercise: Routing To Specific Version
 
 We will look a bit into how a VirtualService and a DestinationRule can control 
