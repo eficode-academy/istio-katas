@@ -264,14 +264,14 @@ You should now see all traffic being routed to `v1` of the name workload.
 This is because when the match did **not** evaluate to true the default 
 route was used. 
 
-> :bulb: Notice the indentation for the route to `name-v1`, which will be our 
-> **default** route. E.g the route to `name-v2` is nested **under** the 
-> `match` block. That is a different route...
+> Whenever you use matches for traffic routing. You should **always** ensure you 
+> have a **default** route.
 
 ![Default route](images/kiali-default-destination.png)
 
-> Whenever you use matches for traffic routing. You should **always** ensure you 
-> have a **default** route.
+> :bulb: In the file `name-vs.yaml` you created. Notice the indentation for the 
+> route to `name-v1`, which is our **default** route. E.g the route to `name-v2` 
+> is nested **under** the `match` block. That is a different route...
 
 #### Task: Remove the default route
 
