@@ -70,9 +70,13 @@ We are using Kiali to visualize the work done in this Istio course.
 
 In this exercise, we are first deploying our application with vanilla Kubernetes.
 We then visit the Kiali website to see that without a sidecar, our service will not be included in istio.
+
 Final thing for the exercise is to enable Istio sidecar and see the traffic flowing in Kiali.
 
-### overview
+Expand the overview below to see the steps in the exercise.
+
+<details>
+    <summary> Overview Of Steps </summary>
 
 - Deploy the sentences application with kubectl 
 
@@ -107,11 +111,21 @@ Final thing for the exercise is to enable Istio sidecar and see the traffic flow
 
 - Inject sidecar for the `age` service
 
-### Step by Step
-<details>
-    <summary> More Details </summary>
+</details>
 
-- **Deploy the sentences application**
+The overview above is just to give an idea about what you will be doing in the 
+**step by step** section below.
+
+It is **recommended** to follow the step by step **tasks** below.
+
+### Step By Step
+
+<details>
+    <summary> Tasks </summary>
+
+#### Task: Deploy the sentences application
+
+___
 
 Open a terminal in the root of the git repository (istio-katas) and use `kubectl` to deploy `v1` of the application.
 
@@ -119,7 +133,9 @@ Open a terminal in the root of the git repository (istio-katas) and use `kubectl
 kubectl apply -f 000-setup-introduction/
 ```
 
-- **Observe the number of services and pods running**
+#### Task: Observe the number of services and pods running
+
+___
 
 ```console
 kubectl get pod,svc
@@ -139,7 +155,9 @@ service/name        ClusterIP   172.20.108.51    <none>        5000/TCP         
 service/sentences   NodePort    172.20.168.218   <none>        5000:30326/TCP   2s
 ```
 
-- **Run the `loop-query.sh` script** 
+#### Task: Run the `loop-query.sh` script
+
+___
 
 Run the following to continuously query the sentence service and observe the output.
 
@@ -163,7 +181,10 @@ Ray is 66 years.
 Traffic is now flowing between the services. But that **doesn't** mean it is part of 
 the service mesh yet...
 
-- **Open Kiali and find the sentences application**
+#### Task: Open Kiali and find the sentences application
+
+___
+
 
 Make sure **Namespace** is selected from the drop down at the top left and 
 enter **your** namespace.
@@ -181,19 +202,28 @@ As there are no sidecars the traffic is **not** part of the istio service mesh.
 
 ![Sentences with no sidecars](images/kiali-no-sidecars.png)
 
-- **Pull sentences application down**
+#### Task: Pull sentences application down
+
+___
+
 
 ```console
 kubectl delete -f 000-setup-introduction/
 ```
 
-- **Enable automatic sidecar injection**
+#### Task: Enable automatic sidecar injection
+
+___
+
 
 ```console
 kubectl label namespace <YOUR_NAMESPACE> istio-injection=enabled
 ```
 
-- **Redeploy sentences application**
+#### Task: Redeploy sentences application
+
+___
+
 
 ```console
 kubectl apply -f 000-setup-introduction/
@@ -234,13 +264,19 @@ name-v1-587b56cdf4-6tnhs        name,istio-proxy
 sentences-v1-6ccc9fdcc5-fzt2g   sentences,istio-proxy
 ```
 
-- **Run the loop-query.sh script**
+#### Task: Run the loop-query.sh script
+
+___
+
 
 ```console
 ./scripts/loop-query.sh
 ```
 
-- **Browse kiali and investigate the traffic flow**
+#### Task: Browse kiali and investigate the traffic flow
+
+___
+
 
 Browse to **Applications** on the left hand menu and select `sentences`.
 
@@ -256,7 +292,10 @@ Now you can see there are sidecars and the traffic is part of the mesh.
 ![Sentences with sidecars](images/kiali-with-sidecars.png)
 
 
-- **Disable automatic sidecar injection for the `age` service**
+#### Task: Disable automatic sidecar injection for the `age` service
+
+___
+
 
 Edit the file `000-setup-introduction/age.yaml` and add the annotation 
 `sidecar.istio.io/inject: 'false'`.
@@ -322,7 +361,10 @@ sentences-v1-7cfbb658b6-rthxn   2/2     Running   0          8m41s
 > to the mesh as it is provides a more **pervasive** and homogenous approach. 
 > If you do not want a sidecar for a service, use an **opt out** approach.
 
-- **Inject sidecar for the `age` service**
+#### Task: Inject sidecar for the `age` service
+
+___
+
 
 You can manually inject sidecars to services. Even if the deployment is 
 annotated. 
@@ -349,7 +391,10 @@ name-v1-795cf79f69-clrw4        2/2     Running   0          16m
 sentences-v1-7cfbb658b6-rthxn   2/2     Running   0          16m
 ```
 
-- **Investigate the different graphs**
+#### Task: Investigate the different graphs
+
+___
+
 
 Browse to the **graphs** and investigate the service, workload, app 
 and versioned app graphs from the drop down at the top.
@@ -365,25 +410,38 @@ and versioned app graphs from the drop down at the top.
 
 # Summary
 
-This Exercise introduced you to the sentences application and Kiali. There is not 
-enough time in the course to go into much more details around Kiali. But it has 
-more features like the Istio Wizards feature which lets you create and delete 
-istio configuration on the fly. It can do validation on the most common Istio 
-objects and more. See the [documentation](https://kiali.io/documentation/latest/features/) 
-for a more complete overview.
-
-You also injected sidecars with automatic sidecar injection, disabled sidecars 
-with an annotation and manually injected a sidecar from the command line. 
-Automatic sidecar injections is recommended. Manually injecting sidecars or 
+In this exercise you injected sidecars with automatic sidecar injection, 
+disabled sidecars with an annotation and manually injected a sidecar from 
+the command line.  Manually injecting sidecars or 
 using annotations is not a cohesive approach.
 
-Automatic sidecar injection ensures a more **pervasive** and homogenous approach 
-for traffic management and observability. It is less intrusive as it happens at 
-the pod level and you won't see any changes to the deployment itself.
+You were also introduced to the sentences application and Kiali. There is not 
+enough time in the course to go into much more details around Kiali. But it 
+has more features like the Istio Wizards feature which lets you create and 
+delete istio configuration on the fly. It can do validation on the most common 
+Istio objects and more. 
 
-You can find more information about the two different methods [here](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/).
+See the [documentation](https://kiali.io/documentation/latest/features/) 
+for a more complete overview.
 
-And you can find more details about sidecar configuration [here](https://istio.io/latest/docs/concepts/traffic-management/#sidecars).
+Main takeaways are:
+
+* You can manually inject sidecars. Manually injecting sidecars can be used as 
+an onboarding process for Istio and to force a sidecar if needed.
+
+* Annotations can be used to control sidecar injection. Both enabling for an 
+onboarding process oor disabling if needed.
+
+* Automatic sidecar injections is recommended. Automatic sidecar injection 
+ensures a more **pervasive** and homogenous approach for traffic management 
+and observability. It is less intrusive as it happens at the pod level and 
+you won't see any changes to the deployment itself.
+
+You can find more information about the different methods 
+[here](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/).
+
+And you can find more details about sidecar configuration 
+[here](https://istio.io/latest/docs/concepts/traffic-management/#sidecars).
 
 # Cleanup
 

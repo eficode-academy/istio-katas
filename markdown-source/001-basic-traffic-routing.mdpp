@@ -21,6 +21,10 @@ the desired workloads.
 
 These are the [VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service/) and the [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/) CRD's.
 
+> :bulb: If you have not completed exercise 
+> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> your namespace with `istio-injection=enabled`.
+
 ### VirtualService
 
 You use virtual services to route traffic to kubernetes services. 
@@ -120,7 +124,10 @@ the flow of traffic in your namespace. We spin up two versions of the name
 service in the namespace, and use the VirtualService and DestinationRule kinds 
 to control the traffic.
 
-### Overview
+Expand the overview below to see the steps in the exercise.
+
+<details>
+    <summary> Overview Of Steps </summary>
 
 - Deploy the sentences app and two versions (`name-v1` and `name-v2`) of the 
 name service
@@ -145,11 +152,22 @@ service
 
 - Use the **Versioned app graph** in Kiali to observe the traffic flow
 
-### Step by Step
-<details>
-    <summary> More Details </summary>
+</details>
 
-- **Deploy sentences app and 2 versions of name services**
+The overview above is just to give an idea about what you will be doing in the 
+**step by step** section below.
+
+It is **recommended** to follow the step by step tasks below.
+
+### Step By Step
+
+<details>
+    <summary> Tasks </summary>
+
+#### Task: Deploy sentences app and 2 versions of name services
+
+___
+
 
 ```console
 kubectl apply -f 001-basic-traffic-routing/start/
@@ -157,13 +175,19 @@ kubectl apply -f 001-basic-traffic-routing/start/name-v1
 kubectl apply -f 001-basic-traffic-routing/start/name-v2
 ```
 
-- **Run loop-query.sh**
+#### Task: Run loop-query.sh
+
+___
+
 
 ```console
 ./scripts/loop-query.sh
 ```
 
-- **Observe the traffic in Kiali**
+#### Task: Observe the traffic in Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu.
@@ -183,7 +207,10 @@ So why is this happening?
 > :bulb: Take a look at the label selector for the name service.
 > It doesn't specify a version...
 
-- **Create a destination rule and apply it**
+#### Task: Create a destination rule and apply it
+
+___
+
 
 Create a destination rule called `name-dr.yaml` in 
 `001-basic-traffic-routing/start/` and apply it.
@@ -217,8 +244,10 @@ virtual service including the destination rule.
 > :bulb: To avoid 503 errors **always** apply destination rules and changes to 
 > destination rules **prior** to changing virtual services.
 
-- **Create a `VirtualService` to route ALL traffic to version 1 of the name 
-service** 
+#### Task: Create a `VirtualService` to route ALL traffic to version 1 of the name service
+
+___
+
 
 Create a virtual service called `name-vs.yaml` in 
 `001-basic-traffic-routing/start/` and apply it.
@@ -266,7 +295,9 @@ You can see in Kiali that the virtual service combined with the destination
 rule subsets routes traffic to the name workload labeled `v1` even though the 
 name service has no versions defined in the selector.
 
-- **Add a route to version 2 of the name service as the **first** route**
+#### Task: Add a route to version 2 of the name service as the **first** route
+
+___
 
 Add a destination to the new service in the `name-vs.yaml` you 
 created before. But place it **before** the `name-v1` service and apply it.
@@ -298,7 +329,10 @@ spec:
 kubectl apply -f 001-basic-traffic-routing/start/name-vs.yaml
 ```
 
-- **Use the versioned app graph to observe route precedence in Kiali**
+#### Task: Use the versioned app graph to observe route precedence in Kiali
+
+___
+
 
 Go to **Graph** menu item in Kiali and select the **Versioned app graph** 
 from the drop down menu and observe the traffic flow. You will see that 
@@ -327,7 +361,8 @@ be routed to the `name-v1` service.
 # Summary
 
 In this exercise you learned what a virtual service is and how to route traffic 
-to a destination service in kubernetes with an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute).
+to a destination service in kubernetes with an 
+[HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute).
 
 > Kubernetes only supports traffic distribution based on instance scaling. 
 
@@ -340,11 +375,23 @@ for more details.
 
 You also saw how a destination rule could be used to determine **what** 
 happens to traffic routed to a kubernetes service using labels identifying 
-workload versions. But you can also set traffic policies on a destination rule 
-to apply load balancing policies, connection pool settings, etc.
+workload versions. But you can also set **traffic policies** on a destination 
+rule to apply load balancing policies, connection pool settings, etc.
 
 See the [documentation](https://istio.io/latest/docs/reference/config/networking/destination-rule/#DestinationRule) 
 for more details.
+
+Main takeaways are:
+
+* A virtual services **hosts** field is a user addressable destination and can 
+be virtual.
+
+* A virtual services **destination** must exist exist. In kubernetes this will 
+be a kubernetes service.
+
+* A destination rule defines traffic policies that apply for the intended 
+service **after** routing has occurred with a virtual service. E.g. route 
+all traffic to v1, different load balancing modes for v1 and v2, etc.
 
 # Cleanup
 
