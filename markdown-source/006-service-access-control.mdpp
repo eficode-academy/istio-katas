@@ -12,7 +12,7 @@
 
 This exercise will demonstrate how to authorize access between components of our
 application such that services only have the access they need, not more. This is
-the *least privelege security principle*.
+the *least privilege security principle*.
 
 First you will control service to service access with native kubernetes 
 network policies to understand what is possible and what is not. 
@@ -25,7 +25,11 @@ to service access. The Istio CRD for this is the
 
 ## Exercise
 
-### Overview
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
+
+<details>
+    <summary> Overview Of Steps </summary>
 
 - Deploy sentences application services
 
@@ -41,12 +45,19 @@ to service access. The Istio CRD for this is the
 
 - Restrict access with an Istio AuthorizationPolicy
 
+</details>
+
+It is **recommended** to follow the step by step **tasks** below.
 
 ### Step by Step
-<details>
-    <summary> More Details </summary>
 
-- **Deploy sentences application services**
+<details>
+    <summary> Tasks </summary>
+
+#### Task: Deploy sentences application services
+
+___
+
 
 Deploy the sentences application:
 
@@ -60,7 +71,10 @@ and test access:
 scripts/loop-query.sh
 ```
 
-- **Test access to `name` service from `age` service**
+#### Task: Test access to `name` service from `age` service
+
+___
+
 
 The sentences application is now deployed without any restrictions between 
 components.
@@ -96,7 +110,10 @@ This shows, that we have wide access to the `name` service from the `age`
 service, which is not necessary for the functioning of the sentences
 application.
 
-- **Restrict access to the name service with a kubernetes NetworkPolicy**
+#### Task: Restrict access to the name service with a kubernetes NetworkPolicy
+
+___
+
 
 To restrict inter-service access to only what is necessary, we can use this
 Kubernetes-native NetworkPolicy:
@@ -116,7 +133,10 @@ Apply this with:
 kubectl apply -f 006-service-access-control/examples/networkpolicy.yaml
 ```
 
-- **Test access to `name` service from `age` service**
+#### Task: Test access to `name` service from `age` service
+
+___
+
 
 Retry the `curl` commands from previously and observe that this policy blocks
 access from the `age` service to the `name` service.
@@ -145,7 +165,10 @@ all access from the `age` service.
 
 </details>
 
-- **Test access to `name` service from the `sentences` service**
+#### Task: Test access to `name` service from the `sentences` service
+
+___
+
 
 The `sentences` service still has access to the `name` service, which we can
 tested by executing a curl command from the container in the `sentences` 
@@ -183,7 +206,10 @@ we need an Istio
 [AuthorizationPolicy](https://istio.io/latest/docs/reference/config/security/authorization-policy/)
 which understands L7 (HTTP).
 
-- **Restrict access with an Istio AuthorizationPolicy**
+#### Task: Restrict access with an Istio AuthorizationPolicy
+
+___
+
 
 Before continuing, delete the Kubernetes NetworkPolicy:
 
@@ -195,8 +221,8 @@ A feature of Istio is strong workload identities. Istio implements the
 [SPIFFE](https://spiffe.io) standard and provides cryptographic verifiable
 identities to workloads within the mesh.
 
-**These identities are the foundation for authorization and mTLS between
-  services.**
+> These identities are the foundation for authorization and mTLS between 
+> services.
 
 Istio bootstraps trust through Kubernetes service accounts since these can 
 be validated through the Kubernetes certificate authority. **This also means 

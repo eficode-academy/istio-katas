@@ -214,7 +214,11 @@ of the shortname because the gateway is located in the `istio-system` namespace.
 > translate to > `istio-egressgateway.default.svc.cluster.local`. So **full names** 
 > should be used when using a gateway in another namespace.
 
-### Overview
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
+
+<details>
+    <summary> Overview Of Steps </summary>
 
 - Modify `sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml` files with `<YOUR_NAMESPACE>`
 
@@ -244,11 +248,19 @@ of the shortname because the gateway is located in the `istio-system` namespace.
 
 - Observe the traffic flow with Kiali
 
-### Step by Step
-<details>
-    <summary> More Details </summary>
+</details>
 
-- **Modify `sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml`**
+It is **recommended** to follow the step by step **tasks** below.
+
+### Step by Step
+
+<details>
+    <summary> Tasks </summary>
+
+#### Task: Modify `sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml`
+
+___
+
 
 The `sentences-svc.yaml` is using a `ClusterIP` type as in exercise 
 [Getting Traffic Into The mesh](003-ingress-traffic.md). Modify the 
@@ -268,7 +280,10 @@ kubectl apply -f 004-egress-traffic/start/sentences-ingress-gw.yaml
 kubectl apply -f 004-egress-traffic/start/sentences-ingress-vs.yaml
 ```
 
-- **Deploy sentences application in `004-egress-traffic/start`**
+#### Task: Deploy sentences application in `004-egress-traffic/start`
+
+___
+
 
 Deploy `v2` of the sentences service along with the age, name and api service.
 
@@ -309,13 +324,19 @@ pod/name-v1-795cf79f69-h4htd        2/2     Running   0          91m
 pod/sentences-v2-75c766ff6c-f68bw   2/2     Running   0          91m
 ```
 
-- **Run the loop query script with the `hosts` entry**
+#### Task: Run the loop query script with the `hosts` entry
+
+___
+
 
 ```console
 ./scripts/loop-query.sh -g <YOUR_NAMESPACE>.sentences.istio.eficode.academy
 ```
 
-- **Observe the responses for the external service**
+#### Task: Observe the responses for the external service
+
+___
+
 
 Export the pod as an environment variable and tail the logs.
 
@@ -333,7 +354,10 @@ WARNING:root:Response was: 502                      <-------------------- Bad Ga
 WARNING:root:Operation 'api' took 306.376ms
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu.
@@ -343,7 +367,10 @@ down menu.
 As there is no service entry all traffic to the external service is blocked 
 and it is a **black hole** to the service mesh.
 
-- **Define a service entry for httpbin.org**
+#### Task: Define a service entry for httpbin.org
+
+___
+
 
 Create a service entry called `api-egress-se.yaml` in 
 `004-egress-traffic/start/`.
@@ -374,7 +401,10 @@ Apply the service entry.
 kubectl apply -f 004-egress-traffic/start/api-egress-se.yaml
 ```
 
-- **Observe the responses for the external service**
+#### Task: Observe the responses for the external service
+
+___
+
 
 Export the pod as an environment variable and tail the logs.
 
@@ -391,7 +421,10 @@ WARNING:root:Response was: 200                <-------------------- OK Response
 WARNING:root:Operation 'api' took 374.259ms
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu.
@@ -401,7 +434,10 @@ down menu.
 Now Kiali recognizes the external service because of the service entry and it 
 is no longer a black hole.
 
-- **Create a virtual service with a timeout of 0.5 seconds**
+#### Task: Create a virtual service with a timeout of 0.5 seconds
+
+___
+
 
 Basically all we have done so far is to add an entry for httpbin to Istio's 
 internal service registry. But we can now apply some of the Istio features to 
@@ -437,7 +473,10 @@ Apply the virtual service.
 kubectl apply -f 004-egress-traffic/start/api-egress-vs.yaml
 ```
 
-- **Observe the responses for the external service**
+#### Task: Observe the responses for the external service
+
+___
+
 
 Export the pod as an environment variable and tail the logs.
 
@@ -456,7 +495,10 @@ WARNING:root:Operation 'api' took 504.809ms
 
 Change the timeout to something greater than 1 second and ensure that you get 200(OK) responses.
 
- - **Modify the the virtual service to route traffic through the common gateway**
+#### Task: Modify the the virtual service to route traffic through the common gateway
+
+___
+
 
 ```console
 kubectl apply -f 004-egress-traffic/start/
@@ -495,7 +537,9 @@ Apply the changes.
 kubectl apply -f 004-egress-traffic/start/api-egress-vs.yaml
 ```
 
-- **Observe the responses for the external service**
+#### Task: Observe the responses for the external service
+
+___
 
 Export the pod as an environment variable and tail the logs.
 
@@ -512,7 +556,10 @@ WARNING:root:Response was: 200                <-------------------- OK Response
 WARNING:root:Operation 'api' took 374.259ms
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. Select the checkboxes as shown in the below image.
@@ -536,7 +583,7 @@ Afterwards you created a virtual service to demonstrate Istio traffic
 management for traffic to an external service. Finally, you routed the 
 traffic to the external service through a **common** egress gateway. 
 
-The important takeaways from this exercise are.
+The main takeaways are:
 
 - If traffic is **not** flowing through the mesh, e.g through the 
 envoy sidecars, then you cannot leverage Istio features. Regardless 

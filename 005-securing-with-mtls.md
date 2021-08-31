@@ -188,8 +188,11 @@ client certificates as the certs generated for mTLS by Istio are used.
 
 </details>
 
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
 
-### Overview
+<details>
+    <summary> Overview Of Steps </summary>
 
 - Modify the gateway and virtual files with your `<YOUR_NAMESPACE>`
 
@@ -230,11 +233,19 @@ client certificates as the certs generated for mTLS by Istio are used.
 
 - Observe the traffic flow with Kiali
 
-### Step by Step
-<details>
-    <summary> More Details </summary>
+</details>
 
-- **Modify the gateway and virtual files with your `<YOUR_NAMESPACE>`**
+It is **recommended** to follow the step by step **tasks** below.
+
+### Step by Step
+
+<details>
+    <summary> Tasks </summary>
+
+#### Task: Modify the gateway and virtual files with your `<YOUR_NAMESPACE>`
+
+___
+
 
 Modify `sentences-ingress-gw.yaml` file with your namespace.
 
@@ -275,7 +286,10 @@ spec:
 
 ```
 
-- **Deploy the sentences application and observe sidecars**
+#### Task: Deploy the sentences application and observe sidecars
+
+___
+
 
 ```console
 kubectl apply -f 005-securing-with-mtls/start/
@@ -291,7 +305,10 @@ name-86969f7468-4qfmp        1/1     Running   0          3s
 sentences-779767c659-mlcm9   1/1     Running   0          4s
 ```
 
-- **Run the script `./scripts/loop-query.sh`**
+#### Task: Run the script `./scripts/loop-query.sh`
+
+___
+
 
 Execute the following to retrieve sentences and thus update Istio metrics.
 
@@ -299,7 +316,10 @@ Execute the following to retrieve sentences and thus update Istio metrics.
 ./scripts/loop-query.sh -g <YOUR_NAMEPSACE>.sentences.istio.eficode.academy
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. 
@@ -315,7 +335,10 @@ as none of the sentences services have sidecars, only the ingress gateway.
 
 ![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls.png)
 
-- **Create peer authentication requiring `STRICT` mTLS**
+#### Task: Create peer authentication requiring `STRICT` mTLS
+
+___
+
 
 Create a file called `peer-authentication.yaml` in 
 `005-securing-with-mtls/start/`.
@@ -337,7 +360,10 @@ Apply the peer authentication.
 kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. 
@@ -357,7 +383,10 @@ validating requests made *towards* a workload with an Istio sidecar.
 
 ![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls.png)
 
-- **Enable sidecar for the age service**
+#### Task: Enable sidecar for the age service
+
+___
+
 
 Inject a sidecar for the **age** service.
 
@@ -381,7 +410,10 @@ name-v2-7755ddbd74-mxlbt      1/1     Running   0          57m
 sentences-v1-fc7dbd55-9smjb   1/1     Running   0          57m
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. 
@@ -397,7 +429,10 @@ has a sidecar and we therefor have **both** plain-text and mTLS traffic.
 
 ![Kiali with no sidecars](images/kiali-mtls-error.png)
 
-- **Allow un-encrypted and un-authenticated traffic using `PERMISSIVE` mTLS**
+#### Task: Allow un-encrypted and un-authenticated traffic using `PERMISSIVE` mTLS
+
+___
+
 
 Modify the `peer-authentication.yaml` in `005-securing-with-mtls/start/` 
 to use `PERMISSIVE` mode.
@@ -421,7 +456,10 @@ spec:
 kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. 
@@ -437,7 +475,10 @@ sidecar.
 
 ![Disjointed graph](images/kiali-disjointed-graph.png)
 
-- **Inject sidecars for all services**
+#### Task: Inject sidecars for all services
+
+___
+
 
 Lets inject Istio sidecars into all sentences services:
 
@@ -464,7 +505,10 @@ sentences-v1-6f9578db77-xbbzf   2/2     Running       0          24s
 sentences-v1-fc7dbd55-9smjb     1/1     Terminating   0          91m
 ```
 
-- **Re-enabled `STRICT` mTLS**
+#### Task: Re-enabled `STRICT` mTLS
+
+___
+
 
 Since **all** services now have an Istio sidecar, we can enable strict mTLS:
 
@@ -486,7 +530,10 @@ spec:
 kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. Select the checkboxes as shown in the below image.
@@ -498,7 +545,10 @@ been selected and you can see that mTLS is enabled in the details view.
 
 ![Full mTLS](images/kiali-mtls-anno.png)
 
-- **Configure TLS to an upstream service**
+#### Task: Configure TLS to an upstream service
+
+___
+
 
 To show how we can control upstream mTLS settings with a DestinationRule, we
 create one that uses mTLS towards `v2` of the `name` service and no mTLS for
@@ -587,7 +637,10 @@ Apply the virtual service and destination rule with the mTLS settings.
 kubectl apply -f 005-securing-with-mtls/start/name-vs-dr.yaml
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. Select the checkboxes as shown in the below image.
@@ -647,7 +700,11 @@ certificate.
 > the kubernetes secret. So **both** must be in the `istio-ingress` namespace in 
 > the above example and the gateway **must** be unique for this exercise.
 
-### Overview
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
+
+<details>
+    <summary> Overview Of Steps </summary>
 
 - Delete the gateway created in the previous exercise
 
@@ -665,11 +722,19 @@ certificate.
 
 > What will happen and what can you change to allow simple TLS?
 
-### Step by Step
-<details>
-    <summary> More Details </summary>
+</details>
 
-- **Delete the gateway created in the previous exercise**
+It is **recommended** to follow the step by step **tasks** below.
+
+### Step by Step
+
+<details>
+    <summary> Tasks </summary>
+
+#### Task: Delete the gateway created in the previous exercise
+
+___
+
 
 First, ensure that the gateway and virtual service for the `sentences` 
 service from the first exercise is removed.
@@ -686,14 +751,17 @@ already be the case, unless you skipped some of the first exercise.
 cat 005-securing-with-mtls/start/*.yaml |grep -v inject | kubectl apply -f -
 ```
 
-- **Generate needed certificate authority(CA) and certificates**
+#### Task: Generate needed certificate authority(CA) and certificates
+
+___
+
 
 Execute the `generate-certs.sh`script.
 
 ```console
 ./scripts/generate-certs.sh
 ```
-You should see namespace specific certs for both a the server side and 
+You should see namespace specific certs for both the server side and 
 client side in your workspace.
 
 There should also be a kubernetes secret in the `istio-ingress` namespace. 
@@ -710,7 +778,10 @@ user2-sentences-tls-secret        Opaque    3      112m
 ```
 > :bulb: DO NOT touch any other secrets in the `istio-ingress` namespace!
 
-- **Modify the gateway to configure `MUTUAL` TLS for port `443`**
+#### Task: Modify the gateway to configure `MUTUAL` TLS for port `443`
+
+___
+
 
 Modify the file `005-securing-with-mtls/start/sentences-ingress-gw.yaml` so 
 that it will be namespaced to the `istio-ingress` namespace and configure it 
@@ -738,7 +809,10 @@ spec:
     - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
 ```
 
-- **Modify the virtual service so point to the gateway in `istio-ingress` namespace**
+#### Task: Modify the virtual service to point to the gateway in `istio-ingress` namespace
+
+___
+
 
 The gateway is now namespaced to the `istio-ingress` namespace so you need 
 to tell the virtual service which namespace the gateway is located in.
@@ -761,7 +835,10 @@ spec:
         host: sentences
 ```
 
-- **Apply the changes to the virtual service and gateway**
+#### Task: Apply the changes to the virtual service and gateway
+
+___
+
 
 Once you have done the modifications to the gateway and virtual service, 
 apply the changes.
@@ -771,7 +848,10 @@ kubectl apply -f 005-securing-with-mtls/start/sentences-ingress-gw.yaml
 kubectl apply -f 005-securing-with-mtls/start/sentences-ingress-vs.yaml
 ```
 
-- **Run `loop-query-mtls.sh https+mtls`**
+#### Task: Run `loop-query-mtls.sh https+mtls`
+
+___
+
 
 The `loop-query-mtls.sh` script uses the `client` certificates that were 
 generated for the mtls connection. 
@@ -794,7 +874,10 @@ Using curl options: '--resolve sentences.istio.eficode.academy:443 --cacert efic
 -------------------------------------
 ```
 
-- **Run `loop-query-mtls.sh https`**
+#### Task: Run `loop-query-mtls.sh https`
+
+___
+
 
 ```console
 scripts/loop-query-mtls.sh https
@@ -821,11 +904,11 @@ made. Istio will simply ignore the client certs passed through the curl options.
 
 PKI (Public Key Infrastructure) does not necessarily mean, that we are using
 internet-scoped public/private key encryption. In this exercise we have seen how
-we can leverage the Istio's **internal PKI** to implement mTLS inside the Istio mesh
+we can leverage Istio's **internal PKI** to implement mTLS inside the Istio mesh
 between PODs with Istio sidecars. We have also seen how to setup mTLS for Istio
 ingress gateways.
 
-The main takeaways from these exercises are the following.
+The main takeaways are:
 
 - Peer authentication policies apply to traffic a workload **receives**
 
@@ -845,5 +928,4 @@ consider namespaces in relation to kubernetes secrets and gateway controllers.
 
 ```console
 kubectl delete -f 005-securing-with-mtls/start/
-kubectl -n istio-ingress delete secret <YOUR_NAMESPACE>-sentences-tls-secret
 ```

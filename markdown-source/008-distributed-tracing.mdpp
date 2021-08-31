@@ -83,7 +83,11 @@ Then you are going to see how Istio's distributed tracing telemetry is
 leveraged by Kiali and Jaeger to help you identify where the delay is 
 happening.
 
-### Overview
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
+
+<details>
+    <summary> Overview Of Steps </summary>
 
 - Deploy sentences application
 
@@ -105,18 +109,29 @@ happening.
 
 - Observe the distributed tracing telemetry in Jaeger
 
-### Step by Step
-<details>
-    <summary> More Details </summary>
+</details>
 
-- **Deploy sentences application**
+It is **recommended** to follow the step by step **tasks** below.
+
+### Step by Step
+
+<details>
+    <summary> Tasks </summary>
+
+#### Task: Deploy sentences application
+
+___
+
 
 ```console
 kubectl apply -f 008-distributed-tracing/start/
 kubectl apply -f 008-distributed-tracing/start/sentences-v2/
 ```
 
-- **Run the script `scripts/loop-query.sh`**
+#### Task: Run the script `scripts/loop-query.sh`
+
+___
+
 
 In another shell, run the following to continuously query the sentence 
 service through the **NodePort**.
@@ -125,7 +140,10 @@ service through the **NodePort**.
 scripts/loop-query.sh
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. 
@@ -135,7 +153,10 @@ introduced by `v2` of the sentences service.
 
 ![Kiali Traffic Delay](images/kiali-sentences-delay.png)
 
-- **Observe the distributed tracing telemetry in Kiali**
+#### Task: Observe the distributed tracing telemetry in Kiali
+
+___
+
 
 This is just a simulated bug and is easy to locate. But in a real world 
 scenario the bug may be introduced by interaction of a service deeper in the 
@@ -170,7 +191,10 @@ about where the request was sent and the response status.
 > [blog](https://medium.com/kialiproject/trace-my-mesh-part-2-3-13cd6ccae1de) 
 > for a more detailed dive into how Kiali does this.
 
-- **Observe the distributed tracing telemetry in Jaeger**
+#### Task: Observe the distributed tracing telemetry in Jaeger
+
+___
+
 
 Jaeger also leverages Istio's distributed tracing and can also be used to 
 identify scenarios like this. 
@@ -196,7 +220,10 @@ also see that the version of the sentences service is `v2`.
 
 ![Jaeger Trace Details](images/jaeger-delay-details.png)
 
-- **Add an ingress gateway and virtual service**
+#### Task: Add an ingress gateway and virtual service
+
+___
+
 
 The traffic flow in our sentences application is pretty simple with low 
 complexity. But in much more complex system with a much more complicated 
@@ -257,7 +284,10 @@ kubectl apply -f 008-distributed-tracing/start/sentences-ingress-gw.yaml
 kubectl apply -f 008-distributed-tracing/start/sentences-ingress-vs.yaml
 ```
 
-- **Route traffic through the ingress gateway**
+#### Task: Route traffic through the ingress gateway
+
+___
+
 
 Now instead of hitting the NodePort of the sentences service use the 
 `./scripts/loop-query.sh` with the `-g` option and the entry point of 
@@ -270,7 +300,10 @@ the gateway you just created.
 Traffic will now be routed through the ingress gateway and towards the 
 sentences service.
 
-- **Observe the distributed tracing telemetry in Jaeger**
+#### Task: Observe the distributed tracing telemetry in Jaeger
+
+___
+
 
 Browse to Jaeger and select the options as shown below and hit find traces.
 
@@ -291,7 +324,7 @@ In this exercise you have seen how Istio's distributed tracing telemetry
 can be leveraged to provide a less intrusive and more cohesive approach 
 to distributed tracing.
 
-The main takeaways from this exercise are.
+The main takeaways are:
 
 - Istio's envoy proxies generate the distributed trace spans for the services.
 

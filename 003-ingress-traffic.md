@@ -15,41 +15,24 @@ and ([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension
 for configuring traffic **into** the service mesh. This is commonly called 
 Ingress traffic. 
 
-You will use the Istio [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway) 
-CRD for this.
+Istio does support 
+[Kubernetes Ingress](https://istio.io/latest/docs/tasks/traffic-management/ingress/kubernetes-ingress/) 
+but also offers another configuration model.
 
-## Exercise: Ingress Traffic With Gateway
-
-The previous exercises used a Kubernetes **NodePort** service to get traffic 
-to the sentences service. E.g. the **ingress** traffic to `sentences` **was 
-not** flowing through the Istio service mesh. 
-
-From the `sentences` service to the `age` and `name` services traffic **was** 
-flowing through the Istio service mesh. We know this to be true because we 
-have applied virtual services and destination rules to the `name` service.
-
-Ingressing traffic directly from the Kubernetes cluster network to a frontend
-service means that Istio features **cannot** be applied on this part of the 
-traffic flow.
-
-In this exercise you are going rectify this by **configuring** 
-ingress traffic to the sentences service through a dedicated 
-**ingress** gateway (`istio-ingressgateway`) provided by 
-**Istio** instead of a Kubernetes NodePort. Furthermore you 
-are going to introduce a fixed delay to demonstrate that you can 
-now apply Istio traffic management to the sentences service.
+The Istio [IngressGateway](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/) 
+which is what you will be using in this exercise.
 
 <details>
     <summary> More Info </summary>
 
-A Gateway **describes** a load balancer operating at the **edge** of the mesh 
-receiving incoming or outgoing **HTTP/TCP** connections. The specification 
-describes the ports to be expose, type of protocol, configuration for the 
-load balancer, etc.
+An Istio gateway **describes** a load balancer operating at the **edge** 
+of the mesh receiving incoming or outgoing **HTTP/TCP** connections. The 
+specification describes the ports to be expose, type of protocol, 
+configuration for the load balancer, etc.
 
-An Istio **Ingress** gateway in a Kubernetes cluster consists, at a minimum, of a 
-Deployment and a Service. Istio ingress gateways are based on the Envoy and have a 
-**standalone** Envoy proxy. 
+An Istio **IngressGateway** in a Kubernetes cluster consists, at a minimum, 
+of a Deployment and a Service. Istio ingress gateways are based on the Envoy 
+and have a **standalone** Envoy proxy. 
 
 Inspecting our course environment would show something like:
 
@@ -67,9 +50,34 @@ NAME                                    CONTAINERS
 istio-ingressgateway-69c77d896c-5vvjg   istio-proxy
 ```
 
+This is the IngressGateway which we configured with the Gateway CRD.
+
 </details>
 
-You are going to do this using the gateway CRD.
+## Exercise: Ingress Traffic With Gateway
+
+The previous exercises used a Kubernetes **NodePort** service to get traffic 
+to the sentences service. E.g. the **ingress** traffic to `sentences` **was 
+not** flowing through the Istio service mesh. 
+
+From the `sentences` service to the `age` and `name` services traffic **was** 
+flowing through the Istio service mesh. We know this to be true because we 
+have applied virtual services and destination rules to the `name` service.
+
+Ingressing traffic directly from the Kubernetes cluster network to a frontend
+service means that Istio features **cannot** be applied on this part of the 
+traffic flow.
+
+In this exercise you are going rectify this by **configuring** 
+ingress traffic to the sentences service through a dedicated 
+**IngressGateway** (`istio-ingressgateway`) provided by 
+**Istio** instead of a Kubernetes NodePort. Furthermore you 
+are going to introduce a fixed delay to demonstrate that you can 
+now apply Istio traffic management to the sentences service.
+
+You are going to do this using the 
+[Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway) 
+CRD.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -88,6 +96,8 @@ spec:
     hosts:
     - "myapp.example.com"
 ```
+> Don't confuse the the **IngressGateway** with the Gateway custom resource 
+> definition. The gateway CRD is used to **configure** the Ingressgateway.
 
 The servers block is where you define the port configurations, protocol 
 and the hosts exposed by the gateway. A host entry is specified as a dnsName 
@@ -130,7 +140,11 @@ Note how it specifies the hostname and the name of the gateway
 hostnames and a VirtualService can be bound to multiple gateways, i.e. these 
 are not necessarily related one-to-one.
 
-### Overview
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
+
+<details>
+    <summary> Overview Of Steps </summary>
 
 - Deploy the `sentences-v1` service with name and age services
 
@@ -149,17 +163,28 @@ are not necessarily related one-to-one.
 
 - Observe the traffic flow with Kiali
 
-### Step by Step
-<details>
-    <summary> More Details </summary>
+</details>
 
-- **Deploy the sentences-v1 service with name and age services**
+It is **recommended** to follow the step by step **tasks** below.
+
+### Step by Step
+
+<details>
+    <summary> Tasks </summary>
+
+#### Task: Deploy the sentences-v1 service with name and age services
+
+___
+
 
 ```console
 kubectl apply -f 003-ingress-traffic/start/
 ```
 
-- **Create an entry point for the sentences service**
+#### Task: Create an entry point for the sentences service
+
+___
+
 
 Create a file called `sentences-ingress-gw.yaml` in 
 `003-ingress-traffic/start` directory.
@@ -194,7 +219,10 @@ Apply the resource:
 kubectl apply -f 003-ingress-traffic/start/sentences-ingress-gw.yaml
 ```
 
-- **Create a route from the gateway to the sentences service**
+#### Task: Create a route from the gateway to the sentences service
+
+___
+
 
 Create a file called `sentences-ingress-vs.yaml` in 
 `003-ingress-traffic/start` directory.
@@ -225,7 +253,10 @@ Apply the resource:
 kubectl apply -f 003-ingress-traffic/start/sentences-ingress-vs.yaml
 ```
 
-- **Run the loop query script with the `hosts` entry**
+#### Task: Run the loop query script with the `hosts` entry
+
+___
+
 
 The sentence service we deployed in the first step has a type of `ClusterIP` 
 now. In order to reach it we will need to go through the `istio-ingressgateway`. 
@@ -236,7 +267,10 @@ Run the `loop-query.sh` script with the option `-g` and pass it the `hosts` entr
 ./scripts/loop-query.sh -g <YOUR_NAMESPACE>.sentences.istio.eficode.academy
 ```
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu.
@@ -246,7 +280,10 @@ Now we can see that the traffic to the `sentences` service is no longer
 
 ![Ingress Gateway](images/kiali-ingress-gw.png)
 
-- **Add a fixed delay to the sentences service**
+#### Task: Add a fixed delay to the sentences service
+
+___
+
 
 To demonstrate that we can now apply Istio traffic management to the 
 sentences service. Add a fixed delay of 5 seconds to the 
@@ -282,7 +319,10 @@ kubectl apply -f 003-ingress-traffic/start/sentences-ingress-vs.yaml
 You should see that the response in the terminal are now taking 
 approximately five seconds each.
 
-- **Observe the traffic flow with Kiali**
+#### Task: Observe the traffic flow with Kiali
+
+___
+
 
 Go to **Workloads** menu item, select `sentences-v1` workload and the 
 **Inbound Metrics** tab, **Reported from** in the **Source** drop down 
@@ -300,12 +340,23 @@ that the request duration is trending towards fve seconds.
 In this exercise you saw how to route incoming traffic through an ingress gateway. 
 This allows you to apply istio traffic management features to the sentences 
 service. For example, you could do a blue/green deploy of two different versions 
-of the sentence service. 
+of the sentence service.
 
-The important takeaway from this exercises is this.
+Istio's default installation provide it's own configuration model (Gateway) 
+for ingress traffic while also supporting Kubernetes ingress. The Istio  
+gateway consists a deployment, a service and a **standalone** envoy proxy.
 
-**If traffic is not flowing through the mesh, e.g through the envoy sidecars, 
-then you cannot leverage Istio features.**
+> The ingress gateway we used in our training environment is located in the 
+> `istio-ingress` namespace.
+
+The main takeaways are:
+
+* When you defined the gateway CRD for your namespace you configured an entry 
+point in the stand alone envoy proxy
+
+* If traffic is not flowing through the mesh, e.g through the envoy sidecars, 
+then you cannot leverage Istio features, e.g. the traffic between the gateway 
+and your front end service
 
 # Cleanup
 

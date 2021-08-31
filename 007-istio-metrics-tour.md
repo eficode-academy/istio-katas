@@ -47,7 +47,11 @@ and inspect the Istio metrics. Then you will enable a single scrape endpoint
 for both the Istio and application metrics. Finally you view and query Istio 
 metrics in Prometheus.
 
-### Overview
+Expand the overview below to get an idea of what you will be doing in the 
+**Step By Step** section.
+
+<details>
+    <summary> Overview Of Steps </summary>
 
 - Deploy the sentences application services
 
@@ -67,11 +71,19 @@ metrics in Prometheus.
 
 - Browse Istio Metrics in Prometheus
 
-### Step by Step
-<details>
-    <summary> More Details </summary>
+</details>
 
-- **Deploy the sentences application services**
+It is **recommended** to follow the step by step **tasks** below.
+
+### Step by Step
+
+<details>
+    <summary> Tasks </summary>
+
+#### Task: Deploy the sentences application services
+
+___
+
 
 ```console
 kubectl apply -f 007-istio-metrics-tour/start/sentences.yaml
@@ -86,7 +98,10 @@ name-86969f7468-4qfmp        1/1     Running   0          3s
 sentences-779767c659-mlcm9   1/1     Running   0          4s
 ```
 
-- **Run the script `scripts/loop-query.sh`**
+#### Task: Run the script `scripts/loop-query.sh`
+
+___
+
 
 Execute `scripts/loop-query.sh` to see the application is running. This will also
 update both Istio and sentences application metrics.
@@ -95,7 +110,10 @@ update both Istio and sentences application metrics.
 ./scripts/loop-query.sh
 ```
 
-- **Inspect available metrics on a sentences service POD port `8000/metrics`**
+#### Task: Inspect available metrics on a sentences service POD port `8000/metrics`
+
+___
+
 
 To retrieve metrics from a POD in the sentences application we can query 
 the metrics port 8000. 
@@ -135,7 +153,10 @@ sentence_requests_total{type="name"} 584.0
 This shows that the `name` POD had received `584` requests from the `loop-query.sh`
 script when we fetched metrics.
 
-- **Inject Istio sidecar to sentences services**
+#### Task: Inject Istio sidecar to sentences services
+
+___
+
 
 The deployed version of the sentences application have Istio sidecar injection 
 **disabled**. This is done through annotations.
@@ -185,7 +206,10 @@ Annotations:  prometheus.io/path: /metrics
 So there is no change in how Prometheus will scrape POD metrics. It will still
 use port `8000` which is handled by the sentences application container.
 
-- **Merge Istio and application metrics to one scrape point**
+#### Task: Merge Istio and application metrics to one scrape point
+
+___
+
 
 What about the Istio metrics from the sidecar?
 
@@ -210,7 +234,10 @@ Annotations:  prometheus.io/path: /stats/prometheus
               prometheus.io/scrape: true
 ```
 
-- **Fetch Istio Metrics**
+#### Task: Fetch Istio Metrics
+
+___
+
 
 Now that we have a single merged scrape endpoint for the application metrics 
 and the Istio metrics we can fetch them both. 
@@ -255,7 +282,10 @@ metrics.
 > versioned graphs. See this link for more information on how [Kiali use
 > Prometheus metrics](https://kiali.io/documentation/latest/faq/#prom-metrics)
 
-- **Browse Istio Metrics in Prometheus**
+#### Task: Browse Istio Metrics in Prometheus
+
+___
+
 
 Istio makes the base monitoring data available but you still need something 
 to analyze and put the data to use. 
@@ -305,7 +335,7 @@ Dashboards.
 In this exercise you have inspected some of the metrics Istio provides along 
 with how to enable for Prometheus.
 
-Important takeaways are the following. 
+Important takeaways are:
 
 - Istio metrics begin with the sidecar. **Each** proxy generates metrics for 
 **all** traffic passing through the sidecar proxy. Both inbound and outbound.
