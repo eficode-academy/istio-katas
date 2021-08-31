@@ -49,7 +49,7 @@ NAME                                    CONTAINERS
 istio-ingressgateway-69c77d896c-5vvjg   istio-proxy
 ```
 
-This is the IngressGateway which we configured with the Gateway CRD.
+This is the IngressGateway which we configure with a Gateway CRD.
 
 </details>
 
