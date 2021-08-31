@@ -143,7 +143,6 @@ user2, user3, etc.
 user1
 ```
 
-
 #### Task: Deploy the sentences application
 
 ___
