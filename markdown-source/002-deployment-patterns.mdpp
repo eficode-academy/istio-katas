@@ -380,6 +380,8 @@ down menu.
 In order for a match on a header to work it **must** be propagated to all the 
 services in the application tree. 
 
+As the header is **not** propagated to the name service the default route is hit.
+
 ![Bad Header](images/kiali-bad-header.png)
 
 </details>
