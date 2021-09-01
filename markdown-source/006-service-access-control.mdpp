@@ -41,7 +41,11 @@ Expand the overview below to get an idea of what you will be doing in the
 
 > Use kubectl to execute a curl command `curl name:5000/` from `age` service.
 
+- Pull the sentences application services down
+
 - Restrict access to the name service with a kubernetes NetworkPolicy
+
+- Redeploy the sentences application services
 
 - Test access to `name` service from the `age` service
 
@@ -114,13 +118,29 @@ This shows, that we have wide access to the `name` service from the `age`
 service, which is not necessary for the functioning of the sentences
 application.
 
+#### Task: Pull the sentences application services down
+
+___
+
+First pull all the services down.
+
+```console
+kubectl delete -f 006-service-access-control/start/
+```
+
 #### Task: Restrict access to the name service with a kubernetes NetworkPolicy
 
 ___
 
 
-To restrict inter-service access to only what is necessary, we can use this
-Kubernetes-native NetworkPolicy:
+To restrict inter-service access to only what is necessary create a file 
+called `name-network-policy.yaml` in the directory 
+`006-service-access-control/start/`.
+
+Paste in the following yaml and modify it with your namespace.
+
+> :bulb: If you are in doubt about your namespace you can run the following 
+> command. `kubectl config view --output 'jsonpath={..namespace}'; echo`
 
 !INCLUDECODE "006-service-access-control/examples/networkpolicy.yaml" (yaml)
 
@@ -137,10 +157,30 @@ Apply this with:
 kubectl apply -f 006-service-access-control/examples/networkpolicy.yaml
 ```
 
+#### Task: Redeploy the sentences application services
+
+___
+
+
+```console
+kubectl apply -f 006-service-access-control/start/
+```
+
+and test access:
+
+```console
+scripts/loop-query.sh
+```
+
 #### Task: Test access to `name` service from `age` service
 
 ___
 
+Export `age` services POD name to an environment variable.
+
+```console
+export AGE_POD=$(kubectl get pod -l app=sentences -l mode=age -o jsonpath="{.items[0].metadata.name}")
+```
 
 Retry the `curl` commands from previously and observe that this policy blocks
 access from the `age` service to the `name` service.
@@ -149,8 +189,16 @@ access from the `age` service to the `name` service.
 kubectl exec $AGE_POD -c age -- curl --silent name:5000/; echo "";
 ```
 
+```console
+kubectl exec $AGE_POD -c age -- curl --silent name:5000/choices; echo "";
+```
+
+```console
+kubectl exec $AGE_POD -c age -- curl --silent name:8000/metrics; echo "";
+```
+
 <details>
-  <summary>Why does applying an `ALLOW` policy between the `sentences` service and the `name` service block the `age` service?</summary>
+  <summary>Why does applying an `ALLOW` policy between the `sentences` service and the `name` service block the `age` service from accessing the `name` service?</summary>
 
 Kubernetes NetworkPolicy applies like this:
 

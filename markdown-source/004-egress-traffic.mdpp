@@ -215,7 +215,7 @@ of the shortname because the gateway is located in the `istio-system` namespace.
 
 > :bulb: Istio will translate a **short name** based one the **namespace** of the 
 > **rule**, e.g. if the virtual service is in the `default` namespace it will 
-> translate to > `istio-egressgateway.default.svc.cluster.local`. So **full names** 
+> translate to `istio-egressgateway.default.svc.cluster.local`. So **full names** 
 > should be used when using a gateway in another namespace.
 
 Expand the overview below to get an idea of what you will be doing in the 
