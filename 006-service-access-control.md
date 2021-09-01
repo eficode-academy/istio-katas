@@ -290,7 +290,7 @@ ___
 Before continuing, delete the Kubernetes NetworkPolicy:
 
 ```console
-kubectl delete -f 006-service-access-control/examples/networkpolicy.yaml
+kubectl delete -f 006-service-access-control/start/name-network-policy.yaml
 ```
 
 A feature of Istio is strong workload identities. Istio implements the
