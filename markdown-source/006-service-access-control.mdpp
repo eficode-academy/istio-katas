@@ -154,7 +154,7 @@ labels and port given in `spec.ingress`.
 Apply this with:
 
 ```console
-kubectl apply -f 006-service-access-control/examples/networkpolicy.yaml
+kubectl apply -f 006-service-access-control/start/name-network-policy.yaml
 ```
 
 #### Task: Redeploy the sentences application services
