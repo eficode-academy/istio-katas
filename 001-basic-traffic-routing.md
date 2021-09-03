@@ -129,40 +129,27 @@ the flow of traffic in your namespace. We spin up two versions of the name
 service in the namespace, and use the VirtualService and DestinationRule kinds 
 to control the traffic.
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
+A general overview of what you will be doing in the **Step By Step** section.
 
-- Deploy the sentences app and two versions (`name-v1` and `name-v2`) of the 
-name service
+- Deploy the sentences application services with kubectl
 
-- Run the script `scripts/loop-query.sh` to produce traffic
+> You will deploy two versions of the `name` service.
 
-- Use the **Versioned app graph** in Kiali to observe the traffic flow
+- Producing traffic to the sentences application
 
-> What you will observe is normal k8's load balancing.
+- Use Kiali to observe the traffic flow
 
-- Create a DestinationRule with **subsets** for the `name-v1` and `name-v2` 
-workloads
+- Create a VirtualService to route **all** traffic to the native k8's service 
+for name
 
-- Create a a VirtualService to route **all** traffic to version 1 of the name 
-service
-
-> A virtual service lets you configure **how** requests are routed 
-> to a **service** within an Istio service mesh. A destination 
-> rule defines what happens after the traffic is routed to a service.
-
-- Add a route to version 2 of the name service as the **first** route
-
-- Use the **Versioned app graph** in Kiali to observe the traffic flow
-
-</details>
-
-It is **recommended** to follow the step by step tasks below.
+- Create a DestinationRule to send traffic to a specific version(workload) of 
+the name service
 
 ### Step By Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>

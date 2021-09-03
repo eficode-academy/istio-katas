@@ -30,35 +30,25 @@ to service access. The Istio CRD for this is the
 
 ## Exercise
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
+A general overview of what you will be doing in the **Step By Step** section.
 
 - Deploy sentences application services
 
-- Test access to `name` service from the `age` service
-
-> Use kubectl to execute a curl command `curl name:5000/` from `age` service.
-
-- Pull the sentences application services down
+- Test access between services
 
 - Restrict access to the name service with a kubernetes NetworkPolicy
 
-- Redeploy the sentences application services
-
-- Test access to `name` service from the `age` service
-
-- Test access to `name` service from the `sentences` service
+- Test access between services
 
 - Restrict access with an Istio AuthorizationPolicy
 
-</details>
-
-It is **recommended** to follow the step by step **tasks** below.
+- Test access between services
 
 ### Step by Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>

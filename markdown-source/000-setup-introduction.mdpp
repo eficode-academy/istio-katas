@@ -69,57 +69,30 @@ We are using Kiali to visualize the work done in this Istio course.
 
 In this exercise, we are first deploying our application with vanilla 
 Kubernetes. We then visit the Kiali website to see that without a 
-sidecar, our service will not be included in istio.
+sidecar our service will not be included in istio.
 
 Then you will be using a few different techniques to enable Istio sidecars 
 and see the traffic flowing in Kiali.
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
+A general overview of what you will be doing in the **Step By Step** section.
 
-- Inspect you namespace
+- Deploy the sentences application services with kubectl
 
-- Deploy the sentences application with kubectl 
+- Producing traffic to the sentences application
 
-> :bulb: It is located under the `000-setup-introduction/` directory.
+- Investigating Kiali
 
-- Observe the number of pods running
+- Enabling sidecars with automatic sidecar injection
 
-- Run the script `scripts/loop-query.sh` to produce traffic
+- Enabling sidecars with annotations
 
-- Open Kiali and find the sentences application
-
-> Browse to **Applications** on the left hand menu and select `sentences`.
-> View the info and browse traffic and metrics tabs.
-
-- Pull the sentences application down.
-
-- Enable automatic sidecar injection for **your** namespace
-
-> Label **your** namespace(user1, user2, etc) with `istio-injection=enabled`.
-
-- Redeploy sentences application
-
-- Run the `loop-query.sh` script to produce traffic.
-
-- Investigate the different graphs provided by kiali.
-
-- Disable automatic sidecar injection for the `age` service
-
-> In `spec.template.metadata.annotations` of the `age` service deployment 
-> add the annotation `sidecar.istio.io/inject: 'false'` and re-deploy the 
-> service.
-
-- Inject sidecar for the `age` service
-
-</details>
-
-It is **recommended** to follow the step by step **tasks** below.
+- Manually injection sidecars
 
 ### Step By Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>

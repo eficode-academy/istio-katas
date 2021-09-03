@@ -144,34 +144,23 @@ Note how it specifies the hostname and the name of the gateway
 hostnames and a VirtualService can be bound to multiple gateways, i.e. these 
 are not necessarily related one-to-one.
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
+A general overview of what you will be doing in the **Step By Step** section.
 
-- Deploy the `sentences-v1` service with name and age services
+- Deploy the sentences application and services
+
+- Observe the traffic flow with Kiali
 
 - Create an entry point for the sentences service
 
-> :bulb: The FQDN you will use should be 
-> `<YOUR_NAMESPACE>.sentences.istio.eficode.academy`.
-
 - Create a route from the entry point to the sentences service
-
-- Run the loop query script with the `-g` option and FQDN
-
-- Observe the traffic flow with Kiali
 
 - Add a fixed delay to the sentences service
 
-- Observe the traffic flow with Kiali
-
-</details>
-
-It is **recommended** to follow the step by step **tasks** below.
-
 ### Step by Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>

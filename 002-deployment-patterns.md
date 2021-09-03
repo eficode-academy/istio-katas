@@ -98,45 +98,22 @@ You can have multiple conditions in a match block and multiple match blocks.
 Expand the overview below to get an idea of what you will be doing in the 
 **Step By Step** section.
 
-<details>
-    <summary> Overview Of Steps </summary>
+### Overview
 
-- Deploy the sentences application services 
+A general overview of what you will be doing in the **Step By Step** section.
 
-> You will deploy two versions of the name service
+- Deploy the sentences application services with kubectl
 
-- Run the `./scripts/loop-query.sh`
-
-- Observe the traffic flow with Kiali
-
-- Stop the `loop-query.sh`
-
-- Add a match block with **header** condition 
-
-> :bulb: Use the header `x-test` and a match type of **exact** with a value 
-> of `use-v2`.
-
-- Run ./scripts/loop-query.sh with the header
-
-> :bulb: `./scripts/loop-query.sh 'x-test: use-v2'`
+> You will deploy two versions of the name service.
 
 - Observe the traffic flow with Kiali
 
-- Run the `loop-query.sh` **without** the header
-
-- Observe the traffic flow with Kiali
-
-- Remove the default route
-
-- Observe the traffic flow with Kiali
-
-- Add the default route and use a different header
-
-</details>
-
-It is **recommended** to follow the step by step tasks below.
+- Route traffic to a specific version `v2` matching a header specified by the 
+client
 
 ### Step by Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>
@@ -444,36 +421,32 @@ workload of `my-service` will receive 10% of **all** traffic.
 Expand the overview below to get an idea of what you will be doing in the 
 **Step By Step** section.
 
-<details>
-    <summary> Overview Of Steps </summary>
+### Overview
 
-- Deploy the sentences app and version `name-v3` of the name service
+A general overview of what you will be doing in the **Step By Step** section.
 
-- Add `name-v3` subset in `name-dr.yaml`
+- Deploy the sentences application services with kubectl
 
-- Adjust the `match` field header in `name-vs.yaml` to `use-v3`
-
-- Run the `scripts/loop-query.sh`
+> You will deploy three versions of the name service
 
 - Observe the traffic flow with Kiali
 
-- Add the `weight` fields in in `name-vs.yaml` to distribute traffic between `name-v1` and `name-v2`
+- incorporate version `v3` of the name service in the destination rule and 
+the virtual service for header based routing
 
-- Observe the traffic flow with Kiali
+> The use case is that new version `v3` will be the new blue/green deployment.
 
-- In a **new** terminal pass the header `x-test: use-v3` to `scripts/loop-query.sh`
+- Create a canary deployment for version `v1`and `v2` of the name service with 
+the `weight` field
 
-- Observe the traffic flow with Kiali
+> The use case is that `v2` has been validated and you are doing a canary 
+deployment to reduce risk.
 
-- Promote `name-v2` to receive **all** traffic.
-
-- Observe the traffic flow with Kiali
-
-</details>
-
-It is **recommended** to follow the step by step tasks below.
+- Promote `v2` of the name service to receive **all** traffic.
 
 ### Step By Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>
@@ -810,29 +783,23 @@ routed to `v2` will be mirrored to the `v3` subset. E.g, if set to 50.0 then
 subset. If the field is not defined then the `v3` subset will get 100% of the 
 traffic routed to `v2`.
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
-
-- Remove the `match` block from `name-vs.yaml`
-
-- Add the `mirror` blocks to `name-vs.yaml`
-
-- Apply the changes to `name-vs.yaml`
-
-- Run `scripts/loop-query.sh`
-
-- Inspect the `name-v3` workload to see if it is receiving traffic
+A general overview of what you will be doing in the **Step By Step** section.
 
 - Observe the traffic in Kiali
 
-</details>
+- Remove the header based routing to `v3` of the name service
 
-It is **recommended** to follow the step by step tasks below.
+> The use case it that has been validated and you want to load test it now.
+
+- Use the `mirror` field to shadow **all** traffic from `v2` to `v3`
+
+- Inspect the `v3` workload to see if it is receiving traffic
 
 ### Step By Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>

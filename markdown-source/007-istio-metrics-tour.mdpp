@@ -50,17 +50,13 @@ and inspect the Istio metrics. Then you will enable a single scrape endpoint
 for both the Istio and application metrics. Finally you view and query Istio 
 metrics in Prometheus.
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
+A general overview of what you will be doing in the **Step By Step** section.
 
-- Deploy the sentences application services
+- Deploy the sentences application services without sidecars
 
-- Run the script `scripts/loop-query.sh`
-
-- Inspect available metrics on a sentences service POD on port `8000/metrics`
+- Inspect available metrics on a sentences service
 
 - Inject Istio sidecar to sentences services
 
@@ -70,15 +66,11 @@ Expand the overview below to get an idea of what you will be doing in the
 > into a single scrape endpoint, however this has been disabled with the
 > annotation `prometheus.istio.io/merge-metrics`
 
-- Fetch Istio Metrics
-
 - Browse Istio Metrics in Prometheus
 
-</details>
-
-It is **recommended** to follow the step by step **tasks** below.
-
 ### Step by Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>

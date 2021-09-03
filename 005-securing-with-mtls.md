@@ -192,56 +192,25 @@ client certificates as the certs generated for mTLS by Istio are used.
 
 </details>
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
-
-- Modify the gateway and virtual files with your `<YOUR_NAMESPACE>`
-
-> The files are located in `005-securing-with-mtls/start/`.
-
-- Deploy the sentences application and observe sidecars
-
-- Run the script `./scripts/loop-query.sh` with `-g` and the gateway 
+A general overview of what you will be doing in the **Step By Step** section.
 
 - Observe the traffic flow with Kiali
 
-- Create peer authentication requiring `STRICT` mTLS
+- Create an ingress gateway for the sentences application
 
-> :bulb: Make sure to namespace the PeerAuthentication CRD with 
-> <YOUR_NAMESPACE>. We are working in a multi namespace environment 
-> in this course.
+- Deploy the sentences application services **without** sidecars and see 
+the effect of mTLS modes
 
-- Observe the traffic flow with Kiali
-
-- Enable sidecar for the age service 
-
-- Observe the traffic flow with Kiali
-
-- Allow un-encrypted and un-authenticated traffic using `PERMISSIVE` mTLS
-
-- Observe the traffic flow with Kiali
-
-- Inject sidecars for all services
-
-- Re-enable `STRICT` mTLS
-
-- Observe the traffic flow with Kiali
+- Deploy the sentences application services **with** sidecars and see the
+effect of mTls modes
 
 - Configure TLS to an upstream service
 
-> :bulb: You will need to create a destination rule **and** a virtual 
-> service to route the traffic.
-
-- Observe the traffic flow with Kiali
-
-</details>
-
-It is **recommended** to follow the step by step **tasks** below.
-
 ### Step by Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>
@@ -712,33 +681,21 @@ certificate.
 > the kubernetes secret. So **both** must be in the `istio-ingress` namespace in 
 > the above example and the gateway **must** be unique for this exercise.
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
-
-- Delete the gateway created in the previous exercise
+A general overview of what you will be doing in the **Step By Step** section.
 
 - Generate needed certificate authority(CA) and certificates 
 
-- Modify the gateway to configure `MUTUAL` TLS for port `443`
+- Require `MUTUAL` TLS for port `443`
 
 - Modify the virtual service to point to the gateway in `istio-ingress` namespace
 
-- Apply the changes to the virtual service and gateway
-
-- Run `loop-query-mtls.sh https+mtls`
-
-- Run `loop-query-mtls.sh https`
-
-> What will happen and what can you change to allow simple TLS?
-
-</details>
-
-It is **recommended** to follow the step by step **tasks** below.
+- Test the traffic using TLS and mTLS
 
 ### Step by Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>

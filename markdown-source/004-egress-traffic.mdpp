@@ -218,29 +218,19 @@ of the shortname because the gateway is located in the `istio-system` namespace.
 > translate to `istio-egressgateway.default.svc.cluster.local`. So **full names** 
 > should be used when using a gateway in another namespace.
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
+A general overview of what you will be doing in the **Step By Step** section.
 
-- Modify `sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml` files with `<YOUR_NAMESPACE>`
+- Deploy sentences application services
 
-- Deploy sentences application in `004-egress-traffic/start`
-
-- Run the loop query script with the `hosts` entry
-
-- Observe the response of the external service
+- Deploy an **ingress** gateway for the sentences application
 
 - Observe the traffic flow with Kiali
 
-- Define a service entry for httpbin.org and apply it
+- Define a service entry to allow traffic out of the mesh
 
-- Observe the traffic flow with Kiali
-
-- Create a virtual service with a timeout of 3 seconds
-
-- Observe the traffic flow with Kiali
+- Apply some Istio traffic management on the external service
 
 - Modify the the virtual service to route traffic through the common gateway
 
@@ -252,11 +242,9 @@ Expand the overview below to get an idea of what you will be doing in the
 
 - Observe the traffic flow with Kiali
 
-</details>
-
-It is **recommended** to follow the step by step **tasks** below.
-
 ### Step by Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>

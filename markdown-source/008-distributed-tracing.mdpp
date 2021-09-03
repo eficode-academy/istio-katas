@@ -87,15 +87,11 @@ Then you are going to see how Istio's distributed tracing telemetry is
 leveraged by Kiali and Jaeger to help you identify where the delay is 
 happening.
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
+### Overview
 
-<details>
-    <summary> Overview Of Steps </summary>
+A general overview of what you will be doing in the **Step By Step** section.
 
-- Deploy sentences application
-
-- Run the script `scripts/loop-query.sh`
+- Deploy sentences application services
 
 - Observe the traffic flow with Kiali
 
@@ -103,21 +99,13 @@ Expand the overview below to get an idea of what you will be doing in the
 
 - Observe the distributed tracing telemetry in Jaeger
 
-- Add an ingress gateway and virtual service
-
 - Route traffic through the ingress gateway 
-
-> :bulb: Use the script `scripts/loop-query.sh` with the `-g` option and 
-> specify your gateway entry point. E.g. 
-`<YOUR_NAMESPACE>.sentences.istio.eficode.academy`.
 
 - Observe the distributed tracing telemetry in Jaeger
 
-</details>
-
-It is **recommended** to follow the step by step **tasks** below.
-
 ### Step by Step
+
+Expand the **Tasks** section below to do the exercise.
 
 <details>
     <summary> Tasks </summary>
