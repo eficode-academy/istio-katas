@@ -264,7 +264,7 @@ kubectl config view --output 'jsonpath={..namespace}'; echo
 
 The `sentences-svc.yaml` is using a `ClusterIP` type as in exercise 
 [Getting Traffic Into The mesh](003-ingress-traffic.md). Modify the 
-`sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml files with 
+`sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml` files with 
 **your** namespace. E.g. user1, user2, etc.
 
 ```yaml
