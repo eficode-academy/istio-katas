@@ -442,7 +442,7 @@ ___
 Basically all we have done so far is to add an entry for httpbin to Istio's 
 internal service registry. But we can now apply some of the Istio features to 
 external service. To demonstrate this you will create a virtual service for 
-traffic to httpbin with a timeout tof `0.5s`.
+traffic to httpbin with a timeout of `0.5s`.
 
 > The api service asks httpbin.org for a response delay of 1 second.
 
