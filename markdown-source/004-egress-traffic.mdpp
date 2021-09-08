@@ -504,7 +504,7 @@ ___
 kubectl apply -f 004-egress-traffic/start/
 ```
 
-**Modify the `api-egress-vs.yaml` from previous exercise**
+**Modify the `api-egress-vs.yaml` from previous step**
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
