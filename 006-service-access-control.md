@@ -368,8 +368,15 @@ command.
 kubectl config view --output 'jsonpath={..namespace}'; echo
 ```
 
+Export it to your environment.
+
 ```console
 export NAMESPACE=<YOUR_NAMESPACE>
+```
+
+Substitute the env variable. 
+
+```console
 cat 006-service-access-control/examples/authz-policy.yaml | envsubst
 ```
 
