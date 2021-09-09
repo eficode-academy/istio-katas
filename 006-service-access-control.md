@@ -278,12 +278,6 @@ which understands L7 (HTTP).
 ___
 
 
-Before continuing, delete the Kubernetes NetworkPolicy:
-
-```console
-kubectl delete -f 006-service-access-control/start/name-network-policy.yaml
-```
-
 A feature of Istio is strong workload identities. Istio implements the
 [SPIFFE](https://spiffe.io) standard and provides cryptographic verifiable
 identities to workloads within the mesh.
