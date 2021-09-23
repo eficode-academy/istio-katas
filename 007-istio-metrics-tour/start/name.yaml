@@ -3,21 +3,21 @@ kind: Deployment
 metadata:
   labels:
     app: sentences
-    mode: sentence
+    mode: name
     version: v1
-  name: sentences
+  name: name
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: sentences
-      mode: sentence
+      mode: name
       version: v1
   template:
     metadata:
       labels:
         app: sentences
-        mode: sentence
+        mode: name
         version: v1
       annotations:
         sidecar.istio.io/inject: 'false'
@@ -28,15 +28,15 @@ spec:
     spec:
       containers:
       - image: praqma/istio-sentences:v1
-        name: sentences
+        name: name
         ports:
           - containerPort: 5000
-            name: sentences
+            name: name
           - containerPort: 8000
-            name: metrics
+            name: name-metrics
         env:
         - name: "SENTENCE_MODE"
-          value: "sentence"
+          value: "name"
         resources:
           requests:
             cpu: 0.25

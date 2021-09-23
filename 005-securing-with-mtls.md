@@ -280,10 +280,11 @@ Execute `kubectl get pods` and observe that we have one container per POD,
 i.e. **no Istio sidecars injected**.
 
 ```
-NAME                         READY   STATUS    RESTARTS   AGE
-age-657d4d9678-q8h7d         1/1     Running   0          3s
-name-86969f7468-4qfmp        1/1     Running   0          3s
-sentences-779767c659-mlcm9   1/1     Running   0          4s
+NAME                          READY   STATUS    RESTARTS   AGE
+age-v1-b69df859b-m996r        1/1     Running   0          30s
+name-v1-6f44875ccd-sz5zp      1/1     Running   0          30s
+name-v2-7755ddbd74-4ppgh      1/1     Running   0          30s
+sentences-v1-fc7dbd55-zx8qs   1/1     Running   0          30s
 ```
 
 #### Task: Run the script `./scripts/loop-query.sh`

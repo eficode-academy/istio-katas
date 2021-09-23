@@ -82,7 +82,7 @@ ___
 
 
 ```console
-kubectl apply -f 007-istio-metrics-tour/start/sentences.yaml
+kubectl apply -f 007-istio-metrics-tour/start/
 ```
 
 Execute `kubectl get pods` and observe that we have one container per POD.
@@ -177,6 +177,8 @@ sidecar injection.
 
 ```console
 cat 007-istio-metrics-tour/start/sentences.yaml |grep -v inject | kubectl apply -f -
+cat 007-istio-metrics-tour/start/name.yaml |grep -v inject | kubectl apply -f -
+cat 007-istio-metrics-tour/start/age.yaml |grep -v inject | kubectl apply -f -
 ```
 
 If we run `kubectl get pods` now, we will see that we have two containers per
