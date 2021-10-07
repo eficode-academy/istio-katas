@@ -431,7 +431,7 @@ A general overview of what you will be doing in the **Step By Step** section.
 
 - Observe the traffic flow with Kiali
 
-- incorporate version `v3` of the name service in the destination rule and 
+- Incorporate version `v3` of the name service in the destination rule and 
 the virtual service for header based routing
 
 > The use case is that new version `v3` will be the new blue/green deployment.
