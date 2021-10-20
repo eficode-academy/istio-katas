@@ -4,7 +4,7 @@ metadata:
   name: sentences
 spec:
   hosts:
-  - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+  - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
   gateways:
   - sentences
   http:
