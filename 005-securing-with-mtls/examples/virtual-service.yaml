@@ -6,7 +6,7 @@ spec:
   hosts:
   - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
   gateways:
-  - istio-ingress/user2-sentences   # Must point to the entry point (gateway) in the istio-ingress namespace
+  - istio-ingress/$STUDENT_NS-sentences   # Must point to the entry point (gateway) in the istio-ingress namespace
   http:
   - route:
     - destination:
