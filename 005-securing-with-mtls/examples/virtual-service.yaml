@@ -4,7 +4,7 @@ metadata:
   name: sentences
 spec:
   hosts:
-  - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+  - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
   gateways:
   - istio-ingress/user2-sentences   # Must point to the entry point (gateway) in the istio-ingress namespace
   http:
