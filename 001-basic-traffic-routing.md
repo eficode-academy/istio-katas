@@ -265,7 +265,7 @@ spec:
 > Istio will translate the short name based one the **namespace** of the rule. 
 > E.g. if the virtual service is in namespace `default` the short name name will 
 > be interpreted as `name.default.svc.cluster.local`. What will happen if the 
-> **name** service is in the namespace `user1`?
+> **name** service is in the namespace `student1`?
 
 ```console
 kubectl apply -f 001-basic-traffic-routing/start/name-vs.yaml

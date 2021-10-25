@@ -222,17 +222,15 @@ of the shortname because the gateway is located in the `istio-system` namespace.
 
 A general overview of what you will be doing in the **Step By Step** section.
 
-- Deploy sentences application services
-
-- Deploy an **ingress** gateway for the sentences application
+- Deploy sentences application services along with an **ingress** gateway and virtual service
 
 - Observe the traffic flow with Kiali
 
-- Define a service entry to allow traffic out of the mesh
+- Define a service entry to allow traffic **out** of the mesh
 
 - Apply some Istio traffic management on the external service
 
-- Modify the the virtual service to route traffic through the common gateway
+- Modify the the virtual service to route traffic through the **common** gateway
 
 > :bulb: The exit point for [httpbin](http://httpbin.org) and needed routes to 
 > the `istio-egressgateway` have already been created in the `istio-system` 
@@ -249,52 +247,22 @@ Expand the **Tasks** section below to do the exercise.
 <details>
     <summary> Tasks </summary>
 
-#### Task: Modify `sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml`
+#### Task: Deploy sentences application along with ingress gateway and virtual service
 
 ___
 
 
-> :bulb: This exercise **requires** that you know the namespace you are 
-> working in. If you do not know you can inspect your namespace with the 
-> following command.
+Deploy `v2` of the sentences application services which has a new api service 
+along with the ingress gateway entry point and virtual service.
 
 ```console
-kubectl config view --output 'jsonpath={..namespace}'; echo
-```
-
-The `sentences-svc.yaml` is using a `ClusterIP` type as in exercise 
-[Getting Traffic Into The mesh](003-ingress-traffic.md). Modify the 
-`sentences-ingress-gw.yaml` and `sentences-ingress-vs.yaml` files with 
-**your** namespace. E.g. user1, user2, etc.
-
-```yaml
-...
-    hosts:
-    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
-```
-
-Apply the changes.
-
-```console
-kubectl apply -f 004-egress-traffic/start/sentences-ingress-gw.yaml
-kubectl apply -f 004-egress-traffic/start/sentences-ingress-vs.yaml
-```
-
-#### Task: Deploy sentences application in `004-egress-traffic/start`
-
-___
-
-
-Deploy `v2` of the sentences service along with the age, name and api service.
-
-```console
-kubectl apply -f 004-egress-traffic/start/
+for file in 004-egress-traffic/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
 Make sure everything is in ready state.
 
 ```console
-kubectl get gateway,se,vs,dr,svc,pods -n <YOUR_NAMESPACE>
+kubectl get gateway,se,vs,dr,svc,pods -n $STUDENT_NS
 ```
 
 You should now see a gateway, two virtual services and a destination rule along 
@@ -306,7 +274,7 @@ gateway.networking.istio.io/sentences   91m
 
 NAME                                            GATEWAYS        HOSTS                                       AGE
 virtualservice.networking.istio.io/name-route   ["mesh"]        ["name"]                                    91m
-virtualservice.networking.istio.io/sentences    ["sentences"]   ["user2.sentences.istio.eficode.academy"]   91m
+virtualservice.networking.istio.io/sentences    ["sentences"]   ["student1.sentences.istio.eficode.academy"]   91m
 
 NAME                                                        HOST   AGE
 destinationrule.networking.istio.io/name-destination-rule   name   91m
@@ -330,7 +298,7 @@ ___
 
 
 ```console
-./scripts/loop-query.sh -g <YOUR_NAMESPACE>.sentences.istio.eficode.academy
+./scripts/loop-query.sh -g $STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy
 ```
 
 #### Task: Observe the responses for the external service
@@ -499,10 +467,6 @@ Change the timeout to something greater than 1 second and ensure that you get 20
 
 ___
 
-
-```console
-kubectl apply -f 004-egress-traffic/start/
-```
 
 **Modify the `api-egress-vs.yaml` from previous step**
 

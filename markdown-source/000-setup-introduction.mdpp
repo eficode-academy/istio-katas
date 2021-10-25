@@ -101,18 +101,19 @@ Expand the **Tasks** section below to do the exercise.
 
 ___
 
-You will need to know your namespace for later exercises. Find it with the 
-following command.
+You will need to know your namespace for later exercises. It is provided for 
+you in the environment variable `STUDENT_NS`. Check it with the following 
+command.
+
+```console
+echo $STUDENT_NS
+```
+
+Execute the following command and make sure it matches the value of the 
+environment variable `STUDENT_NS`.
 
 ```console
 kubectl config view --output 'jsonpath={..namespace}'; echo
-```
-
-You should see something like below depending on your namespace. E.g. user1, 
-user2, user3, etc.
-
-```console
-user1
 ```
 
 #### Task: Deploy the sentences application
@@ -209,7 +210,7 @@ ___
 
 
 ```console
-kubectl label namespace <YOUR_NAMESPACE> istio-injection=enabled
+kubectl label namespace $STUDENT_NS istio-injection=enabled
 ```
 
 #### Task: Redeploy sentences application

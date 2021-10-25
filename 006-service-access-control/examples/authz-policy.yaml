@@ -11,7 +11,7 @@ spec:
   rules:
    - from:
       - source:
-          principals: ["cluster.local/ns/$NAMESPACE/sa/sentences"]
+          principals: ["cluster.local/ns/$STUDENT_NS/sa/sentences"]
      to:
       - operation:
           methods: ["GET"]

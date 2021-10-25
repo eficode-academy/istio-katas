@@ -128,10 +128,7 @@ To restrict inter-service access to only what is necessary create a file
 called `name-network-policy.yaml` in the directory 
 `006-service-access-control/start/`.
 
-Paste in the following yaml and modify it with your namespace.
-
-> :bulb: If you are in doubt about your namespace you can run the following 
-> command. `kubectl config view --output 'jsonpath={..namespace}'; echo`
+Paste in the following yaml.
 
 !INCLUDECODE "006-service-access-control/examples/networkpolicy.yaml" (yaml)
 
@@ -142,22 +139,19 @@ This policy applies to the `name` service PODs due to the labels given in
 `spec.podSelector` and it allows ingress from the `sentence` service due to the
 labels and port given in `spec.ingress`.
 
-Apply this with:
-
-```console
-kubectl apply -f 006-service-access-control/start/name-network-policy.yaml
-```
-
 #### Task: Redeploy the sentences application services
 
 ___
 
+Now that you have a network policy redeploy the sentences application services 
+along with the policy by substituting the placeholders with environment variable(s) 
+and applying with kubectl.
 
 ```console
-kubectl apply -f 006-service-access-control/start/
+for file in 006-service-access-control/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
-and test access:
+Once all services are running test that the sentences application is running properly.
 
 ```console
 scripts/loop-query.sh
@@ -282,13 +276,13 @@ that applies to the `name` service (due to the label selector in
 !INCLUDECODE "006-service-access-control/examples/authz-policy.yaml" (yaml)
 
 Note how the policy allows traffic from a workload identified as
-`cluster.local/ns/$NAMESPACE/sa/sentences`. This identifier should be 
+`cluster.local/ns/$STUDENT_NS/sa/sentences`. This identifier should be 
 interpreted like:
 
 ```
 cluster.local    - Identity within this cluster (identity can extend outside a Kubernetes cluster)
 ns               - Scoped to a namespace
-$NAMESPACE       - The name of our namespace (we will expand this env. variable later)
+$STUDENT_NS      - The name of our namespace (we will expand this env. variable later)
 sa               - Scoped to a service account
 sentences        - The name of the service account
 ```
@@ -314,23 +308,10 @@ kubectl get po -l mode=sentence -o jsonpath='{.items[*].spec.serviceAccount}'
 
 To allow for running this exercise in different environments, the namespace name
 has been made configurable. To inspect the resulting AuthorizationPolicy use the
-following commands and change the value of `NAMESPACE` to `<YOUR_NAMESPACE>`, e.g 
-user1, user2, etc.
+following commands and change the value of `STUDENT_NS` to `<YOUR_NAMESPACE>`, e.g 
+student1, student2, etc.
 
-If you do not know what your namespace is you can inspect it with the following 
-command.
-
-```console
-kubectl config view --output 'jsonpath={..namespace}'; echo
-```
-
-Export it to your environment.
-
-```console
-export NAMESPACE=<YOUR_NAMESPACE>
-```
-
-Substitute the env variable. 
+Examine the substitution of the placeholder with the environment variable. 
 
 ```console
 cat 006-service-access-control/examples/authz-policy.yaml | envsubst

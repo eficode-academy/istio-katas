@@ -153,6 +153,11 @@ A general overview of what you will be doing in the **Step By Step** section.
 
 - Create an entry point for the sentences service
 
+> :bulb: In the yaml provided in the **Step By Step** section notice the 
+> placeholder environment variables (`$STUDENT_NS` and `$TRAINING_NAME`). 
+> When applying these you will be using the `envsubst` command to replace them 
+> with the values provided in the environment. 
+
 - Create a route from the entry point to the sentences service
 
 - Add a fixed delay to the sentences service
@@ -168,15 +173,6 @@ Expand the **Tasks** section below to do the exercise.
 
 ___
 
-
-> :bulb: This exercise **requires** that you know the namespace you are 
-> working in. If you do not know you can inspect your namespace with the 
-> following command.
-
-```console
-kubectl config view --output 'jsonpath={..namespace}'; echo
-```
-
 Deploy the sentences application services.
 
 ```console
@@ -191,11 +187,7 @@ ___
 Create a file called `sentences-ingress-gw.yaml` in 
 `003-ingress-traffic/start` directory.
 
-It should look like the below yaml. 
-
-> :bulb: Replace <YOUR_NAMESPACE> in the yaml below with the namespace you 
-> have been assigned in this course. Otherwise you might not hit the 
-> `sentence` service in your namespace.
+It should look like the below yaml.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -212,13 +204,13 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+    - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
 ```
 
-Apply the resource:
+Substitute the environment variable(s) and apply the output with kubectl.
 
 ```console
-kubectl apply -f 003-ingress-traffic/start/sentences-ingress-gw.yaml
+envsubst < 003-ingress-traffic/start/sentences-ingress-gw.yaml | kubectl apply -f -
 ```
 
 #### Task: Create a route from the gateway to the sentences service
@@ -229,6 +221,8 @@ ___
 Create a file called `sentences-ingress-vs.yaml` in 
 `003-ingress-traffic/start` directory.
 
+It should look like the below yaml.
+
 ```yaml
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -236,7 +230,7 @@ metadata:
   name: sentences
 spec:
   hosts:
-  - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+  - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
   gateways:
   - sentences
   http:
@@ -249,11 +243,15 @@ The VirtualService routes all traffic for the given hostname
 to the `sentences` service (the two last lines specifying the Kubernetes
 `sentences` service as destination).
 
-Apply the resource:
+Substitute the environment variable(s) and apply the output with kubectl.
 
 ```console
-kubectl apply -f 003-ingress-traffic/start/sentences-ingress-vs.yaml
+envsubst < 003-ingress-traffic/start/sentences-ingress-vs.yaml | kubectl apply -f -
 ```
+
+> :bulb: If want or need to do an environment substitution on multiple files 
+> you can use a for loop to do so.
+> `for file in 003-ingress-traffic/start/*.yaml; do envsubst < $file | kubectl apply -f -; done`
 
 #### Task: Run the loop query script with the `hosts` entry
 
@@ -266,7 +264,7 @@ now. In order to reach it we will need to go through the `istio-ingressgateway`.
 Run the `loop-query.sh` script with the option `-g` and pass it the `hosts` entry.
 
 ```console
-./scripts/loop-query.sh -g <YOUR_NAMESPACE>.sentences.istio.eficode.academy
+./scripts/loop-query.sh -g $STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy
 ```
 
 #### Task: Observe the traffic flow with Kiali
@@ -298,7 +296,7 @@ metadata:
   name: sentences
 spec:
   hosts:
-  - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+  - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
   gateways:
   - sentences
   http:
@@ -312,10 +310,10 @@ spec:
         host: sentences
 ```
 
-Apply the changes.
+Substitute the environment variable(s) and apply the output with kubectl.
 
 ```console
-kubectl apply -f 003-ingress-traffic/start/sentences-ingress-vs.yaml
+envsubst < 003-ingress-traffic/start/sentences-ingress-vs.yaml | kubectl apply -f -
 ```
 
 You should see that the response in the terminal are now taking 

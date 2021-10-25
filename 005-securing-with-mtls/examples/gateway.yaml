@@ -20,6 +20,6 @@ spec:
       protocol: HTTPS
     tls:
       mode: MUTUAL
-      credentialName: $STUDENT_NS-sentences-tls-secret # Must be in same namespace as ingressgateway
+      credentialName: $STUDENT_NS-sentences-tls-secret # The name of your secret which is in same namespace as ingressgateway
     hosts:
     - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"

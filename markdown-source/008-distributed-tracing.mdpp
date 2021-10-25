@@ -197,7 +197,7 @@ identify scenarios like this.
 Browse to Jaeger and select the options as shown below and hit find traces.
 
 > :bulb: Select the sentences service corresponding to **your** namespace. 
-> E.g `sentences.user1`, `sentences.user2`, etc.
+> E.g `sentences.student1`, `sentences.student2`, etc.
 
 You should see a trace taking longer than 1 second in the graph and the list 
 of traces. 
@@ -252,7 +252,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+    - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
 ```
 
 Then create a file `sentences-ingress-vs.yaml` in the directory 
@@ -267,7 +267,7 @@ metadata:
   name: sentences
 spec:
   hosts:
-  - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+  - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
   gateways:
   - sentences
   http:
@@ -276,11 +276,11 @@ spec:
         host: sentences
 ```
 
-Finally apply the gateway and virtual service.
+Substitute the placeholders with environment variable(s) and apply with kubectl.
 
 ```console
-kubectl apply -f 008-distributed-tracing/start/sentences-ingress-gw.yaml
-kubectl apply -f 008-distributed-tracing/start/sentences-ingress-vs.yaml
+envsubst < 008-distributed-tracing/start/sentences-ingress-gw.yaml | kubectl apply -f -
+envsubst < 008-distributed-tracing/start/sentences-ingress-vs.yaml | kubectl apply -f -
 ```
 
 #### Task: Route traffic through the ingress gateway
@@ -293,7 +293,7 @@ Now instead of hitting the NodePort of the sentences service use the
 the gateway you just created.
 
 ```console
-./scripts/loop-query.sh -g <YOUR_NAMESPACE>.sentences.istio.eficode.academy
+./scripts/loop-query.sh -g $STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy
 ```
 
 Traffic will now be routed through the ingress gateway and towards the 
