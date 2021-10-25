@@ -132,10 +132,10 @@ kubectl apply -f 000-setup-introduction/
 ___
 
 ```console
-kubectl get pod,svc
+watch kubectl get pod,svc
 ```
 
-You should see something like:
+You should see something like. It may take a few seconds.
 
 ```console
 NAME                             READY   STATUS    RESTARTS   AGE
@@ -148,6 +148,8 @@ service/age         ClusterIP   172.20.123.133   <none>        5000/TCP         
 service/name        ClusterIP   172.20.108.51    <none>        5000/TCP         2s
 service/sentences   NodePort    172.20.168.218   <none>        5000:30326/TCP   2s
 ```
+
+Use `ctrl` + `c` to exit the watch once all services are running.
 
 #### Task: Run the `loop-query.sh` script
 
@@ -226,10 +228,10 @@ kubectl apply -f 000-setup-introduction/
 Observe the number of services and pods running.
 
 ```console
-kubectl get pod,svc
+watch kubectl get pod,svc
 ```
 
-You should see two containers per POD.
+You should see **two** containers per POD.
 
 ```console
 NAME                                READY   STATUS    RESTARTS   AGE
@@ -242,6 +244,8 @@ service/age         ClusterIP   172.20.228.238   <none>        5000/TCP         
 service/name        ClusterIP   172.20.213.23    <none>        5000/TCP         4m4s
 service/sentences   NodePort    172.20.106.197   <none>        5000:32092/TCP   4m4s
 ```
+
+Use `ctrl` + `c` to exit the watch once all services are running.
 
 Run the following command to observe envoy proxy.
 
@@ -406,8 +410,8 @@ and versioned app graphs from the drop down at the top.
 
 In this exercise you injected sidecars with automatic sidecar injection, 
 disabled sidecars with an annotation and manually injected a sidecar from 
-the command line.  Manually injecting sidecars or 
-using annotations is not a cohesive approach.
+the command line.  Manually injecting sidecars or using annotations is not 
+a cohesive approach.
 
 You were also introduced to the sentences application and Kiali. There is not 
 enough time in the course to go into much more details around Kiali. But it 
