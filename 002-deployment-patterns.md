@@ -95,9 +95,6 @@ You can have multiple conditions in a match block and multiple match blocks.
 
 **NOTE:** Matches are evaluated **prior** to any destination's being applied.
 
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
-
 ### Overview
 
 A general overview of what you will be doing in the **Step By Step** section.
@@ -417,9 +414,6 @@ In the above example we define a traffic distribution percentage with the
 `weight` fields on the destinations of the HTTPRoute. The `v1` workload of 
 `my-service` destination will receive 90% of **all** traffic while the `v2` 
 workload of `my-service` will receive 10% of **all** traffic.
-
-Expand the overview below to get an idea of what you will be doing in the 
-**Step By Step** section.
 
 ### Overview
 

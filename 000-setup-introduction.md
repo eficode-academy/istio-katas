@@ -423,8 +423,7 @@ for a more complete overview.
 
 Main takeaways are:
 
-* Annotations can be used to control sidecar injection. Both enabling for an 
-onboarding process or disabling if needed.
+* Annotations can be used to control sidecar injection.
 
 * Automatic sidecar injections is recommended. Automatic sidecar injection 
 ensures a more **pervasive** and homogenous approach for traffic management 
