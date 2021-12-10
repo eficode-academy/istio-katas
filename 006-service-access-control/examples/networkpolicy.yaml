@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: allow-sentences-to-name
-  namespace: <YOUR_NAMESPACE>
+  namespace: $STUDENT_NS
 spec:
   podSelector:
     matchLabels:

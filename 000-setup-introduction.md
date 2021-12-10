@@ -89,7 +89,7 @@ A general overview of what you will be doing in the **Step By Step** section.
 
 - Enabling sidecars with annotations
 
-- Manually injection sidecars
+- Manually force injection of sidecars
 
 ### Step By Step
 
@@ -98,22 +98,23 @@ Expand the **Tasks** section below to do the exercise.
 <details>
     <summary> Tasks </summary>
 
-#### Task: Inspect you namespace
+#### Task: Inspect your namespace
 
 ___
 
-You will need to know your namespace for later exercises. Find it with the 
-following command.
+You will need to know your namespace for later exercises. It is provided for 
+you in the environment variable `STUDENT_NS`. Check it with the following 
+command.
+
+```console
+echo $STUDENT_NS
+```
+
+Execute the following command and make sure it matches the value of the 
+environment variable `STUDENT_NS`.
 
 ```console
 kubectl config view --output 'jsonpath={..namespace}'; echo
-```
-
-You should see something like below depending on your namespace. E.g. user1, 
-user2, user3, etc.
-
-```console
-user1
 ```
 
 #### Task: Deploy the sentences application
@@ -134,9 +135,9 @@ ___
 kubectl get pod,svc
 ```
 
-You should see something like:
+Once all the pods are running you should see something like. It may take a few seconds.
 
-```console
+```
 NAME                             READY   STATUS    RESTARTS   AGE
 pod/age-7976688957-mbvzz         1/1     Running   0          2s
 pod/name-v1-587b56cdf4-rwcwt     1/1     Running   0          2s
@@ -162,7 +163,7 @@ Do this is a **new** terminal.
 
 You should see output from the shell that looks like this.
 
-```console
+```
 Using 10.0.36.130:30459, header ''
 Egon is 40 years.
 Ray is 16 years.
@@ -171,8 +172,7 @@ Peter is 19 years.
 Ray is 66 years.
 ```
 
-Traffic is now flowing between the services. But that **doesn't** mean it is part of 
-the service mesh yet...
+Traffic is now flowing between the services. But that **doesn't** mean it is part of the service mesh yet...
 
 #### Task: Open Kiali and find the sentences application
 
@@ -210,7 +210,7 @@ ___
 
 
 ```console
-kubectl label namespace <YOUR_NAMESPACE> istio-injection=enabled
+kubectl label namespace $STUDENT_NS istio-injection=enabled
 ```
 
 #### Task: Redeploy sentences application
@@ -228,9 +228,9 @@ Observe the number of services and pods running.
 kubectl get pod,svc
 ```
 
-You should see two containers per POD.
+You should see **two** containers per POD in ready state.
 
-```console
+```
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/age-v1-6fccc84ff-kkdgn          2/2     Running   0          4m4s
 pod/name-v1-6644f45d6f-lndkm        2/2     Running   0          4m4s
@@ -250,7 +250,7 @@ kubectl get pods -o=custom-columns=NAME:.metadata.name,CONTAINERS:.spec.containe
 
 This should show an istio proxy sidecar for each service.
 
-```console
+```
 NAME                            CONTAINERS
 age-v1-676bf56bdd-m6bcj         age,istio-proxy
 name-v1-587b56cdf4-6tnhs        name,istio-proxy
@@ -316,7 +316,7 @@ spec:
         mode: age
         version: v1
       annotations:                          # Annotations block
-        sidecar.istio.io/inject: 'false'    # Enable or Disable sidecar injection
+        sidecar.istio.io/inject: 'false'    # True to enable or false to disable
     spec:
       containers:
       - image: praqma/istio-sentences:v1
@@ -340,29 +340,29 @@ Use kubectl to see the number of pods running.
 kubectl get pods
 ```
 
-You should, eventually, see that the `age` service has only **one** pod. E.g. it no 
-longer has a sidecar and is **not** part of the service mesh.
+You should, eventually, see that the `age` service has only **one** pod. 
+E.g. it no longer has a sidecar and is **not** part of the service mesh.
 
-```console
+```
 NAME                            READY   STATUS    RESTARTS   AGE
 age-v1-574bfbb6b4-qb6rv         1/1     Running   0          3m50s
 name-v1-795cf79f69-clrw4        2/2     Running   0          8m41s
 sentences-v1-7cfbb658b6-rthxn   2/2     Running   0          8m41s
 ```
 
-> Using automatic sidecar injection is the recommended way to add services 
-> to the mesh as it is provides a more **pervasive** and homogenous approach. 
-> If you do not want a sidecar for a service, use an **opt out** approach.
+> Automatic sidecar injection provides a **pervasive** and homogenous approach 
+> to ensuring the features istio provides. For example telemetry like metrics 
+> and traces for observability. If you do not want a sidecar for a service, use 
+> an **opt out** approach.
 
 #### Task: Inject sidecar for the `age` service
 
 ___
 
 
-You can manually inject sidecars to services. Even if the deployment is 
-annotated. 
-
-Run the following command to inject a sidecar for the `age` service.
+An easy way to manually inject sidecars to services. Even if the deployment is 
+annotated with false is to run the following command to inject a sidecar for 
+the `age` service.
 
 ```console
 cat 000-setup-introduction/age.yaml |grep -v inject | kubectl apply -f -
@@ -377,12 +377,16 @@ kubectl get pods
 You should now see that the `age` service has **two** pods. E.g. it has 
 a sidecar and is **again** part of the service mesh.
 
-```console
+```
 NAME                            READY   STATUS    RESTARTS   AGE
 age-v1-7b9f67b7dc-qxlxx         2/2     Running   0          76s
 name-v1-795cf79f69-clrw4        2/2     Running   0          16m
 sentences-v1-7cfbb658b6-rthxn   2/2     Running   0          16m
 ```
+
+You didn't modify the static yaml with the above command. You simply took the 
+output of the cat command, piped it into grep which stripped out the annotation 
+and applied the **output** with kubectl.
 
 #### Task: Investigate the different graphs
 
@@ -405,8 +409,8 @@ and versioned app graphs from the drop down at the top.
 
 In this exercise you injected sidecars with automatic sidecar injection, 
 disabled sidecars with an annotation and manually injected a sidecar from 
-the command line.  Manually injecting sidecars or 
-using annotations is not a cohesive approach.
+the command line.  Manually injecting sidecars or using annotations is not 
+a cohesive approach.
 
 You were also introduced to the sentences application and Kiali. There is not 
 enough time in the course to go into much more details around Kiali. But it 
@@ -419,16 +423,12 @@ for a more complete overview.
 
 Main takeaways are:
 
-* You can manually inject sidecars. Manually injecting sidecars can be used as 
-an onboarding process for Istio and to force a sidecar if needed.
-
-* Annotations can be used to control sidecar injection. Both enabling for an 
-onboarding process or disabling if needed.
+* Annotations can be used to control sidecar injection.
 
 * Automatic sidecar injections is recommended. Automatic sidecar injection 
 ensures a more **pervasive** and homogenous approach for traffic management 
 and observability. It is less intrusive as it happens at the pod level and 
-you won't see any changes to the deployment itself.
+you won't see any changes to the yaml itself.
 
 You can find more information about the different methods 
 [here](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/).

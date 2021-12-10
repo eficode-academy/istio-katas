@@ -317,9 +317,9 @@ If you wanted the results for a specific service, say the `age` service, in a
 specific namespace you could change the expression to use `destination_service` 
 and specify the full name with `<NAMESPACE>.svc.cluster.local`. 
 
-For example to get istio requests total for the `age` service in the `user2` 
+For example to get istio requests total for the `age` service in the `student1` 
 namespace you could specify the expression 
-`istio_requests_total{destination_service="age.user2.svc.cluster.local"}`
+`istio_requests_total{destination_service="age.student1.svc.cluster.local"}`
 
 Although not part of our course setup you can also visualize metrics using 
 [Grafana](https://istio.io/latest/docs/ops/integrations/grafana/) to create 

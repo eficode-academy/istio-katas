@@ -1,8 +1,8 @@
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: <YOUR_NAMESPACE>-sentences # Gateways in same namespace must be unique
-  namespace: istio-ingress         # Must be in same namespace as secret
+  name: $STUDENT_NS-sentences       # Gateways in same namespace must be unique
+  namespace: istio-ingress          # Must be in same namespace as secret
 spec:
   selector:
     app: istio-ingressgateway
@@ -13,13 +13,13 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+    - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
   - port:
       number: 443
       name: https
       protocol: HTTPS
     tls:
       mode: MUTUAL
-      credentialName: <YOUR_NAMESPACE>-sentences-tls-secret # Must be in same namespace as ingressgateway
+      credentialName: $STUDENT_NS-sentences-tls-secret # The name of your secret which is in same namespace as ingressgateway
     hosts:
-    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+    - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"

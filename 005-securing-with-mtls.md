@@ -196,10 +196,6 @@ client certificates as the certs generated for mTLS by Istio are used.
 
 A general overview of what you will be doing in the **Step By Step** section.
 
-- Observe the traffic flow with Kiali
-
-- Create an ingress gateway for the sentences application
-
 - Deploy the sentences application services **without** sidecars and see 
 the effect of mTLS modes
 
@@ -208,6 +204,8 @@ effect of mTls modes
 
 - Configure TLS to an upstream service
 
+- Observe the traffic flow with Kiali between different steps
+
 ### Step by Step
 
 Expand the **Tasks** section below to do the exercise.
@@ -215,65 +213,17 @@ Expand the **Tasks** section below to do the exercise.
 <details>
     <summary> Tasks </summary>
 
-#### Task: Modify the gateway and virtual files with your `<YOUR_NAMESPACE>`
-
-___
-
-
-> :bulb: This exercise **requires** that you know the namespace you are 
-> working in. If you do not know you can inspect you namespace with the 
-> following command.
-
-```console
-kubectl config view --output 'jsonpath={..namespace}'; echo
-```
-
-Modify `sentences-ingress-gw.yaml` file with your namespace.
-
-```yaml
-apiVersion: networking.istio.io/v1beta1
-kind: Gateway
-metadata:
-  name: sentences
-spec:
-  selector:
-    app: istio-ingressgateway
-    istio: ingressgateway
-  servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"    # user1, user2, etc
-```
-
-Modify `sentences-ingress-vs.yaml` file with your namespace.
-
-```yaml
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: sentences
-spec:
-  hosts:
-  - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"      # user1, user2, etc
-  gateways:
-  - sentences
-  http:
-  - route:
-    - destination:
-        host: sentences
-
-```
-
 #### Task: Deploy the sentences application and observe sidecars
 
 ___
 
 
+Run a for loop to substitute placeholders for environment variables and deploy 
+the services along with an ingress gateway and virtual service for routing 
+inbound traffic.
+
 ```console
-kubectl apply -f 005-securing-with-mtls/start/
+for file in 003-ingress-traffic/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
 Execute `kubectl get pods` and observe that we have one container per POD, 
@@ -292,10 +242,13 @@ sentences-v1-fc7dbd55-zx8qs   1/1     Running   0          30s
 ___
 
 
-Execute the following to retrieve sentences and thus update Istio metrics.
+The sentence service we deployed in the first step has a type of `ClusterIP` 
+now. In order to reach it we will need to go through the `istio-ingressgateway`. 
+
+Run the `loop-query.sh` script with the option `-g`.
 
 ```console
-./scripts/loop-query.sh -g <YOUR_NAMEPSACE>.sentences.istio.eficode.academy
+./scripts/loop-query.sh -g $STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy
 ```
 
 #### Task: Observe the traffic flow with Kiali
@@ -325,21 +278,28 @@ ___
 Create a file called `peer-authentication.yaml` in 
 `005-securing-with-mtls/start/`.
 
+Paste the following yaml into the file.
+
 ```yaml
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
   name: default
-  namespace: <YOUR_NAMESPACE>
+  namespace: $STUDENT_NS
 spec:
   mtls:
     mode: STRICT
 ```
 
-Apply the peer authentication.
+> :bulb: Note `$STUDENT_NS` in the above yaml. It is important that the 
+> PeerAuthentication CRD is scoped to **your individual** namespace. There can 
+> only be one mesh wide and one namespace wide policy at a time.
+
+Substitute the placeholder with the value of the environment variable and apply 
+the output with kubectl.
 
 ```console
-kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
+envsubst < 005-securing-with-mtls/start/peer-authentication.yaml | kubectl apply -f -
 ```
 
 #### Task: Observe the traffic flow with Kiali
@@ -370,7 +330,8 @@ validating requests made *towards* a workload with an Istio sidecar.
 ___
 
 
-Inject a sidecar for the **age** service.
+Lets inject Istio sidecar into the **age** service by removing the 
+`sidecar.istio.io/inject: 'false'` annotation from the deployment.
 
 ```console
 cat 005-securing-with-mtls/start/age.yaml |grep -v inject | kubectl apply -f -
@@ -379,10 +340,11 @@ cat 005-securing-with-mtls/start/age.yaml |grep -v inject | kubectl apply -f -
 Wait for the pod to be redeployed. 
 
 ```console
-kubectl get pods
+watch kubectl get pods
 ```
 
-You should see it being terminated and new instantiated with a sidecar.
+You should see it being terminated and new instantiated. Once it has been 
+redeployed hit `ctrl+c` to exit the watch.
 
 ```console
 NAME                          READY   STATUS    RESTARTS   AGE
@@ -424,18 +386,21 @@ apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
   name: default
-  namespace: <YOUR_NAMESPACE>
+  namespace: $STUDENT_NS
 spec:
   mtls:
-    mode: PERMISSIVE
+    mode: PERMISSIVE    # <---- Change mode.
 ```
 
 > While migrating an application to full mTLS, it may be useful to start with 
 > a `PERMISSIVE` mTLS mode which allow a mix of mTLS and un-encrypted and 
 > un-authenticated traffic.
 
+Substitute the placeholder with the value of the environment variable and apply 
+the output with kubectl.
+
 ```console
-kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
+envsubst < 005-securing-with-mtls/start/peer-authentication.yaml | kubectl apply -f -
 ```
 
 #### Task: Observe the traffic flow with Kiali
@@ -462,19 +427,21 @@ sidecar.
 ___
 
 
-Lets inject Istio sidecars into all sentences services:
+Lets inject Istio sidecars into all sentences services by running a for loop 
+removing the `sidecar.istio.io/inject: 'false'` annotation from all deployments.
 
 ```console
-cat 005-securing-with-mtls/start/*.yaml |grep -v inject | kubectl apply -f -
+for file in 005-securing-with-mtls/start/*.yaml; do grep -v inject < $file | kubectl apply -f -; done
 ```
 
 Wait for the pods to be redeployed.
 
 ```console
-kubectl get pods
+watch kubectl get pods
 ```
 
-You should see them being terminated and new instantiated.
+You should see them being terminated and new instantiated. Once the have all 
+been redeployed hit `ctrl+c` to exit the watch.
 
 ```console
 NAME                            READY   STATUS        RESTARTS   AGE
@@ -502,14 +469,17 @@ apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
   name: default
-  namespace: <YOUR_NAMESPACE>
+  namespace: $STUDENT_NS
 spec:
   mtls:
-    mode: STRICT
+    mode: STRICT    # <-- Change mode.
 ```
 
+Substitute the placeholder with the value of the environment variable and apply 
+the output with kubectl.
+
 ```console
-kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
+envsubst < 005-securing-with-mtls/start/peer-authentication.yaml | kubectl apply -f -
 ```
 
 #### Task: Observe the traffic flow with Kiali
@@ -546,14 +516,17 @@ apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
   name: default
-  namespace: <YOUR_NAMESPACE>
+  namespace: $STUDENT_NS
 spec:
   mtls:
     mode: PERMISSIVE
 ```
 
+Substitute the placeholder with the value of the environment variable and apply 
+the output with kubectl.
+
 ```console
-kubectl apply -f 005-securing-with-mtls/start/peer-authentication.yaml
+envsubst < 005-securing-with-mtls/start/peer-authentication.yaml | kubectl apply -f -
 ```
 
 Note, that a DestinationRule *will not* take effect until a route rule
@@ -692,7 +665,7 @@ A general overview of what you will be doing in the **Step By Step** section.
 
 - Modify the virtual service to point to the gateway in `istio-ingress` namespace
 
-- Test the traffic using TLS and mTLS
+- Test the traffic using a script in both TLS and mTLS modes
 
 ### Step by Step
 
@@ -706,19 +679,19 @@ Expand the **Tasks** section below to do the exercise.
 ___
 
 
-First, ensure that the gateway and virtual service for the `sentences` 
+You must have the sentences application deployed with sidecars. This should 
+already be the case, unless you skipped some of the first exercise.
+
+```console
+for file in 005-securing-with-mtls/start/*.yaml; do grep -v inject < $file | kubectl apply -f -; done
+```
+
+Ensure that the gateway and virtual service for the `sentences` 
 service from the first exercise is removed.
 
 ```console
 kubectl delete -f 005-securing-with-mtls/start/sentences-ingress-gw.yaml
 kubectl delete -f 005-securing-with-mtls/start/sentences-ingress-vs.yaml
-```
-
-We must have the sentences application deployed with sidecars. This should 
-already be the case, unless you skipped some of the first exercise.
-
-```console
-cat 005-securing-with-mtls/start/*.yaml |grep -v inject | kubectl apply -f -
 ```
 
 #### Task: Generate needed certificate authority(CA) and certificates
@@ -744,7 +717,7 @@ It should be pre-pended with your namespace and look something like below.
 
 ```console
 NAME                              TYPE      DATA   AGE
-user2-sentences-tls-secret        Opaque    3      112m
+student1-sentences-tls-secret        Opaque    3      112m
 ```
 > :bulb: DO NOT touch any other secrets in the `istio-ingress` namespace!
 
@@ -752,14 +725,6 @@ user2-sentences-tls-secret        Opaque    3      112m
 
 ___
 
-
-> :bulb: This exercise **requires** that you know the namespace you are 
-> working in. If you do not know you can inspect your namespace with the 
-> following command.
-
-```console
-kubectl config view --output 'jsonpath={..namespace}'; echo
-```
 
 Modify the file `005-securing-with-mtls/start/sentences-ingress-gw.yaml` so 
 that it will be namespaced to the `istio-ingress` namespace and configure it 
@@ -769,22 +734,22 @@ for `MUTUAL` TLS on port 443.
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: <YOUR_NAMESPACE>-sentences # <----- Use your namespace to make it unique
-  namespace: istio-ingress         # <----- Must be in the istio-ingress namespace
+  name: $STUDENT_NS-sentences                           # <----- Use your namespace to make it unique
+  namespace: istio-ingress                              # <----- Must be in the istio-ingress namespace
 spec:
   selector:
     app: istio-ingressgateway
     istio: ingressgateway
   servers:
-  - port:                         # <----- Add the port block with the port and protocol
+  - port:                                               # <----- Add the port block with the port and protocol
       number: 443
       name: https
       protocol: HTTPS
-    tls:                          # <----- Add the tls block
-      mode: MUTUAL                # <----- TLS mode
-      credentialName: <YOUR_NAMESPACE>-sentences-tls-secret # <----- Add the kubernetes secret
+    tls:                                                # <----- Add the tls block
+      mode: MUTUAL                                      # <----- TLS mode
+      credentialName: $STUDENT_NS-sentences-tls-secret  # <----- Add the kubernetes secret
     hosts:
-    - "<YOUR_NAMESPACE>.sentences.istio.eficode.academy"
+    - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
 ```
 
 #### Task: Modify the virtual service to point to the gateway in `istio-ingress` namespace
@@ -804,9 +769,9 @@ metadata:
   name: sentences
 spec:
   hosts:
-  - "<YOUR_USERNAME>.sentences.istio.eficode.academy"
+  - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
   gateways:
-  - istio-ingress/<YOUR_USERNAME>-sentences  # <----- Use the gateway in the istio-ingress namespace
+  - istio-ingress/$TRAINING_NAME-sentences  # <----- Use the gateway in the istio-ingress namespace
   http:
   - route:
     - destination:
@@ -819,11 +784,11 @@ ___
 
 
 Once you have done the modifications to the gateway and virtual service, 
-apply the changes.
+substitute the placeholders with environment variable(s) and apply with kubectl.
 
 ```console
-kubectl apply -f 005-securing-with-mtls/start/sentences-ingress-gw.yaml
-kubectl apply -f 005-securing-with-mtls/start/sentences-ingress-vs.yaml
+envsubst < 005-securing-with-mtls/start/sentences-ingress-gw.yaml | kubectl apply -f -
+envsubst < 005-securing-with-mtls/start/sentences-ingress-vs.yaml | kubectl apply -f -
 ```
 
 #### Task: Run `loop-query-mtls.sh https+mtls`
@@ -847,7 +812,7 @@ be found in your workspace as the below has been edited for simplicity.
 ```console
 -------------------------------------
 Using ingress gateway with label: app=istio-ingressgateway
-Using URL: https://user2.sentences.istio.eficode.academy:443/
+Using URL: https://student1.sentences.istio.eficode.academy:443/
 Using curl options: '--resolve sentences.istio.eficode.academy:443 --cacert eficode.academy.crt --cert client.crt --key client.key'
 -------------------------------------
 ```
@@ -868,8 +833,8 @@ simple TLS only requires server side authentication.
 ```console
 -------------------------------------
 Using ingress gateway with label: app=istio-ingressgateway
-Using URL: https://user2.sentences.istio.eficode.academy:443/
-Using curl options: '--resolve user2.sentences.istio.eficode.academy:443 --cacert eficode.academy.crt'
+Using URL: https://student1.sentences.istio.eficode.academy:443/
+Using curl options: '--resolve student1.sentences.istio.eficode.academy:443 --cacert eficode.academy.crt'
 ```
 
 If you change the TLS mode to `SIMPLE` then plain `https` will work. You can 
@@ -903,6 +868,8 @@ mesh if **not** namespaced
 consider namespaces in relation to kubernetes secrets and gateway controllers.
 
 ## Cleanup
+
+#Todo: Check this as we now are dynamically naming gatways based of env vars -> Use envsubst?
 
 ```console
 kubectl delete -f 005-securing-with-mtls/start/
