@@ -335,9 +335,11 @@ spec:
 kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 ```
 
-Now try using a different header with the value `use-v2`.
+Now try using a different header with the value `use-v2`. Modify the virtual 
+service to reflect the header you chose and pass the header to the 
+loop-query.sh script.
 
-> :bulb: You can call it anything you want. For example `x-version` is used 
+> You can call it anything you want. For example `x-version` is used 
 > below but it really doesn't matter.
 
 ```console
