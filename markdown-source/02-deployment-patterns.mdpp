@@ -877,7 +877,7 @@ ___
 You should **only** see responses from the `name-v2` workload. It should look 
 something like the following.
 
-```console
+```
 Porthos (v2) is 82 years
 Athos (v2) is 42 years
 Athos (v2) is 85 years
@@ -896,16 +896,22 @@ Athos (v2) is 75 years
 
 ___
 
+Export the pod name to an environment variable.
 
 ```console
 export NAME_V3_POD=$(kubectl get pod -l app=sentences,version=v3 -o jsonpath={.items..metadata.name})
-kubectl logs "$NAME_V3_POD" --tail=20 --follow
 ```
+
+Get the logs with kubectl.
+
+```console
+kubectl logs "$NAME_V3_POD" --tail=20 --follow
+``` 
 
 You should see GET requests hitting the `name-v3` workload. It should look 
 something like this.
 
-```console
+```
 WARNING:root:Using name 'd'Artagnan (v3)'
 WARNING:root:Operation 'name' took 0.171ms
 127.0.0.1 - - [01/Jul/2021 14:18:13] "GET / HTTP/1.1" 200 -
@@ -935,7 +941,7 @@ traffic being shown.
 But you know that the client is **not** getting 
 responses from `v3` from the terminals output.
 
-```console
+```
 Porthos (v2) is 82 years
 Athos (v2) is 42 years
 Athos (v2) is 85 years
