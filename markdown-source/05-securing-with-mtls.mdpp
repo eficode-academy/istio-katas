@@ -339,13 +339,13 @@ cat 05-securing-with-mtls/start/age.yaml |grep -v inject | kubectl apply -f -
 Wait for the pod to be redeployed. 
 
 ```console
-watch kubectl get pods
+kubectl get pods
 ```
 
-You should see it being terminated and new instantiated. Once it has been 
-redeployed hit `ctrl+c` to exit the watch.
+You should see it being terminated and new instantiated. Wait until all services 
+are ready.
 
-```console
+```
 NAME                          READY   STATUS    RESTARTS   AGE
 age-v1-698cf6fd9d-kgvt2       2/2     Running   0          81s
 name-v1-6f44875ccd-bsnrm      1/1     Running   0          57m
@@ -436,13 +436,13 @@ for file in 05-securing-with-mtls/start/*.yaml; do grep -v inject < $file | kube
 Wait for the pods to be redeployed.
 
 ```console
-watch kubectl get pods
+kubectl get pods
 ```
 
-You should see them being terminated and new instantiated. Once the have all 
-been redeployed hit `ctrl+c` to exit the watch.
+You should see them being terminated and new instantiated. Wait until all 
+services are running.
 
-```console
+```
 NAME                            READY   STATUS        RESTARTS   AGE
 age-v1-698cf6fd9d-kgvt2         2/2     Running       0          35m
 name-v1-6f44875ccd-bsnrm        1/1     Terminating   0          91m
@@ -587,7 +587,7 @@ spec:
 
 Apply the virtual service and destination rule with the mTLS settings.
 
-```Console
+```console
 kubectl apply -f 05-securing-with-mtls/start/name-vs-dr.yaml
 ```
 
@@ -714,7 +714,7 @@ kubectl get secrets -n istio-ingress
 
 It should be pre-pended with your namespace and look something like below.
 
-```console
+```
 NAME                              TYPE      DATA   AGE
 student1-sentences-tls-secret        Opaque    3      112m
 ```
@@ -808,7 +808,7 @@ authority **and** the client cert, which is required for mTLS, are specified.
 It will look *something* like below but with the CA and client certs that can 
 be found in your workspace as the below has been edited for simplicity.
 
-```console
+```
 -------------------------------------
 Using ingress gateway with label: app=istio-ingressgateway
 Using URL: https://student1.sentences.istio.eficode.academy:443/
@@ -829,7 +829,7 @@ You should see an OpenSSL error. Note the curl options printed when the
 script starts. **Only** the **certificate authority** is specified as 
 simple TLS only requires server side authentication.
 
-```console
+```
 -------------------------------------
 Using ingress gateway with label: app=istio-ingressgateway
 Using URL: https://student1.sentences.istio.eficode.academy:443/
