@@ -75,7 +75,7 @@ across the services.
 </details>
 
 > :bulb: If you have not completed exercise 
-> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
 
 ## Exercise
@@ -117,8 +117,8 @@ ___
 
 
 ```console
-kubectl apply -f 008-distributed-tracing/start/
-kubectl apply -f 008-distributed-tracing/start/sentences-v2/
+kubectl apply -f 08-distributed-tracing/start/
+kubectl apply -f 08-distributed-tracing/start/sentences-v2/
 ```
 
 #### Task: Run the script `scripts/loop-query.sh`
@@ -234,7 +234,7 @@ As an example you will create an ingress gateway and virtual service to route
 external traffic through it to the sentences service.
 
 First create a file called `sentences-ingress-gw.yaml` in the directory 
-`008-distributed-tracing/start/`.
+`08-distributed-tracing/start/`.
 
 > :bulb: Edit the hosts field with **your** namespace.
 
@@ -257,7 +257,7 @@ spec:
 ```
 
 Then create a file `sentences-ingress-vs.yaml` in the directory 
-`008-distributed-tracing/start/`.
+`08-distributed-tracing/start/`.
 
 > :bulb: Again edit the hosts field with **your** namespace.
 
@@ -280,8 +280,8 @@ spec:
 Substitute the placeholders with environment variable(s) and apply with kubectl.
 
 ```console
-envsubst < 008-distributed-tracing/start/sentences-ingress-gw.yaml | kubectl apply -f -
-envsubst < 008-distributed-tracing/start/sentences-ingress-vs.yaml | kubectl apply -f -
+envsubst < 08-distributed-tracing/start/sentences-ingress-gw.yaml | kubectl apply -f -
+envsubst < 08-distributed-tracing/start/sentences-ingress-vs.yaml | kubectl apply -f -
 ```
 
 #### Task: Route traffic through the ingress gateway
@@ -340,6 +340,6 @@ B3 trace headers.
 ## Cleanup
 
 ```console
-kubectl delete -f 008-distributed-tracing/start/sentences-v2/
-kubectl delete -f 008-distributed-tracing/start/
+kubectl delete -f 08-distributed-tracing/start/sentences-v2/
+kubectl delete -f 08-distributed-tracing/start/
 ```

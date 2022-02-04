@@ -26,7 +26,7 @@ to service access. The Istio CRD for this is the
 [AuthorizationPolicy](https://istio.io/latest/docs/reference/config/security/authorization-policy/).
 
 > :bulb: If you have not completed exercise 
-> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
 
 ## Exercise
@@ -62,7 +62,7 @@ ___
 Deploy the sentences application:
 
 ```console
-kubectl apply -f 006-service-access-control/start/
+kubectl apply -f 06-service-access-control/start/
 ```
 
 and test access:
@@ -117,7 +117,7 @@ ___
 First pull all the services down.
 
 ```console
-kubectl delete -f 006-service-access-control/start/
+kubectl delete -f 06-service-access-control/start/
 ```
 
 #### Task: Restrict access to the name service with a kubernetes NetworkPolicy
@@ -127,7 +127,7 @@ ___
 
 To restrict inter-service access to only what is necessary create a file 
 called `name-network-policy.yaml` in the directory 
-`006-service-access-control/start/`.
+`06-service-access-control/start/`.
 
 Paste in the following yaml.
 
@@ -172,7 +172,7 @@ along with the policy by substituting the placeholders with environment variable
 and applying with kubectl.
 
 ```console
-for file in 006-service-access-control/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
+for file in 06-service-access-control/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
 Once all services are running test that the sentences application is running properly.
@@ -358,13 +358,13 @@ student1, student2, etc.
 Examine the substitution of the placeholder with the environment variable. 
 
 ```console
-cat 006-service-access-control/examples/authz-policy.yaml | envsubst
+cat 06-service-access-control/examples/authz-policy.yaml | envsubst
 ```
 
 And apply the policy:
 
 ```console
-cat 006-service-access-control/examples/authz-policy.yaml | envsubst | kubectl apply -f -
+cat 06-service-access-control/examples/authz-policy.yaml | envsubst | kubectl apply -f -
 ```
 
 If we retry the curl commands from previously from both the `age` and
@@ -398,6 +398,6 @@ given service.
 ## Cleanup
 
 ```console
-kubectl delete -f 006-service-access-control/start/sentences.yaml
-cat 006-service-access-control/examples/authz-policy.yaml | envsubst | kubectl delete -f -
+kubectl delete -f 06-service-access-control/start/sentences.yaml
+cat 06-service-access-control/examples/authz-policy.yaml | envsubst | kubectl delete -f -
 ```

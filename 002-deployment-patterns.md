@@ -17,10 +17,10 @@ HTTPRoute. These fields and their combinations can be used to enable several
 useful deployment patterns like blue/green deployments, canary deployments and 
 shadow deployments.
 
-These exercises build on the [Basic traffic routing](001-basic-traffic-routing.md) exercises.
+These exercises build on the [Basic traffic routing](01-basic-traffic-routing.md) exercises.
 
 > :bulb: If you have not completed exercise 
-> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
 
 ## Exercise: Blue/Green Deployment 
@@ -121,9 +121,9 @@ ___
 
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/
-kubectl apply -f 002-deployment-patterns/start/name-v1/
-kubectl apply -f 002-deployment-patterns/start/name-v2/
+kubectl apply -f 02-deployment-patterns/start/
+kubectl apply -f 02-deployment-patterns/start/name-v1/
+kubectl apply -f 02-deployment-patterns/start/name-v2/
 ```
 
 This will deploy two versions of the **name** service along with a destination 
@@ -195,7 +195,7 @@ spec:
 ```
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
+kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
 ```
 
 #### Task: Run loop-query.sh with the `x-test` header
@@ -279,7 +279,7 @@ spec:
 ```
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
+kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
 ```
 
 #### Task: Observe the traffic flow with Kiali
@@ -332,7 +332,7 @@ spec:
 ```
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
+kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
 ```
 
 Now try using a different header with the value `use-v2`. Modify the virtual 
@@ -427,7 +427,7 @@ A general overview of what you will be doing in the **Step By Step** section.
 
 - Observe the traffic flow with Kiali
 
-- Incorporate version `v3` of the name service in the destination rule and 
+- incorporate version `v3` of the name service in the destination rule and 
 the virtual service for header based routing
 
 > The use case is that new version `v3` will be the new blue/green deployment.
@@ -453,10 +453,10 @@ ___
 
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/
-kubectl apply -f 002-deployment-patterns/start/name-v1/
-kubectl apply -f 002-deployment-patterns/start/name-v2/
-kubectl apply -f 002-deployment-patterns/start/name-v3/
+kubectl apply -f 02-deployment-patterns/start/
+kubectl apply -f 02-deployment-patterns/start/name-v1/
+kubectl apply -f 02-deployment-patterns/start/name-v2/
+kubectl apply -f 02-deployment-patterns/start/name-v3/
 ```
 
 #### Task: Add `name-v3` in `name-dr.yaml`
@@ -471,7 +471,7 @@ ___
 ```
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-dr.yaml
+kubectl apply -f 02-deployment-patterns/start/name-dr.yaml
 ```
 
 #### Task: Adjust the `match` field in `name-vs.yaml` to `use-v3`
@@ -514,7 +514,7 @@ spec:
 > match is true. The other two routes are evaluated top down.
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
+kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
 ```
 
 #### Task: Run `scripts/loop-query.sh`
@@ -582,7 +582,7 @@ spec:
 > be under the same route block.
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
+kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
 ```
 
 #### Task: Observe the traffic flow with Kiali
@@ -685,8 +685,8 @@ spec:
 ```
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-dr.yaml
-kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
+kubectl apply -f 02-deployment-patterns/start/name-dr.yaml
+kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
 
 ```
 
@@ -697,7 +697,7 @@ kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
 Finally, delete the `name-v1` workload. 
 
 ```console
-kubectl delete -f 002-deployment-patterns/start/name-v1/
+kubectl delete -f 02-deployment-patterns/start/name-v1/
 ```
 
 #### Task: Observe the traffic flow with Kiali
@@ -861,7 +861,7 @@ ___
 
 
 ```console
-kubectl apply -f 002-deployment-patterns/start/name-vs.yaml
+kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
 ```
 
 #### Task: Run `scripts/loop-query.sh`
@@ -983,9 +983,9 @@ service to work with it
 # Cleanup
 
 ```console
-kubectl delete -f 002-deployment-patterns/start/name-v3
-kubectl delete -f 002-deployment-patterns/start/name-v2
-kubectl delete -f 002-deployment-patterns/start/name-v1
-kubectl delete -f 002-deployment-patterns/start/
+kubectl delete -f 02-deployment-patterns/start/name-v3
+kubectl delete -f 02-deployment-patterns/start/name-v2
+kubectl delete -f 02-deployment-patterns/start/name-v1
+kubectl delete -f 02-deployment-patterns/start/
 
 ```

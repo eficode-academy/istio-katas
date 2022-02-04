@@ -55,7 +55,7 @@ This is the IngressGateway which we configure with a Gateway CRD.
 </details>
 
 > :bulb: If you have not completed exercise 
-> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
 
 ## Exercise: Ingress Traffic With Gateway
@@ -177,7 +177,7 @@ ___
 Deploy the sentences application services.
 
 ```console
-kubectl apply -f 003-ingress-traffic/start/
+kubectl apply -f 03-ingress-traffic/start/
 ```
 
 #### Task: Create an entry point for the sentences service
@@ -186,7 +186,7 @@ ___
 
 
 Create a file called `sentences-ingress-gw.yaml` in 
-`003-ingress-traffic/start` directory.
+`03-ingress-traffic/start` directory.
 
 It should look like the below yaml.
 
@@ -211,7 +211,7 @@ spec:
 Substitute the environment variable(s) and apply the output with kubectl.
 
 ```console
-envsubst < 003-ingress-traffic/start/sentences-ingress-gw.yaml | kubectl apply -f -
+envsubst < 03-ingress-traffic/start/sentences-ingress-gw.yaml | kubectl apply -f -
 ```
 
 #### Task: Create a route from the gateway to the sentences service
@@ -220,7 +220,7 @@ ___
 
 
 Create a file called `sentences-ingress-vs.yaml` in 
-`003-ingress-traffic/start` directory.
+`03-ingress-traffic/start` directory.
 
 It should look like the below yaml.
 
@@ -247,12 +247,12 @@ to the `sentences` service (the two last lines specifying the Kubernetes
 Substitute the environment variable(s) and apply the output with kubectl.
 
 ```console
-envsubst < 003-ingress-traffic/start/sentences-ingress-vs.yaml | kubectl apply -f -
+envsubst < 03-ingress-traffic/start/sentences-ingress-vs.yaml | kubectl apply -f -
 ```
 
 > :bulb: If want or need to do an environment substitution on multiple files 
 > you can use a for loop to do so.
-> `for file in 003-ingress-traffic/start/*.yaml; do envsubst < $file | kubectl apply -f -; done`
+> `for file in 03-ingress-traffic/start/*.yaml; do envsubst < $file | kubectl apply -f -; done`
 
 #### Task: Run the loop query script with the `hosts` entry
 
@@ -314,7 +314,7 @@ spec:
 Substitute the environment variable(s) and apply the output with kubectl.
 
 ```console
-envsubst < 003-ingress-traffic/start/sentences-ingress-vs.yaml | kubectl apply -f -
+envsubst < 03-ingress-traffic/start/sentences-ingress-vs.yaml | kubectl apply -f -
 ```
 
 You should see that the response in the terminal are now taking 
@@ -362,5 +362,5 @@ and your front end service
 # Cleanup
 
 ```console
-kubectl delete -f 003-ingress-traffic/start/
+kubectl delete -f 03-ingress-traffic/start/
 ```

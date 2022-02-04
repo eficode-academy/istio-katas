@@ -39,7 +39,7 @@ See the [documentation](https://istio.io/latest/docs/concepts/observability/#met
 for more details.
 
 > :bulb: If you have not completed exercise 
-> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
 
 ## Exercise
@@ -81,7 +81,7 @@ ___
 
 
 ```console
-kubectl apply -f 007-istio-metrics-tour/start/
+kubectl apply -f 07-istio-metrics-tour/start/
 ```
 
 Execute `kubectl get pods` and observe that we have one container per POD.
@@ -156,7 +156,7 @@ ___
 The deployed version of the sentences application have Istio sidecar injection 
 **disabled**. This is done through annotations.
 
-You can investigate the yaml file `007-istio-metrics-tour/start/sentences.yaml` 
+You can investigate the yaml file `07-istio-metrics-tour/start/sentences.yaml` 
 and observe the use of the `sidecar.istio.io/inject` annotation:
 
 ```yaml
@@ -175,9 +175,9 @@ Re-deploy the sentences application without the annotation that disables
 sidecar injection.
 
 ```console
-cat 007-istio-metrics-tour/start/sentences.yaml |grep -v inject | kubectl apply -f -
-cat 007-istio-metrics-tour/start/name.yaml |grep -v inject | kubectl apply -f -
-cat 007-istio-metrics-tour/start/age.yaml |grep -v inject | kubectl apply -f -
+cat 07-istio-metrics-tour/start/sentences.yaml |grep -v inject | kubectl apply -f -
+cat 07-istio-metrics-tour/start/name.yaml |grep -v inject | kubectl apply -f -
+cat 07-istio-metrics-tour/start/age.yaml |grep -v inject | kubectl apply -f -
 ```
 
 If we run `kubectl get pods` now, we will see that we have two containers per
@@ -217,7 +217,7 @@ annotation `prometheus.istio.io/merge-metrics`.
 Re-deploy the sentences application with this annotation removed as well.
 
 ```console
-cat 007-istio-metrics-tour/start/sentences.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
+cat 07-istio-metrics-tour/start/sentences.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
 ```
 
 > :bulb: It may take a few seconds for the old PODs to terminate.
@@ -353,5 +353,5 @@ For an overview of the standard Istio **service-level** metrics see this
 ## Cleanup
 
 ```console
-kubectl delete -f 007-istio-metrics-tour/start/sentences.yaml
+kubectl delete -f 07-istio-metrics-tour/start/sentences.yaml
 ```

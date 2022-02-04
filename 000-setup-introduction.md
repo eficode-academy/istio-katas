@@ -124,7 +124,7 @@ ___
 Open a terminal in the root of the git repository (istio-katas) and use `kubectl` to deploy `v1` of the application.
 
 ```console
-kubectl apply -f 000-setup-introduction/
+kubectl apply -f 00-setup-introduction/
 ```
 
 #### Task: Observe the number of services and pods running
@@ -201,7 +201,7 @@ ___
 
 
 ```console
-kubectl delete -f 000-setup-introduction/
+kubectl delete -f 00-setup-introduction/
 ```
 
 #### Task: Enable automatic sidecar injection
@@ -219,7 +219,7 @@ ___
 
 
 ```console
-kubectl apply -f 000-setup-introduction/
+kubectl apply -f 00-setup-introduction/
 ```
 
 Observe the number of services and pods running.
@@ -290,7 +290,7 @@ Now you can see there are sidecars and the traffic is part of the mesh.
 ___
 
 
-Edit the file `000-setup-introduction/age.yaml` and add the annotation 
+Edit the file `00-setup-introduction/age.yaml` and add the annotation 
 `sidecar.istio.io/inject: 'false'`.
 
 ```yaml
@@ -331,7 +331,7 @@ spec:
 Apply the changes to the `age.yaml` file.
 
 ```console
-kubectl apply -f 000-setup-introduction/age.yaml
+kubectl apply -f 00-setup-introduction/age.yaml
 ```
 
 Use kubectl to see the number of pods running.
@@ -365,7 +365,7 @@ annotated with false is to run the following command to inject a sidecar for
 the `age` service.
 
 ```console
-cat 000-setup-introduction/age.yaml |grep -v inject | kubectl apply -f -
+cat 00-setup-introduction/age.yaml |grep -v inject | kubectl apply -f -
 ```
 
 Use kubectl to see the number of pods running.
@@ -439,5 +439,5 @@ And you can find more details about sidecar configuration
 # Cleanup
 
 ```console
-kubectl delete -f 000-setup-introduction/
+kubectl delete -f 00-setup-introduction/
 ```

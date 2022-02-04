@@ -24,10 +24,10 @@ First you will route traffic **directly** to an external service from an interna
 service with a service entry. Then you will route traffic from an internal 
 service through a common egress gateway. 
 
-This exercise builds on the [Getting Traffic Into The mesh](003-ingress-traffic.md) exercises.
+This exercise builds on the [Getting Traffic Into The mesh](03-ingress-traffic.md) exercises.
 
 > :bulb: If you have not completed exercise 
-> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
 
 ## Exercise: Egress Traffic
@@ -256,7 +256,7 @@ Deploy `v2` of the sentences application services which has a new api service
 along with the ingress gateway entry point and virtual service.
 
 ```console
-for file in 004-egress-traffic/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
+for file in 04-egress-traffic/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
 Make sure everything is in ready state.
@@ -341,7 +341,7 @@ ___
 
 
 Create a service entry called `api-egress-se.yaml` in 
-`004-egress-traffic/start/`.
+`04-egress-traffic/start/`.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -366,7 +366,7 @@ spec:
 Apply the service entry.
 
 ```console
-kubectl apply -f 004-egress-traffic/start/api-egress-se.yaml
+kubectl apply -f 04-egress-traffic/start/api-egress-se.yaml
 ```
 
 #### Task: Observe the responses for the external service
@@ -415,7 +415,7 @@ traffic to httpbin with a timeout of `0.5s`.
 > The api service asks httpbin.org for a response delay of 1 second.
 
 Create a file called `api-egress-vs.yaml` in 
-`004-egress-traffic/start/`.
+`04-egress-traffic/start/`.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -438,7 +438,7 @@ spec:
 Apply the virtual service.
 
 ```console
-kubectl apply -f 004-egress-traffic/start/api-egress-vs.yaml
+kubectl apply -f 04-egress-traffic/start/api-egress-vs.yaml
 ```
 
 #### Task: Observe the responses for the external service
@@ -498,7 +498,7 @@ spec:
 Apply the changes.
 
 ```console
-kubectl apply -f 004-egress-traffic/start/api-egress-vs.yaml
+kubectl apply -f 04-egress-traffic/start/api-egress-vs.yaml
 ```
 
 #### Task: Observe the responses for the external service
@@ -563,5 +563,5 @@ service.
 # Cleanup
 
 ```console
-kubectl delete -f 004-egress-traffic/start/
+kubectl delete -f 04-egress-traffic/start/
 ```

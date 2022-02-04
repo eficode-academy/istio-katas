@@ -23,7 +23,7 @@ the desired workloads.
 These are the [VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service/) and the [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/) CRD's.
 
 > :bulb: If you have not completed exercise 
-> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
 
 ### VirtualService
@@ -119,7 +119,7 @@ spec:
 > rules are **evaluated**, so they apply to the traffic’s “real” destination.
 
 > :bulb: If you have not completed exercise 
-> [000-setup-introduction](000-setup-introduction.md) you **need** to label 
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
 
 ## Exercise: Routing To Specific Version
@@ -160,9 +160,9 @@ ___
 
 
 ```console
-kubectl apply -f 001-basic-traffic-routing/start/
-kubectl apply -f 001-basic-traffic-routing/start/name-v1
-kubectl apply -f 001-basic-traffic-routing/start/name-v2
+kubectl apply -f 01-basic-traffic-routing/start/
+kubectl apply -f 01-basic-traffic-routing/start/name-v1
+kubectl apply -f 01-basic-traffic-routing/start/name-v2
 ```
 
 #### Task: Run loop-query.sh
@@ -203,7 +203,7 @@ ___
 
 
 Create a destination rule called `name-dr.yaml` in 
-`001-basic-traffic-routing/start/` and apply it.
+`01-basic-traffic-routing/start/` and apply it.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -226,7 +226,7 @@ The above destination rule says, when combined with a virtual service, **what**
 I want to do is send traffic to a workload **labeled** with either `v1` or `v2`.
 
 ```console
-kubectl apply -f 001-basic-traffic-routing/start/name-dr.yaml
+kubectl apply -f 01-basic-traffic-routing/start/name-dr.yaml
 ```
 Applying the destination rule has no effect at this point because there is no 
 virtual service including the destination rule.
@@ -240,7 +240,7 @@ ___
 
 
 Create a virtual service called `name-vs.yaml` in 
-`001-basic-traffic-routing/start/` and apply it.
+`01-basic-traffic-routing/start/` and apply it.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -268,7 +268,7 @@ spec:
 > **name** service is in the namespace `student1`?
 
 ```console
-kubectl apply -f 001-basic-traffic-routing/start/name-vs.yaml
+kubectl apply -f 01-basic-traffic-routing/start/name-vs.yaml
 ```
 
 Go to **Graph** menu item in Kiali and select the **Versioned app graph** 
@@ -316,7 +316,7 @@ spec:
 ```
 
 ```console
-kubectl apply -f 001-basic-traffic-routing/start/name-vs.yaml
+kubectl apply -f 01-basic-traffic-routing/start/name-vs.yaml
 ```
 
 #### Task: Use the versioned app graph to observe route precedence in Kiali
@@ -337,11 +337,12 @@ Reorder the destination rules so that service `name-v1` will be evaluated
 first and apply the changes.
 
 ```console
-kubectl apply -f 001-basic-traffic-routing/start/name-vs.yaml
+kubectl apply -f 01-basic-traffic-routing/start/name-vs.yaml
 ```
 
 Go to **Graph** menu item in Kiali and select the **Versioned app graph** 
-from the drop down menu and observe the traffic flow. Traffic should once more be routed to the `name-v1` service.
+from the drop down menu and observe the traffic flow.Traffic should once more  
+be routed to the `name-v1` service.
 
 ![Virtual service and destination rule](images/basic-route-vs.png)
 
@@ -385,7 +386,7 @@ all traffic to v1, different load balancing modes for v1 and v2, etc.
 # Cleanup
 
 ```console
-kubectl delete -f 001-basic-traffic-routing/start/name-v2
-kubectl delete -f 001-basic-traffic-routing/start/name-v1
-kubectl delete -f 001-basic-traffic-routing/start/
+kubectl delete -f 01-basic-traffic-routing/start/name-v2
+kubectl delete -f 01-basic-traffic-routing/start/name-v1
+kubectl delete -f 01-basic-traffic-routing/start/
 ```

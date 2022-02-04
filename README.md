@@ -6,15 +6,15 @@ Exercises for the [Eficode Academy](https://www.eficode.com/academy) Istio cours
 
 The natural order would be:
 
-- [Introducing the setup](000-setup-introduction.md)
-- [Basic traffic routing](001-basic-traffic-routing.md)
-- [Deployment patterns](002-deployment-patterns.md)
-- [Traffic into the mesh](003-ingress-traffic.md)
-- [Traffic out of the mesh](004-egress-traffic.md)
-- [Securing with mutual TLS](005-securing-with-mtls.md)
-- [Service access control](006-service-access-control.md)
-- [A tour of Istio's metrics](007-istio-metrics-tour.md)
-- [Istio and distributed tracing](008-distributed-tracing.md)
+- [Introducing the setup](00-setup-introduction.md)
+- [Basic traffic routing](01-basic-traffic-routing.md)
+- [Deployment patterns](02-deployment-patterns.md)
+- [Traffic into the mesh](03-ingress-traffic.md)
+- [Traffic out of the mesh](04-egress-traffic.md)
+- [Securing with mutual TLS](05-securing-with-mtls.md)
+- [Service access control](06-service-access-control.md)
+- [A tour of Istio's metrics](07-istio-metrics-tour.md)
+- [Istio and distributed tracing](08-distributed-tracing.md)
 
 However each exercise **file** should be complete enough to allow you to 
 do them in **your** preferred order.
@@ -22,7 +22,7 @@ do them in **your** preferred order.
 There is a corresponding (numbered) directory for each exercise file. The 
 kubernetes yaml will be located here so you can view them.
 
-> :bulb: If you do **not** start with [Introducing the setup](000-setup-introduction.md) 
+> :bulb: If you do **not** start with [Introducing the setup](00-setup-introduction.md) 
 > you will need to enable automatic sidecar injection prior to doing the exercise.
 
 Do note that there **can be multiple exercises** per exercise file. 
