@@ -222,7 +222,7 @@ the services along with an ingress gateway and virtual service for routing
 inbound traffic.
 
 ```console
-for file in 03-ingress-traffic/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
+for file in 05-securing-with-mtls/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
 Execute `kubectl get pods` and observe that we have one container per POD, 
