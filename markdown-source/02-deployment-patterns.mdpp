@@ -788,9 +788,9 @@ A general overview of what you will be doing in the **Step By Step** section.
 
 - Remove the header based routing to `v3` of the name service
 
-> The use case it that has been validated and you want to load test it now.
+> The use case it that has been validated and you want to load test it now
 
-- Use the `mirror` field to shadow **all** traffic from `v2` to `v3`
+- Use the `mirror` field to shadow **all** traffic to `v2` to `v3` also
 
 - Inspect the `v3` workload to see if it is receiving traffic
 
