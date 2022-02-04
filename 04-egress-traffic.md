@@ -379,14 +379,7 @@ kubectl apply -f 04-egress-traffic/start/api-egress-se.yaml
 
 ___
 
-
-Export the pod as an environment variable.
-
-```console
-export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
-```
-
-Now tail the logs.
+Tail the logs.
 
 ```console
 export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
@@ -420,7 +413,7 @@ ___
 
 Basically all we have done so far is to add an entry for httpbin to Istio's 
 internal service registry. But we can now apply some of the Istio features to 
-external service. To demonstrate this you will create a virtual service for 
+the external service. To demonstrate this you will create a virtual service for 
 traffic to httpbin with a timeout of `0.5s`.
 
 > The api service asks httpbin.org for a response delay of 1 second.
@@ -456,14 +449,7 @@ kubectl apply -f 04-egress-traffic/start/api-egress-vs.yaml
 
 ___
 
-
-Export the pod as an environment variable.
-
-```console
-export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
-```
-
-Now tail the logs.
+Tail the logs.
 
 ```console
 kubectl logs "$API_POD" --tail=20 --follow
@@ -521,13 +507,7 @@ kubectl apply -f 04-egress-traffic/start/api-egress-vs.yaml
 
 ___
 
-Export the pod as an environment variable.
-
-```console
-export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
-```
-
-Now tail the logs.
+Tail the logs.
 
 ```console
 kubectl logs "$API_POD" --tail=20 --follow
@@ -552,6 +532,9 @@ down menu. Select the checkboxes as shown in the below image.
 You will see traffic to the sentences service entering through the ingress 
 gateway in the `istio-ingress` namespace. Traffic from the api service is now 
 leaving through the common egress gateway in the `istio-system` namespace.
+
+> Note depending on the version of Kiali in use the graph may look disconnected 
+> between the api service and the external service.
 
 ![API Egress](images/kiali-api-egress.png)
 
