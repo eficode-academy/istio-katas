@@ -357,8 +357,8 @@ In order for a match on a header to work it **must** be propagated to all the
 services in the application tree. 
 
 As the header is **not** propagated to the name service the default route is hit. 
-You would need to modify the sentence service propagate the header onwards so the 
-virtual service could match on it.
+> You would need to modify the sentence service to propagate the header onwards 
+> so the virtual service could match on it.
 
 ![Bad Header](images/kiali-bad-header.png)
 
