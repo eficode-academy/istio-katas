@@ -161,7 +161,7 @@ Deployment and a Service. Istio egress gateways are based on Envoy and have a
 
 Inspecting our course environment would show something like:
 
-```console
+```
 NAME                                       TYPE                                   
 istio-egressgateway                        deployment  
 istio-egressgateway                        service
@@ -170,7 +170,7 @@ istio-egressgateway-8679c48588-2p8vw       pod
 
 Inspecting the POD would show something like:
 
-```console
+```
 NAME                                    CONTAINERS
 istio-egressgateway-8679c48588-2p8vw    istio-proxy
 ```
@@ -268,7 +268,7 @@ kubectl get gateway,se,vs,dr,svc,pods -n $STUDENT_NS
 You should now see a gateway, two virtual services and a destination rule along 
 with four services and pods running. It should look something like below.
 
-```console
+```
 NAME                                    AGE
 gateway.networking.istio.io/sentences   91m
 
@@ -306,17 +306,22 @@ ___
 ___
 
 
-Export the pod as an environment variable and tail the logs.
+Export the pod as an environment variable. 
 
 ```console
 export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
+```
+
+Now tail the logs.
+
+```console
 kubectl logs "$API_POD" --tail=20 --follow
 ```
 
 You should see a response of 502(Bad Gateway) because there exists no service entry for 
 the external service httpbin.
 
-```console
+```
 INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 12:07:41] "GET / HTTP/1.1" 200 -
 WARNING:root:Response was: 502                      <-------------------- Bad Gateway Response
 WARNING:root:Operation 'api' took 306.376ms
@@ -374,16 +379,21 @@ kubectl apply -f 04-egress-traffic/start/api-egress-se.yaml
 ___
 
 
-Export the pod as an environment variable and tail the logs.
+Export the pod as an environment variable.
 
 ```console
 export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
-kubectl logs "$API_POD" --tail=20 --follow
+```
+
+Now tail the logs.
+
+```console
+export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
 ```
 
 Now you should be getting a 200(OK) response from the external service. 
 
-```console
+```
 INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 12:21:14] "GET / HTTP/1.1" 200 -
 WARNING:root:Response was: 200                <-------------------- OK Response
 WARNING:root:Operation 'api' took 374.259ms
@@ -446,16 +456,21 @@ kubectl apply -f 04-egress-traffic/start/api-egress-vs.yaml
 ___
 
 
-Export the pod as an environment variable and tail the logs.
+Export the pod as an environment variable.
 
 ```console
 export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
+```
+
+Now tail the logs.
+
+```console
 kubectl logs "$API_POD" --tail=20 --follow
 ```
 
 Now you should be getting a 504(Gateway Timeout) response from the external service. 
 
-```console
+```
 INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 13:29:11] "GET / HTTP/1.1" 200 -
 WARNING:root:Response was: 504                <-------------------- 504 Gateway Timeout
 WARNING:root:Operation 'api' took 504.809ms
@@ -505,16 +520,21 @@ kubectl apply -f 04-egress-traffic/start/api-egress-vs.yaml
 
 ___
 
-Export the pod as an environment variable and tail the logs.
+Export the pod as an environment variable.
 
 ```console
 export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
+```
+
+Now tail the logs.
+
+```console
 kubectl logs "$API_POD" --tail=20 --follow
 ```
 
 You should be getting a 200(OK) response from the external service. 
 
-```console
+```
 INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 12:21:14] "GET / HTTP/1.1" 200 -
 WARNING:root:Response was: 200                <-------------------- OK Response
 WARNING:root:Operation 'api' took 374.259ms
