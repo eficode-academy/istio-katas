@@ -934,8 +934,8 @@ ___
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu.
 
-If you look at the **version app graph** you **will** see the mirrored 
-traffic being shown.
+If you look at the **version app graph** you **may** or **may not** see the 
+mirrored traffic being shown. It depends on the version of Kiali you are using.
 
 ![Graph with mirror](images/kiali-mirror-graph.png)
 
