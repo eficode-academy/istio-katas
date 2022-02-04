@@ -341,7 +341,7 @@ kubectl apply -f 01-basic-traffic-routing/start/name-vs.yaml
 ```
 
 Go to **Graph** menu item in Kiali and select the **Versioned app graph** 
-from the drop down menu and observe the traffic flow.Traffic should once more  
+from the drop down menu and observe the traffic flow.Traffic should once more 
 be routed to the `name-v1` service.
 
 ![Virtual service and destination rule](images/basic-route-vs.png)
