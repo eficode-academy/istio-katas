@@ -332,7 +332,7 @@ menu and select checkboxes as shown in the below image.
 ![Sentences delay](images/kiali-sentences-fixed-delay.png)
 
 It may take a little bit before the graph updates but, eventually, you 
-should see that the request duration is trending towards fve seconds.
+should see that the request duration is trending towards five seconds.
 
 </details>
 
