@@ -3,7 +3,7 @@
 set -e
 
 INGRESSGATEWAY_NS="istio-ingress"
-PREFIX=${1:-"istio"}
+PREFIX=${TRAINING_NAME:-"istio"}
 NAMESPACE=$(kubectl config view --minify --output 'jsonpath={..namespace}')
 CA="eficode.academy"
 

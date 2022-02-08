@@ -4,7 +4,7 @@ set -e
 
 ARG_PROTO=${1:-"http"}
 ARG_PATH=${2:-""}
-PREFIX=${PREFIX:-istio}
+PREFIX=${TRAINING_NAME:-istio}
 NAMESPACE=$(kubectl config view --minify --output 'jsonpath={..namespace}')
 CA="eficode.academy"
 HOST="$NAMESPACE.sentences.$PREFIX.eficode.academy"
