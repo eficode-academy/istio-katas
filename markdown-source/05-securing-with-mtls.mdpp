@@ -802,7 +802,7 @@ spec:
   hosts:
   - "$STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy"
   gateways:
-  - istio-ingress/$TRAINING_NAME-sentences  # <----- Use the gateway in the istio-ingress namespace
+  - istio-ingress/$STUDENT_NS-sentences  # <----- Use the gateway in the istio-ingress namespace
   http:
   - route:
     - destination:
@@ -857,9 +857,10 @@ ___
 scripts/loop-query-mtls.sh https
 ```
 
-You should see an OpenSSL error. Note the curl options printed when the 
-script starts. **Only** the **certificate authority** is specified as 
-simple TLS only requires server side authentication.
+**You should see an OpenSSL error**! Note the curl options printed when the 
+script starts. **Only** the **certificate authority** is passed as simple TLS 
+only requires server side authentication. But we have configured our gateway 
+to use `MUTUAL` TLS. E.g.both client and server side authenticate.
 
 ```
 -------------------------------------
@@ -868,9 +869,17 @@ Using URL: https://student1.sentences.istio.eficode.academy:443/
 Using curl options: '--resolve student1.sentences.istio.eficode.academy:443 --cacert eficode.academy.crt'
 ```
 
-If you change the TLS mode to `SIMPLE` then plain `https` will work. You can 
-still pass the `https+mtls` argument to the script and a connection will be 
-made. Istio will simply ignore the client certs passed through the curl options.
+Change the TLS mode to `SIMPLE` and apply the change.
+
+```console
+envsubst < 05-securing-with-mtls/start/sentences-ingress-gw.yaml | kubectl apply -f -
+```
+
+Plain `https` will now work. 
+
+> You can still pass the `https+mtls` argument to the script and a connection 
+> will be made. Only server side authentication will be done. E.g. Istio will 
+> simply **ignore** the client certs passed through the curl options.
 
 </details>
 
