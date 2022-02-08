@@ -199,7 +199,7 @@ A general overview of what you will be doing in the **Step By Step** section.
 
 - Deploy the sentences application services and see the effect of mesh wide mTLS config
 
-- Apply a STRICTand PERMISSIVE mTLS policy to **your** namespace and observe 
+- Apply a STRICT and PERMISSIVE mTLS policy to **your** namespace and observe 
 the affects
 
 - Observe the affects on a service without a sidecar
