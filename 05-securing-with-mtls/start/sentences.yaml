@@ -19,9 +19,6 @@ spec:
         app: sentences
         mode: sentence
         version: v1
-      annotations:
-        dummy: '123'
-        sidecar.istio.io/inject: 'false'
     spec:
       containers:
       - image: praqma/istio-sentences:v1
@@ -48,5 +45,5 @@ spec:
   selector:
     app: sentences
     mode: sentence
-  type: ClusterIP
+  type: NodePort
 ---

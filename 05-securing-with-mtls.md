@@ -97,8 +97,10 @@ There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`,
 ## Exercise: Mutual TLS Inside the Mesh
 
 You will deploy all the services for the sentences application to observe 
-the affects of mTLS configuration **without** sidecars. Afterwards you will 
-inject sidecars and observe the effects of the mTLS configuration.
+the affects of mTLS configuration. You will first observe that the default 
+mesh wide configuration will be inherited by your namespace. Afterwards you 
+will apply mTLS configuration to **your** namespace and observe the affects 
+of STRICT and PERMISSIVE policies.
 
 ### PeerAuthentication
 
@@ -196,15 +198,14 @@ client certificates as the certs generated for mTLS by Istio are used.
 
 A general overview of what you will be doing in the **Step By Step** section.
 
-- Deploy the sentences application services **without** sidecars and see 
-the effect of mTLS modes
+- Deploy the sentences application services and see the effect of mesh wide mTLS config
 
-- Deploy the sentences application services **with** sidecars and see the
-effect of mTls modes
+- Apply a STRICTand PERMISSIVE mTLS policy to **your** namespace and observe 
+the affects
+
+- Observe the affects on a service without a sidecar
 
 - Configure TLS to an upstream service
-
-- Observe the traffic flow with Kiali between different steps
 
 ### Step by Step
 
@@ -226,15 +227,29 @@ inbound traffic.
 for file in 05-securing-with-mtls/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
-Execute `kubectl get pods` and observe that we have one container per POD, 
-i.e. **no Istio sidecars injected**.
+Observe that the services are ready and we have a sidecar container per POD and 
+the sentences service is exposed with NodePort.
+
+> :bulb: We have also configured an entry point with a Gateway and VirtualService 
+> but are also exposing it as a NodePort to demonstrate the effects of the policies.
+
+```console
+kubectl get pods,svc
+```
+
+It should look
 
 ```
-NAME                          READY   STATUS    RESTARTS   AGE
-age-v1-b69df859b-m996r        1/1     Running   0          30s
-name-v1-6f44875ccd-sz5zp      1/1     Running   0          30s
-name-v2-7755ddbd74-4ppgh      1/1     Running   0          30s
-sentences-v1-fc7dbd55-zx8qs   1/1     Running   0          30s
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/age-v1-6d5946d477-dbx4j         2/2     Running   0          24s
+pod/name-v1-6d59555fff-m9khm        2/2     Running   0          23s
+pod/name-v2-7bffd6cd8f-46jwb        2/2     Running   0          23s
+pod/sentences-v1-6bc9b4875b-rm6bj   2/2     Running   0          22s
+
+NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/age         ClusterIP   172.20.134.163   <none>        5000/TCP         25s
+service/name        ClusterIP   172.20.59.167    <none>        5000/TCP         24s
+service/sentences   NodePort    172.20.92.234    <none>        5000:30962/TCP   23s
 ```
 
 #### Task: Run the script `./scripts/loop-query.sh`
@@ -242,38 +257,36 @@ sentences-v1-fc7dbd55-zx8qs   1/1     Running   0          30s
 ___
 
 
-The sentence service we deployed in the first step has a type of `ClusterIP` 
-now. In order to reach it we will need to go through the `istio-ingressgateway`. 
-
-Run the `loop-query.sh` script with the option `-g`.
+Run the loop-query.sh script without parameters to reach the service over the 
+NodePort.
 
 ```console
-./scripts/loop-query.sh -g $STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy
+./scripts/loop-query.sh
 ```
 
 #### Task: Observe the traffic flow with Kiali
 
 ___
 
-
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. 
 
-Select the `istio-ingress` namespace along with your namespace and select the
-display checkboxes as shown below.
+Check the display options as shown in the image below. Especially the **Security** 
+checkbox. 
 
-Select the **arrow** from the ingress gateway to the sentences service.
+Notice the lock icons, which indicate whether the traffic is encrypted between 
+the services.
 
-If we observe the result in Kiali, we will see that we only have information
-about traffic from the ingress gateway towards the frontend sentences service
-as none of the sentences services have sidecars, only the ingress gateway.
+Select one of the **arrows** with a lock icon. You will be able to see on the 
+sidebar that the traffic is mTLS secured. Notice that traffic from the 
+`loop-query.sh` script(unknown) to the sentences frontend service is plain text 
+HTTP traffic as we are using a NodePort to access it.
 
-![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls.png)
+![Kiali default mTLS](images/kiali-mtls-default.png)
 
-#### Task: Create peer authentication requiring `STRICT` mTLS
+#### Task: Create peer authentication policy in your namespace
 
 ___
-
 
 Create a file called `peer-authentication.yaml` in 
 `05-securing-with-mtls/start/`.
@@ -284,7 +297,7 @@ Paste the following yaml into the file.
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: default
+  name: $STUDENT_NS
   namespace: $STUDENT_NS
 spec:
   mtls:
@@ -302,106 +315,204 @@ the output with kubectl.
 envsubst < 05-securing-with-mtls/start/peer-authentication.yaml | kubectl apply -f -
 ```
 
-#### Task: Observe the traffic flow with Kiali
-
-___
-
-
-Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. 
-
-Select the `istio-ingress` namespace along with your namespace and select the
-display checkboxes as shown below.
-
-Select the **arrow** from the ingress gateway to the sentences service.
-
-We see, that traffic still flows. This is because the sentences services do not
-have an Istio sidecar and the strict peer-authentication policy we created only
-applies to the namespace where we created it and it is only applied when
-validating requests made *towards* a workload with an Istio sidecar. 
-
-> Even if we created a strict policy in the namespace of the ingress gateway, 
-> traffic would still flow. **No sidecar means no policy enforcement**.
-
-![Kiali with no sidecars](images/kiali-no-sidecar-no-mtls.png)
-
-#### Task: Enable sidecar for the age service
-
-___
-
-
-Lets inject Istio sidecar into the **age** service by removing the 
-`sidecar.istio.io/inject: 'false'` annotation from the deployment.
-
-```console
-cat 05-securing-with-mtls/start/age.yaml |grep -v inject | kubectl apply -f -
-```
-
-Wait for the pod to be redeployed. 
-
-```console
-kubectl get pods
-```
-
-You should see it being terminated and new instantiated. Wait until all services 
-are ready.
+You should lose your connection.
 
 ```
-NAME                          READY   STATUS    RESTARTS   AGE
-age-v1-698cf6fd9d-kgvt2       2/2     Running   0          81s
-name-v1-6f44875ccd-bsnrm      1/1     Running   0          57m
-name-v2-7755ddbd74-mxlbt      1/1     Running   0          57m
-sentences-v1-fc7dbd55-9smjb   1/1     Running   0          57m
+Aramis (v2) is 52 years.
+Egon is 60 years.
+Aramis (v2) is 35 years.
+curl: (56) Recv failure: Connection reset by peer
 ```
 
-#### Task: Observe the traffic flow with Kiali
+You just applied a STRICT policy **requiring** all traffic to be over mTLS but 
+are accessing the frontend service directly over a NodePort and the traffic is 
+plain-text over HTTP.
 
-___
-
-
-Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. 
-
-Select the `istio-ingress` namespace along with your namespace and select the
-display checkboxes as shown below.
-
-Select the **arrow** from the ingress gateway to the sentences service.
-
-After this we see, that traffic no longer flows. We have applied a `STRICT` 
-policy saying **all** traffic **must** be mTLS. But **only** the `age` service 
-has a sidecar and we therefor have **both** plain-text and mTLS traffic.
-
-![Kiali with no sidecars](images/kiali-mtls-error.png)
-
-#### Task: Allow un-encrypted and un-authenticated traffic using `PERMISSIVE` mTLS
-
-___
-
-
-Modify the `peer-authentication.yaml` in `05-securing-with-mtls/start/` 
-to use `PERMISSIVE` mode.
+Change the mode to `PERMISSIVE` in the `peer-authentication.yaml` file you just 
+created.
 
 ```yaml
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: default
+  name: $STUDENT_NS
   namespace: $STUDENT_NS
 spec:
   mtls:
-    mode: PERMISSIVE    # <---- Change mode.
+    mode: PERMISSIVE
+```
+
+Apply the changed policy.
+
+```console
+envsubst < 05-securing-with-mtls/start/peer-authentication.yaml | kubectl apply -f -
+```
+
+#### Task: Observe the traffic flow with Kiali
+
+___
+
+Re-run the `loop-query.sh` script as before so we access the sentences frontend 
+service over the NodePort as before.
+
+```console
+./scripts/loop-query.sh
+```
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu. 
+
+Check the display options as shown in the image below. Especially the 
+**Security** checkbox. 
+
+Notice that traffic is plain text HTTP traffic and is now allowed as 
+`PERMISSIVE` mode allows both plain-text and mTLS.
+
+![Kiali default mTLS](images/kiali-mtls-default.png)
+
+#### Task: Route traffic through the gateway
+
+___
+
+An entry point in the `istio-ingressgateway` was created when you deployed the 
+sentence application services in the first task. Route the traffic through the 
+gateway.
+
+Run the loop-query.sh script with the option -g.
+
+```console
+./scripts/loop-query.sh -g $STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy
+```
+
+#### Task: Observe the traffic flow with Kiali
+
+___
+
+Go to Graph menu item and select the **Versioned app graph** from the drop 
+down menu. 
+
+Select the `istio-ingress` namespace along with your namespace and select the
+display checkboxes as shown below.
+
+![Kiali with no sidecars](images/kiali-mtls-gw.png)
+
+We can now see that all the traffic within the mesh is mTLS. As the traffic is 
+now being routed through the ingress gateway it is being secured over mTLS by 
+the gateways standalone envoy proxy towards the sentences frontend service. 
+
+When `PERMISSIVE` mode is enabled both plain-text traffic and mTLS traffic are 
+allowed but mTLS **will be applied where possible**. 
+
+There is no real reason, besides for demonstration purposes, to expose the 
+sentences frontend service as a NodePort. Change the sentences service type to 
+`ClusterIP` in the `sentences.yaml` file in `05-securing-with-mtls/start` folder.
+
+```yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sentences
+    mode: sentence
+    app.kubernetes.io/part-of: sentences
+  name: sentences
+spec:
+  ports:
+  - name: http-sentences
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+    appProtocol: http
+  selector:
+    app: sentences
+    mode: sentence
+  type: ClusterIP       # <---------
+---
+```
+
+As all of the traffic is now going through the ingress gateway you can apply 
+`STRICT` mode to your policy now. Change it in the `peer-authentication.yaml` 
+file you created.
+
+Apply your changes.
+
+```console
+for file in 05-securing-with-mtls/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
 > While migrating an application to full mTLS, it may be useful to start with 
 > a `PERMISSIVE` mTLS mode which allow a mix of mTLS and un-encrypted and 
 > un-authenticated traffic.
 
-Substitute the placeholder with the value of the environment variable and apply 
-the output with kubectl.
+#### Task: Disable sidecar for the age service
+
+___
+
+What do you think will happen if a service has **no sidecar**?
+
+Modify the age service so it has no sidecar by adding an annotation to the file 
+`age.yaml` in `05-securing-with-mtls/start` folder to disable sidecar injection.
+
+The deployment section of the file should look like.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sentences
+    mode: age
+    version: v1
+  name: age-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentences
+      mode: age
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: sentences
+        mode: age
+        version: v1
+      annotations:                          # Annotations block
+        sidecar.istio.io/inject: 'false'    # True to enable or false to disable
+    spec:
+      containers:
+      - image: praqma/istio-sentences:v1
+        name: age
+        env:
+        - name: "SENTENCE_MODE"
+          value: "age"
+---
+```
+
+Apply the change.
 
 ```console
-envsubst < 05-securing-with-mtls/start/peer-authentication.yaml | kubectl apply -f -
+kubectl apply -f 05-securing-with-mtls/start/age.yaml
 ```
+
+Check that POD for the age service has no sidecar.
+
+```console
+kubectl get pod
+```
+You should see it terminating and a new one running with only one container.
+
+```
+NAME                                READY   STATUS        RESTARTS   AGE
+pod/age-v1-54fc4584d6-k94zk         1/1     Running       0          13s
+pod/age-v1-6d5946d477-f7fdp         2/2     Terminating   0          57m
+```
+
+You really shouldn't see any interruptions from the `loop-query.sh` script 
+running in the terminal.
+
+If a POD has no sidecar then the policy **cannot be applied**...
 
 #### Task: Observe the traffic flow with Kiali
 
@@ -414,88 +525,17 @@ down menu.
 Select the `istio-ingress` namespace along with your namespace and select the
 display checkboxes as shown below.
 
-Select the **arrow** from the ingress gateway to the sentences service.
+As the age service has no sidecar, eventually, you will not be able to see 
+traffic flowing to the age service in the graph even though it is still flowing 
+over HTTP.
 
-The traffic is now flowing but you **may** see a disjointed graph and `unknown` 
-traffic. This is because the `age` service is the **only** service which has a 
-sidecar.
+![Kiali mTLS no age sidecar](images/kiali-mtls-no-age-service.png)
 
-![Disjointed graph](images/kiali-disjointed-graph.png)
-
-#### Task: Inject sidecars for all services
-
-___
-
-
-Lets inject Istio sidecars into all sentences services by running a for loop 
-removing the `sidecar.istio.io/inject: 'false'` annotation from all deployments.
+Remove the below annotation from the age service and redeploy it with
 
 ```console
-for file in 05-securing-with-mtls/start/*.yaml; do grep -v inject < $file | kubectl apply -f -; done
+kubectl apply -f 05-securing-with-mtls/start/age.yaml
 ```
-
-Wait for the pods to be redeployed.
-
-```console
-kubectl get pods
-```
-
-You should see them being terminated and new instantiated. Wait until all 
-services are running.
-
-```
-NAME                            READY   STATUS        RESTARTS   AGE
-age-v1-698cf6fd9d-kgvt2         2/2     Running       0          35m
-name-v1-6f44875ccd-bsnrm        1/1     Terminating   0          91m
-name-v1-7f7bcf7fb8-btpff        2/2     Running       0          24s
-name-v2-6886569bfb-lxb9z        2/2     Running       0          24s
-name-v2-7755ddbd74-mxlbt        1/1     Terminating   0          91m
-sentences-v1-6f9578db77-xbbzf   2/2     Running       0          24s
-sentences-v1-fc7dbd55-9smjb     1/1     Terminating   0          91m
-```
-
-#### Task: Re-enabled `STRICT` mTLS
-
-___
-
-
-Since **all** services now have an Istio sidecar, we can enable strict mTLS:
-
-Modify the `peer-authentication.yaml` in `05-securing-with-mtls/start/` 
-to use `STRICT` mode.
-
-```yaml
-apiVersion: security.istio.io/v1beta1
-kind: PeerAuthentication
-metadata:
-  name: default
-  namespace: $STUDENT_NS
-spec:
-  mtls:
-    mode: STRICT    # <-- Change mode.
-```
-
-Substitute the placeholder with the value of the environment variable and apply 
-the output with kubectl.
-
-```console
-envsubst < 05-securing-with-mtls/start/peer-authentication.yaml | kubectl apply -f -
-```
-
-#### Task: Observe the traffic flow with Kiali
-
-___
-
-
-Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. Select the checkboxes as shown in the below image.
-
-Now we can see in Kiali, that mTLS is enabled between all services of the
-sentences application. Kiali will denote it with a **lock** icon on the graph. 
-In the view below, the link between the frontend and the `age` service has 
-been selected and you can see that mTLS is enabled in the details view.
-
-![Full mTLS](images/kiali-mtls-anno.png)
 
 #### Task: Configure TLS to an upstream service
 
@@ -515,7 +555,7 @@ to use `PERMISSIVE` mode.
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: default
+  name: $STUDENT_NS
   namespace: $STUDENT_NS
 spec:
   mtls:

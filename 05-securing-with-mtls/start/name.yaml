@@ -19,9 +19,6 @@ spec:
         app: sentences
         mode: name        
         version: v1
-      annotations:
-        dummy: '123'
-        sidecar.istio.io/inject: 'false'
     spec:
       containers:
       - image: praqma/istio-sentences:v1
@@ -70,9 +67,6 @@ spec:
         app: sentences
         mode: name
         version: v2
-      annotations:
-        dummy: '123'
-        sidecar.istio.io/inject: 'false'
     spec:
       containers:
       - image: praqma/istio-sentences:v1
