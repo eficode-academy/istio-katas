@@ -141,8 +141,8 @@ ___
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. 
 
-If we select to display 'response time' we that there is a significant delay 
-introduced by `v2` of the sentences service.
+If we select to display 'response time' we can see that there is a significant 
+delay introduced by `v2` of the sentences service.
 
 ![Kiali Traffic Delay](images/kiali-sentences-delay.png)
 
@@ -217,13 +217,6 @@ also see that the version of the sentences service is `v2`.
 
 ___
 
-> :bulb: This exercise **requires** that you know the namespace you are 
-> working in. If you do not know you can inspect your namespace with the 
-> following command.
-
-```console
-kubectl config view --output 'jsonpath={..namespace}'; echo
-```
 
 The traffic flow in our sentences application is pretty simple with low 
 complexity. But in much more complex system with a much more complicated 
@@ -258,8 +251,6 @@ spec:
 
 Then create a file `sentences-ingress-vs.yaml` in the directory 
 `08-distributed-tracing/start/`.
-
-> :bulb: Again edit the hosts field with **your** namespace.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
