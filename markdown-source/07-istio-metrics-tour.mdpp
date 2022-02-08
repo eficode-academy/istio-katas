@@ -122,7 +122,7 @@ kubectl get pods -o wide
 
 This should produce output that looks like the following.
 
-```console
+```
 NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE                                        NOMINATED NODE   READINESS GATES
 age-7584598b58-zv4wb         1/1     Running   0          14m   10.0.52.63    ip-10-0-57-188.eu-west-1.compute.internal   <none>           <none>
 name-7cbf469c96-l2x42        1/1     Running   0          14m   10.0.42.100   ip-10-0-32-58.eu-west-1.compute.internal    <none>           <none>
@@ -145,8 +145,8 @@ This will return something like the following.
 sentence_requests_total{type="name"} 584.0
 ```
 
-This shows that the `name` POD had received `584` requests from the `loop-query.sh`
-script when we fetched metrics.
+This shows that the POD had received `584` requests from the 
+`loop-query.sh` script when we fetched metrics.
 
 #### Task: Inject Istio sidecar to sentences services
 

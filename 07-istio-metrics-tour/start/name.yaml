@@ -33,7 +33,7 @@ spec:
           - containerPort: 5000
             name: name
           - containerPort: 8000
-            name: name-metrics
+            name: metrics
         env:
         - name: "SENTENCE_MODE"
           value: "name"

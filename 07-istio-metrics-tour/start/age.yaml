@@ -33,7 +33,7 @@ spec:
           - containerPort: 5000
             name: age
           - containerPort: 8000
-            name: age-metrics
+            name: metrics
         env:
         - name: "SENTENCE_MODE"
           value: "age"
