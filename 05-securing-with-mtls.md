@@ -525,13 +525,13 @@ down menu.
 Select the `istio-ingress` namespace along with your namespace and select the
 display checkboxes as shown below.
 
-As the age service has no sidecar, eventually, you will not be able to see 
+As the age service has no sidecar you will, **eventually**, not be able to see 
 traffic flowing to the age service in the graph even though it is still flowing 
 over HTTP.
 
 ![Kiali mTLS no age sidecar](images/kiali-mtls-no-age-service.png)
 
-Remove the below annotation from the age service and redeploy it with
+Remove the annotation to disable sidecar injection from the age service and redeploy it.
 
 ```console
 kubectl apply -f 05-securing-with-mtls/start/age.yaml
