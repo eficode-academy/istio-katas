@@ -908,8 +908,6 @@ consider namespaces in relation to kubernetes secrets and gateway controllers.
 
 ## Cleanup
 
-#Todo: Check this as we now are dynamically naming gatways based of env vars -> Use envsubst?
-
 ```console
-kubectl delete -f 05-securing-with-mtls/start/
+for file in 05-securing-with-mtls/start/*.yaml; do envsubst < $file | kubectl delete -f -; done
 ```
