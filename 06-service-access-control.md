@@ -232,8 +232,8 @@ ___
 
 
 The `sentences` service still has access to the `name` service, which we can
-tested by executing a curl command from the container in the `sentences` 
-service as you have done fro the age container.
+test by executing a curl command from the container in the `sentences` 
+service as you have done for the age container.
 
 Export `sentences` services POD name to an environment variable.
 
@@ -249,8 +249,8 @@ kubectl exec $SENTENCES_POD -c sentences -- curl --silent name:5000/; echo "";
 ```
 
 With this command, the previous URLs/endpoints for the `name` service towards
-port 5000 will work. The NetworkPolicy did not allow access to port 8000, hence
-access the to the `name:8000/metrics` endpoint is no longer allowed.
+port 5000 will work. The NetworkPolicy **did not allow access to port 8000**.
+So access the to the `name:8000/metrics` endpoint is no longer allowed.
 
 The `sentences` service can still access the `name:5000/choices` URL even though
 this is not needed by the `sentences` service. 
