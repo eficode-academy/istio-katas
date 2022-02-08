@@ -717,14 +717,6 @@ Expand the **Tasks** section below to do the exercise.
 
 ___
 
-
-You must have the sentences application deployed with sidecars. This should 
-already be the case, unless you skipped some of the first exercise.
-
-```console
-for file in 05-securing-with-mtls/start/*.yaml; do grep -v inject < $file | kubectl apply -f -; done
-```
-
 Ensure that the gateway and virtual service for the `sentences` 
 service from the first exercise is removed.
 
