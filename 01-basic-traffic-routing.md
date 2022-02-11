@@ -30,7 +30,7 @@ These are the [VirtualService](https://istio.io/latest/docs/reference/config/net
 
 You use virtual services to route traffic to kubernetes services. 
 
-VirtualService is used in addition to the normal Kubernetes service object.
+A VirtualService is used in addition to the normal Kubernetes service object.
 A VirtualService defines a set of traffic routing rules to apply when a host 
 is addressed. 
 
@@ -38,7 +38,10 @@ Each routing rule defines matching criteria for traffic of a
 specific protocol. If the traffic is matched, then it is sent to a named 
 destination **service** or subset/version of it.
 
-An example of a VirtualService is seen below:
+> :bulb: **Expand the example below for more details.**
+
+<details>
+    <summary> Example </summary>
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -82,6 +85,8 @@ takes a form like `reviews`, `ratings`, etc.
 - The subset block is the name of a subset within the service and **must** be 
 defined in a **DestinationRule**.
 
+</details>
+
 ### DestinationRule
 
 Destination rules configure **what** happens to traffic for a destination 
@@ -95,6 +100,11 @@ One of the most common uses of `DestinationRule` is to specify named service **s
 
 For example, grouping all of a service instances **versions**. You can then 
 use these **subsets** in a virtual service to control traffic to different versions.
+
+> :bulb: **Expand the example below for more details.**
+
+<details>
+    <summary> Example </summary>
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -121,6 +131,8 @@ spec:
 > :bulb: If you have not completed exercise 
 > [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
+
+</details>
 
 ## Exercise: Routing To Specific Version
 
