@@ -20,7 +20,7 @@ However each exercise **file** should be complete enough to allow you to
 do them in **your** preferred order.
 
 There is a corresponding (numbered) directory for each exercise file. The 
-kubernetes yaml will be located here so you can view them.
+kubernetes yaml will working with will be located here so you can view them.
 
 > :bulb: If you do **not** start with [Introducing the setup](00-setup-introduction.md) 
 > you will need to enable automatic sidecar injection prior to doing the exercise.
@@ -41,6 +41,9 @@ idea as to what you will be doing.
 This is followed by a detailed step-by-step set of **tasks** you execute 
 to complete the exercise. The tasks should be executed from a terminal in 
 the **root** directory, e.g. `istio-katas`.
+
+> :bulb: The actual tasks in the **Step by Step** section are **collapsed**. 
+> Select the arrow to **expand** the tasks section to do the exercise.
 
 The step-by-step instructions also explain _why_ some of the steps are 
 done in the way they are in the exercise.
