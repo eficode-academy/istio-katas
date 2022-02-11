@@ -62,25 +62,10 @@ control egress traffic also. Because of this many clusters will have the
 `outBoundTrafficPolicy` set to `REGISTRY_ONLY` as is done in our cluster. 
 This will force you to define your external services with a service entry.
 
+> :bulb: **Expand the example below for more details.**
+
 <details>
-    <summary> More Info </summary>
-
-When you create a service entry it is added to Istio's internal service 
-registry and traffic is allowed out of the mesh to the defined destination. 
-
-Istio maintains an internal service registry containing the set of services, 
-and their corresponding service endpoints, running in a service mesh. 
-Istio uses the service registry to generate Envoy configuration.
-
-> Istio does not provide service discovery, although most services are 
-> automatically added to the registry by Pilot adapters that reflect the 
-> discovered services of the underlying platform (Kubernetes, Consul, plain DNS). 
-> Additional services can also be registered manually using a ServiceEntry 
-> configuration.
-
-</details>
-
-An example ServiceEntry CRD looks like this.
+    <summary> Example </summary>
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -111,6 +96,21 @@ the service entry to the namespace where it is defined.
 > scoping the service entry to your namespace will open the external 
 > service for **all** attendees. 
 
+When you create a service entry it is added to Istio's internal service 
+registry and traffic is allowed out of the mesh to the defined destination. 
+
+Istio maintains an internal service registry containing the set of services, 
+and their corresponding service endpoints, running in a service mesh. 
+Istio uses the service registry to generate Envoy configuration.
+
+> Istio does not provide service discovery, although most services are 
+> automatically added to the registry by Pilot adapters that reflect the 
+> discovered services of the underlying platform (Kubernetes, Consul, plain DNS). 
+> Additional services can also be registered manually using a ServiceEntry 
+> configuration.
+
+</details>
+
 ### Gateway
 
 Once a service entry is defined the traffic flows **directly** from the 
@@ -118,6 +118,16 @@ workloads Envoy sidecar to the external service.
 
 But it is a pretty common use cases to have traffic leaving the mesh 
 routed **via** a common **egress** gateway.
+
+A Gateway **describes** a load balancer operating at the **edge** of the mesh 
+receiving incoming or outgoing **HTTP/TCP** connections. The specification 
+describes the ports to be expose, type of protocol, configuration for the 
+load balancer, etc.
+
+> :bulb: **Expand the example below for more details.**
+
+<details>
+    <summary> Example </summary>
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -147,14 +157,6 @@ The gateway defines an **exit point** to be exposed in the `istio-egressgateway`
 That is it. Nothing else. Just like an ingress entry point, it knows nothing 
 about how traffic is routed to it. 
 
-<details>
-    <summary> More Info </summary>
-
-A Gateway **describes** a load balancer operating at the **edge** of the mesh 
-receiving incoming or outgoing **HTTP/TCP** connections. The specification 
-describes the ports to be expose, type of protocol, configuration for the 
-load balancer, etc.
-
 An Istio **Egress** gateway in a Kubernetes cluster consists, at a minimum, of a 
 Deployment and a Service. Istio egress gateways are based on Envoy and have a 
 **standalone** Envoy proxy. 
@@ -177,7 +179,13 @@ istio-egressgateway-8679c48588-2p8vw    istio-proxy
 
 </details>
 
-In order to route the traffic we, of course, use a virtual service. 
+In order to route the traffic we, of course, use a virtual service. The GateWay 
+just defines the **exit point** and we still need to define the route.
+
+> :bulb: **Expand the example below for more details.**
+
+<details>
+    <summary> Example </summary>
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -217,6 +225,8 @@ of the shortname because the gateway is located in the `istio-system` namespace.
 > **rule**, e.g. if the virtual service is in the `default` namespace it will 
 > translate to `istio-egressgateway.default.svc.cluster.local`. So **full names** 
 > should be used when using a gateway in another namespace.
+
+</details>
 
 ### Overview
 
