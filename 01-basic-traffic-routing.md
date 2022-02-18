@@ -101,7 +101,7 @@ One of the most common uses of `DestinationRule` is to specify named service **s
 For example, grouping all of a service instances **versions**. You can then 
 use these **subsets** in a virtual service to control traffic to different versions.
 
-> :bulb: **Expand the example below for more details.**
+> **Expand the example below for more details.**
 
 <details>
     <summary> Example </summary>

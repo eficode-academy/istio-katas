@@ -62,7 +62,7 @@ control egress traffic also. Because of this many clusters will have the
 `outBoundTrafficPolicy` set to `REGISTRY_ONLY` as is done in our cluster. 
 This will force you to define your external services with a service entry.
 
-> :bulb: **Expand the example below for more details.**
+> **Expand the example below for more details.**
 
 <details>
     <summary> Example </summary>
@@ -124,7 +124,7 @@ receiving incoming or outgoing **HTTP/TCP** connections. The specification
 describes the ports to be expose, type of protocol, configuration for the 
 load balancer, etc.
 
-> :bulb: **Expand the example below for more details.**
+> **Expand the example below for more details.**
 
 <details>
     <summary> Example </summary>
@@ -182,7 +182,7 @@ istio-egressgateway-8679c48588-2p8vw    istio-proxy
 In order to route the traffic we, of course, use a virtual service. The GateWay 
 just defines the **exit point** and we still need to define the route.
 
-> :bulb: **Expand the example below for more details.**
+> **Expand the example below for more details.**
 
 <details>
     <summary> Example </summary>
