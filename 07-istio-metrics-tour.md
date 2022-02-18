@@ -213,9 +213,9 @@ What about the Istio metrics from the sidecar?
 
 Istio supports merging Prometheus metrics from the application and the sidecar
 into a single scrape endpoint, however this has been disabled with the
-annotation `prometheus.istio.io/merge-metrics`.
+annotation `prometheus.istio.io/merge-metrics` which is set to `false`.
 
-Re-deploy the sentences application with this annotation removed as well.
+Re-deploy the sentences application service with this annotation removed as well.
 
 ```console
 cat 07-istio-metrics-tour/start/sentences.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
@@ -240,8 +240,8 @@ ___
 Now that we have a single merged scrape endpoint for the application metrics 
 and the Istio metrics we can fetch them both. 
 
-First, list PODs to get their cluster IP as it has changed when we changed the 
-prometheus annotation.
+First, list PODs to get the cluster IP of the sentences application service as 
+it has changed when we changed the prometheus annotation.
 
 ```console
 kubectl get pods -o wide
@@ -250,7 +250,7 @@ kubectl get pods -o wide
 Then run the curl command as before but use the new **merged** scrape endpoint.
 
 ```console
-curl -s <POD IP>:15020/stats/prometheus | grep requests_total
+curl -s <SENTENCES POD IP>:15020/stats/prometheus | grep requests_total
 ```
 
 The result of which should look somewhat like the following for e.g. 
