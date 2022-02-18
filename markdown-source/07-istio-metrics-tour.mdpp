@@ -353,5 +353,5 @@ For an overview of the standard Istio **service-level** metrics see this
 ## Cleanup
 
 ```console
-kubectl delete -f 07-istio-metrics-tour/start/sentences.yaml
+kubectl delete -f 07-istio-metrics-tour/start/
 ```
