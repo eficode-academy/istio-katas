@@ -22,38 +22,6 @@ but also offers another configuration model.
 The Istio [IngressGateway](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/) 
 which is what you will be using in this exercise.
 
-<details>
-    <summary> More Info </summary>
-
-An Istio gateway **describes** a load balancer operating at the **edge** 
-of the mesh receiving incoming or outgoing **HTTP/TCP** connections. The 
-specification describes the ports to be expose, type of protocol, 
-configuration for the load balancer, etc.
-
-An Istio **IngressGateway** in a Kubernetes cluster consists, at a minimum, 
-of a Deployment and a Service. Istio ingress gateways are based on the Envoy 
-and have a **standalone** Envoy proxy. 
-
-Inspecting our course environment would show something like:
-
-```console
-NAME                                        TYPE                                   
-istio-ingressgateway                        deployment  
-istio-ingressgateway                        service
-istio-ingressgateway-69c77d896c-5vvjg       pod
-```
-
-Inspecting the POD would show something like:
-
-```console
-NAME                                    CONTAINERS
-istio-ingressgateway-69c77d896c-5vvjg   istio-proxy
-```
-
-This is the IngressGateway which we configure with a Gateway CRD.
-
-</details>
-
 > :bulb: If you have not completed exercise 
 > [00-setup-introduction](00-setup-introduction.md) you **need** to label 
 > your namespace with `istio-injection=enabled`.
@@ -72,16 +40,20 @@ Ingressing traffic directly from the Kubernetes cluster network to a frontend
 service means that Istio features **cannot** be applied on this part of the 
 traffic flow.
 
-In this exercise you are going rectify this by **configuring** 
-ingress traffic to the sentences service through a dedicated 
-**IngressGateway** (`istio-ingressgateway`) provided by 
-**Istio** instead of a Kubernetes NodePort. Furthermore you 
-are going to introduce a fixed delay to demonstrate that you can 
-now apply Istio traffic management to the sentences service.
+In this exercise you are going rectify this by **configuring** ingress traffic 
+to the sentences service through a dedicated **IngressGateway** (`istio-ingressgateway`) 
+provided by **Istio** instead of a Kubernetes NodePort. Furthermore you are going 
+to introduce a fixed delay to demonstrate that you can now apply Istio traffic 
+management to the sentences service.
 
 You are going to do this using the 
 [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway) 
-CRD.
+CRD which will **configure** an **entry point** in the Istio **IngressGateway**.
+
+> **Expand the example below for more details.**
+
+<details>
+    <summary> Example </summary>
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -100,28 +72,55 @@ spec:
     hosts:
     - "myapp.example.com"
 ```
-> Don't confuse the the **IngressGateway** with the Gateway custom resource 
-> definition. The gateway CRD is used to **configure** the Ingressgateway.
 
-The servers block is where you define the port configurations, protocol 
+- The servers block is where you define the port configurations, protocol 
 and the hosts exposed by the gateway. A host entry is specified as a dnsName 
 and should be specified using the FQDN format. 
 
-> You can use a wildcard character in the **left-most** component of the 
-> `hosts`field. E.g. `*.example.com`. You can also **prefix** the `hosts` field 
-> with a namespace. 
-> See the [documentation](https://istio.io/latest/docs/reference/config/networking/gateway/#Server) 
-> for more details.
+  > You can use a wildcard character in the **left-most** component of the 
+  > `hosts` field. E.g. `*.example.com`. 
+  > 
+  > You can also **prefix** the `hosts` field with a namespace. See the 
+  > [documentation](https://istio.io/latest/docs/reference/config/networking/gateway/#Server) for more details.
 
-The **selectors** above are the labels on the `istio-ingressgateway` POD which 
-is running a standalone Envoy proxy.
+- The **selectors** above are the labels on the `istio-ingressgateway` POD which 
+is the IngressGateway the traffic will be routed through.
 
-The gateway defines and **entry point** to be exposed in the 
-`istio-ingressgateway`. That is it. Nothing else. This entry point knows 
-nothing about how to route the traffic to the desired destination within the 
-mesh. 
+> Don't confuse the the **IngressGateway** with the Gateway custom resource 
+> definition. The gateway CRD is used to **configure** the Ingressgateway.
+> The gateway defines and **entry point** to be exposed in the 
+> `istio-ingressgateway`. That is it. Nothing else.
 
-In order to route the traffic we, of course, use a virtual service. 
+
+<details>
+    <summary> More About IngressGateways </summary>
+
+An Istio **IngressGateway** **describes** a load balancer operating at the 
+**edge** of the mesh receiving incoming or outgoing **HTTP/TCP** connections.
+
+An Istio **IngressGateway** in a Kubernetes cluster consists, at a minimum, 
+of a Deployment and a Service. Istio ingress gateways are based on Envoy 
+and have a **standalone** Envoy proxy. 
+
+In our course environment we have an Istio **IngressGateway** in it's own 
+namespace `istio-ingress`.
+
+This is the IngressGateway which we configure with a Gateway CRD.
+
+</details>
+
+</details>
+
+
+In order to route the traffic we, of course, use a **virtual service**. The entry 
+point you configure with a GateWay CRD knows nothing about how to route the 
+traffic to the desired destination within the mesh. Therefor you use a virtual 
+service specifying the **gateway** you defined.
+
+> **Expand the example below for more details.**
+
+<details>
+    <summary> Example </summary>
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -132,7 +131,7 @@ spec:
   hosts:
   - "myapp.example.com"
   gateways:
-  - myapp-gateway
+  - myapp-gateway         # This is the gateway entry point to use
   http:
   - route:
     - destination:
@@ -143,6 +142,8 @@ Note how it specifies the hostname and the name of the gateway
 (in `spec.gateways`). A gateway definition can define an entry for many 
 hostnames and a VirtualService can be bound to multiple gateways, i.e. these 
 are not necessarily related one-to-one.
+
+</details>
 
 ### Overview
 

@@ -162,7 +162,7 @@ An Istio **Egress** gateway in a Kubernetes cluster consists, at a minimum, of a
 Deployment and a Service. Istio egress gateways are based on Envoy and have a 
 **standalone** Envoy proxy. 
 
-Inspecting our course environment would show something like:
+Our course environment would show something like:
 
 ```
 NAME                                       TYPE                                   

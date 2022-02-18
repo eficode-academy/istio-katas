@@ -38,7 +38,7 @@ Each routing rule defines matching criteria for traffic of a
 specific protocol. If the traffic is matched, then it is sent to a named 
 destination **service** or subset/version of it.
 
-> :bulb: **Expand the example below for more details.**
+> **Expand the example below for more details.**
 
 <details>
     <summary> Example </summary>
