@@ -358,6 +358,6 @@ given service.
 ## Cleanup
 
 ```console
-kubectl delete -f 06-service-access-control/start/sentences.yaml
+kubectl delete -f 06-service-access-control/start/
 cat 06-service-access-control/examples/authz-policy.yaml | envsubst | kubectl delete -f -
 ```
