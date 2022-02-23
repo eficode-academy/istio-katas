@@ -430,6 +430,10 @@ spec:
 ---
 ```
 
+#### Task: Apply STRICT policy
+
+___
+
 As all of the traffic is now going through the ingress gateway you can apply 
 `STRICT` mode to your policy now. Change it in the `peer-authentication.yaml` 
 file you created.
