@@ -324,10 +324,14 @@ cat 06-service-access-control/examples/authz-policy.yaml | envsubst | kubectl ap
 ```
 
 If we retry the curl commands from previously from both the `age` and
-`sentences` service, we will see that the only access that is now possible is
-the `sentences` service accessing the primary `name` endpoint and the
-`name:5000/choices` endpoint cannot be accessed either. This correlates with the
+`sentences` service, we will see:
+
+- That the only access that is now possible is the `sentences` service accessing the 
+primary `name` endpoint.
+- The `name:5000/choices` endpoint cannot be accessed either. This correlates with the 
 AuthorizationPolicy only allowing `GET` towards `/`.
+
+> :bulb: Note that it might take a few seconds for the policy to properly register.
 
 ```console
 kubectl exec $SENTENCES_POD -c sentences -- curl --silent name:5000/choices; echo "";
