@@ -49,17 +49,17 @@ metadata:
   name: myservice-route
 spec:
   hosts:
-  - myservice
+  - myservice               # Apply these rules for trafic to this host
   gateways:
   - mesh
   http:
   - route:
     - destination:
-        host: myservice-v1
-        subset: myservice-v1
+        host: myservice     # Send to this Kubernetes Service
+        subset: v1          # but only this subset of the Service
     - destination:
-        host: myservice-v2
-        subset: myservice-v1
+        host: myservice
+        subset: v2
 ```
 
 - The **http** block is an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute) 
@@ -111,11 +111,11 @@ kind: DestinationRule
 metadata:
   name: my-destination-rule
 spec:
-  host: myservice
+  host: myservice      # These rules apply to this host. Typically a Kubernetes Service
   subsets:
-  - name: v1
+  - name: v1           # Define a named subset 'v1'
     labels:
-      version: v1
+      version: v1      # Labels on 'host', e.g. labels on the Kubernetes Service
   - name: v2
     labels:
       version: v2
@@ -165,7 +165,7 @@ Expand the **Tasks** section below to do the exercise.
 <details>
     <summary> Tasks </summary>
 
-#### Task: Deploy sentences app and 2 versions of name services
+#### Task: Deploy sentences app WITH TWO VERSIONS of the name services
 
 ___
 
@@ -206,7 +206,7 @@ fashion.
 So why is this happening?
 
 > :bulb: Take a look at the label selector for the name service.
-> It doesn't specify a version...
+> It doesn't specify a version.  Compare this with the labels on the `name` Deployments by using `kubectl get deploy --show-labels`
 
 #### Task: Create a destination rule and apply it
 
@@ -222,13 +222,13 @@ kind: DestinationRule
 metadata:
   name: name-destination-rule
 spec:
-  host: name
+  host: name       # Apply to the name Kubernetes Service
   exportTo:
   - "."
   subsets:
-  - name: name-v1
+  - name: name-v1  # Define a subset 'name-v1'
     labels:
-      version: v1
+      version: v1  # That consists of the destinations (i.e. Pods) with this label
   - name: name-v2
     labels:
       version: v2
@@ -282,6 +282,10 @@ spec:
 kubectl apply -f 01-basic-traffic-routing/start/name-vs.yaml
 ```
 
+Immediately after applying this, you will see the output from the
+`loop-query.sh` change and strings with '(v2)' in them are no longer
+received.
+
 Go to **Graph** menu item in Kiali and select the **Versioned app graph** 
 from the drop down menu and observe the traffic flow. It may take a minute 
 before fully complete but you should see the traffic being routed to the 
@@ -330,6 +334,10 @@ spec:
 kubectl apply -f 01-basic-traffic-routing/start/name-vs.yaml
 ```
 
+Immediately after applying this, you will see the output from the
+`loop-query.sh` change and now only strings with '(v2)' in them are
+received.
+
 #### Task: Use the versioned app graph to observe route precedence in Kiali
 
 ___
@@ -365,7 +373,7 @@ In this exercise you learned what a virtual service is and how to route traffic
 to a destination service in kubernetes with an 
 [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute).
 
-> Kubernetes only supports traffic distribution based on instance scaling. 
+> Kubernetes only supports traffic distribution based on instance scaling. I.e. with the Kubernetes Service definition, we would need to scale the `name-v1` or `name-v2` Deployments to shift traffic.
 
 There is a lot more virtual services can do for traffic distribution like 
 match conditions for HTTPRoute on headers, uri, schemes, etc. HTTP redirects, 
@@ -387,8 +395,8 @@ Main takeaways are:
 * A virtual services **hosts** field is a user addressable destination and can 
 be virtual.
 
-* A virtual services **destination** must exist exist. In kubernetes this will 
-be a kubernetes service.
+* A virtual services **destination** must exist exist. In Kubernetes this will 
+be a Kubernetes Service.
 
 * A destination rule defines traffic policies that apply for the intended 
 service **after** routing has occurred with a virtual service. E.g. route 

@@ -48,7 +48,7 @@ health of your service mesh. It provides detailed metrics, Grafana access and
 integrates with Jaeger for distributed tracing.
 
 One of it's most powerful features are it's graphs. They provide a powerful way 
-to visualize the topology oy your service mesh. 
+to visualize the topology of your service mesh. 
 
 It provides four main graph renderings of the mesh telemetry.
 
@@ -179,12 +179,10 @@ Traffic is now flowing between the services. But that **doesn't** mean it is par
 ___
 
 
-Make sure **Namespace** is selected from the drop down at the top left and 
+Browse to **Applications** on the left hand menu. Click **Namespace** drop-down at the top left and 
 enter **your** namespace.
 
-![Select Namespace](images/kiali-namespace-select.png)
-
-Browse to **Applications** on the left hand menu and select `sentences`.
+Finally, select your `sentences` application from the center-part of the UI.
 
 You will see the application, workloads and services are discovered by Kiali. 
 But not much else.
@@ -242,7 +240,7 @@ service/name        ClusterIP   172.20.213.23    <none>        5000/TCP         
 service/sentences   NodePort    172.20.106.197   <none>        5000:32092/TCP   4m4s
 ```
 
-Run the following command to observe envoy proxy.
+Run the following command to observe that an envoy proxy container has been injected into the application.
 
 ```console
 kubectl get pods -o=custom-columns=NAME:.metadata.name,CONTAINERS:.spec.containers[*].name
@@ -350,6 +348,9 @@ name-v1-795cf79f69-clrw4        2/2     Running   0          8m41s
 sentences-v1-7cfbb658b6-rthxn   2/2     Running   0          8m41s
 ```
 
+If you re-inspect the application graph in Kiali, you will also
+notice, that the `age` service is no longer being shown.
+
 > Automatic sidecar injection provides a **pervasive** and homogenous approach 
 > to ensuring the features istio provides. For example telemetry like metrics 
 > and traces for observability. If you do not want a sidecar for a service, use 
@@ -360,9 +361,8 @@ sentences-v1-7cfbb658b6-rthxn   2/2     Running   0          8m41s
 ___
 
 
-An easy way to manually inject sidecars to services. Even if the deployment is 
-annotated with false is to run the following command to inject a sidecar for 
-the `age` service.
+To update the `age` deployment to again include a sidecar, w can use
+the following command:
 
 ```console
 cat 00-setup-introduction/age.yaml |grep -v inject | kubectl apply -f -
@@ -374,7 +374,7 @@ Use kubectl to see the number of pods running.
 kubectl get pods
 ```
 
-You should now see that the `age` service has **two** pods. E.g. it has 
+You should now see that the `age` service again has **two** pods. E.g. it has 
 a sidecar and is **again** part of the service mesh.
 
 ```
@@ -383,6 +383,9 @@ age-v1-7b9f67b7dc-qxlxx         2/2     Running   0          76s
 name-v1-795cf79f69-clrw4        2/2     Running   0          16m
 sentences-v1-7cfbb658b6-rthxn   2/2     Running   0          16m
 ```
+
+If you inspect the application graph in Kiali, you will see that the
+`age` service again is being shown.
 
 You didn't modify the static yaml with the above command. You simply took the 
 output of the cat command, piped it into grep which stripped out the annotation 
@@ -400,6 +403,8 @@ and versioned app graphs from the drop down at the top.
 > different graphs. Showing request distribution is something
 > we will be using often. Also ensure you are running the 
 > `loop-query.sh` script to generate traffic.
+
+> :bulb: Use the `Legend` button to explain the different objects being shown.
 
 ![Graph Details](images/kiali-details.png)
 
