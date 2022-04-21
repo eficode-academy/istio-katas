@@ -72,9 +72,9 @@ spec:
     - "myapp.example.com"
 ```
 
-- The servers block is where you define the port configurations, protocol 
-and the hosts exposed by the gateway. A host entry is specified as a dnsName 
-and should be specified using the FQDN format. 
+- The `servers` block is where you define the port configurations, protocol
+and the hosts exposed by the gateway. A host entry is specified as a DNS name
+and should be specified using the FQDN format.
 
   > You can use a wildcard character in the **left-most** component of the 
   > `hosts` field. E.g. `*.example.com`. 
@@ -333,6 +333,11 @@ menu and select checkboxes as shown in the below image.
 
 It may take a little bit before the graph updates but, eventually, you 
 should see that the request duration is trending towards five seconds.
+
+Similarly, the versioned graph view can show the 95th percentile of response times:
+
+![Sentences delay](images/kiali-sentences-fixed-delay-versioned-graph.png)
+
 
 </details>
 

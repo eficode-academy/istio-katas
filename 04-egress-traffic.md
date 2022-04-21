@@ -88,10 +88,10 @@ spec:
   resolution: DNS
 ```
 
-The `hosts` field is used to select matching `hosts` in virtual services 
-and destination rules. The `resolution` field is used to determine how the 
-proxy will resolve IP addresses of the end points. The `exportTo` field scopes 
-the service entry to the namespace where it is defined.
+The `hosts` field is used to select matching `hosts` in virtual services
+and destination rules. The `resolution` field is used to determine how the
+proxy will resolve IP addresses of the end points. The `exportTo` field scopes
+the service entry to the namespace where it is defined
 
 > :bulb: The `exportTo` field is important for this exercise. **Not** 
 > scoping the service entry to your namespace will open the external 
@@ -216,10 +216,10 @@ spec:
 - The route uses the reserved keyword `mesh` implying that this rule applies 
 to the sidecars in the mesh. 
 
-- The scopeTo field ensures the virtual service is applied only to the present 
+- The exportTo field ensures the virtual service is applied only to the present
 namespace. 
 
-- The **full name** of the `istio-egressgateway` service is defined instead 
+- The **full DNS name** of the `istio-egressgateway` service is defined instead
 of the shortname because the gateway is located in the `istio-system` namespace.
 
 > :bulb: Istio will translate a **short name** based one the **namespace** of the 
@@ -392,7 +392,7 @@ ___
 Tail the logs.
 
 ```console
-export API_POD=$(kubectl get pod -l app=sentences,mode=api -o jsonpath={.items..metadata.name})
+kubectl logs "$API_POD" --tail=20 --follow
 ```
 
 Now you should be getting a 200(OK) response from the external service. 
