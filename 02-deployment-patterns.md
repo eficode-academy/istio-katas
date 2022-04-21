@@ -414,10 +414,14 @@ spec:
         subset: v2
       weight: 10
 ```
-In the above example we define a traffic distribution percentage with the 
-`weight` fields on the destinations of the HTTPRoute. The `v1` workload of 
-`my-service` destination will receive 90% of **all** traffic while the `v2` 
-workload of `my-service` will receive 10% of **all** traffic.
+
+In the above example we define a traffic distribution percentage with
+the `weight` fields on the destinations of the HTTPRoute. The `v1`
+workload of `my-service` destination will receive 90% of **all**
+traffic while the `v2` workload of `my-service` will receive 10% of
+**all** traffic.  The `weight` field is not percentages and
+distribution is relative to the sum of weights, which may be different
+from 100.
 
 ### Overview
 
@@ -449,7 +453,7 @@ Expand the **Tasks** section below to do the exercise.
 <details>
     <summary> Tasks </summary>
 
-#### Task: Deploy the sentences app with `name-v3`
+#### Task: Deploy the sentences app with three version of the `name` service.
 
 ___
 
@@ -461,7 +465,7 @@ kubectl apply -f 02-deployment-patterns/start/name-v2/
 kubectl apply -f 02-deployment-patterns/start/name-v3/
 ```
 
-#### Task: Add `name-v3` in `name-dr.yaml`
+#### Task: Open file `02-deployment-patterns/start/name-dr.yaml` and add `name-v3`:
 
 ___
 
@@ -494,14 +498,14 @@ spec:
   gateways:
   - mesh
   http:
-  - match:
-    - headers:
-        x-test:
-          exact: use-v3
-    route:
-    - destination:
-        host: name
-        subset: name-v3
+  - match:                # Add from here...
+    - headers:            #
+        x-test:           #
+          exact: use-v3   #
+    route:                #
+    - destination:        #
+        host: name        #
+        subset: name-v3   # ...to here
   - route:
     - destination:
         host: name
@@ -573,11 +577,11 @@ spec:
     - destination:
         host: name
         subset: name-v1
-      weight: 90
+      weight: 90                # Add this, NOTE: 'route' removed
     - destination:
         host: name
         subset: name-v2
-      weight: 10
+      weight: 10                # and this
 ```
 
 > :bulb: The weight is distributed by **route** so the destination for `v2` must 
