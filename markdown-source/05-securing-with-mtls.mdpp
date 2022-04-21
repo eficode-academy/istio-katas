@@ -373,11 +373,10 @@ Notice that traffic is plain text HTTP traffic and is now allowed as
 
 ___
 
-An entry point in the `istio-ingressgateway` was created when you deployed the 
-sentence application services in the first task. Route the traffic through the 
-gateway.
-
-Run the loop-query.sh script with the option -g.
+An ingress gateway entry point in the `istio-ingressgateway` was
+created when you deployed the sentence application services in the
+first task. Route the traffic through the gateway by running the
+loop-query.sh script with the option -g.
 
 ```console
 ./scripts/loop-query.sh -g $STUDENT_NS.sentences.$TRAINING_NAME.eficode.academy
@@ -515,7 +514,7 @@ pod/age-v1-6d5946d477-f7fdp         2/2     Terminating   0          57m
 You really shouldn't see any interruptions from the `loop-query.sh` script 
 running in the terminal.
 
-If a POD has no sidecar then the policy **cannot be applied**...
+If a POD has no sidecar then the PeerAuthentication policy **cannot be applied**.
 
 #### Task: Observe the traffic flow with Kiali
 
