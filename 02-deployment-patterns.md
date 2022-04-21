@@ -71,7 +71,7 @@ Istio allows to use other parts of **incoming** requests and match them to value
 
 - **header:** Matches the request headers
 
-**NOTE:** Headers need to be **lower** cased and separated by hyphens. If 
+**NOTE:** Headers need to be **lower** cased and may use hyphens. If
 headers is used uri, schema, method and authority are ignored.
 
 **Match Types**
