@@ -395,12 +395,12 @@ Tail the logs.
 kubectl logs "$API_POD" --tail=20 --follow
 ```
 
-Now you should be getting a 200(OK) response from the external service. 
+Now you should be getting a 200(OK) response from the external service. Also notice, that the external response time was slightly above 1s because we are calling the 'delay service' at `http://httpbin.org/delay/1`:
 
 ```
 INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 12:21:14] "GET / HTTP/1.1" 200 -
 WARNING:root:Response was: 200                <-------------------- OK Response
-WARNING:root:Operation 'api' took 374.259ms
+WARNING:root:Operation 'api' took 1073.259ms
 ```
 
 #### Task: Observe the traffic flow with Kiali
@@ -426,7 +426,7 @@ internal service registry. But we can now apply some of the Istio features to
 the external service. To demonstrate this you will create a virtual service for 
 traffic to httpbin with a timeout of `0.5s`.
 
-> The api service asks httpbin.org for a response delay of 1 second.
+> The api service asks httpbin.org for a response delay of 1 second and since we are now enforcing a local timeout of 0.5s we are basically configuring the external call to timeout!
 
 Create a file called `api-egress-vs.yaml` in 
 `04-egress-traffic/start/`.
@@ -523,12 +523,12 @@ Tail the logs.
 kubectl logs "$API_POD" --tail=20 --follow
 ```
 
-You should be getting a 200(OK) response from the external service. 
+You should be getting a 200(OK) response from the external service and a delay of 1 second:
 
 ```
 INFO:werkzeug:127.0.0.1 - - [10/Aug/2021 12:21:14] "GET / HTTP/1.1" 200 -
 WARNING:root:Response was: 200                <-------------------- OK Response
-WARNING:root:Operation 'api' took 374.259ms
+WARNING:root:Operation 'api' took 1080.768ms
 ```
 
 #### Task: Observe the traffic flow with Kiali
