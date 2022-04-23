@@ -111,31 +111,30 @@ update both Istio and sentences application metrics.
 ___
 
 
-To retrieve metrics from a POD in the sentences application we can query 
-the metrics port 8000. 
+To retrieve metrics from a POD in the sentences application we can
+query the metrics port 8000. To do that, we deploy a test tool:
 
-Execute kubectl to get pods and find a node ip.
+```console
+kubectl apply -f 07-istio-metrics-tour/multitool
+```
 
+and when the POD is ready, we run a shell inside the test tool container:
+
+```console
+kubectl exec -it `kubectl get po -l app=multitool -o jsonpath='{.items..metadata.name}'` -- bash
+```
+
+Next, look-up an IP of one of the sentence application PODs:
 
 ```console
 kubectl get pods -o wide
 ```
 
-This should produce output that looks like the following.
-
-```
-NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE                                        NOMINATED NODE   READINESS GATES
-age-7584598b58-zv4wb         1/1     Running   0          14m   10.0.52.63    ip-10-0-57-188.eu-west-1.compute.internal   <none>           <none>
-name-7cbf469c96-l2x42        1/1     Running   0          14m   10.0.42.100   ip-10-0-32-58.eu-west-1.compute.internal    <none>           <none>
-sentences-5576c79877-vpgmq   1/1     Running   0          14m   10.0.44.91    ip-10-0-32-58.eu-west-1.compute.internal    <none>           <none>
-```
-
-Run curl with `IP` of one of the nodes on port `8000` for `/metrics` and grep 
-the output for `sentence_requests_total`. E.g from the above example this 
-would be `curl -s 10.0.44.91:8000/metrics | grep sentence_requests_total`
+Run curl towards one of the POD IPs on port `8000` towards the `/metrics` path. Use `grep`
+to filter the output for `requests_total`.
 
 ```console
-curl -s <Any node IP>:8000/metrics | grep sentence_requests_total
+curl -s <POD IP>:8000/metrics | grep requests_total
 ```
 
 This will return something like the following.
@@ -148,6 +147,8 @@ sentence_requests_total{type="name"} 584.0
 
 This shows that the POD had received `584` requests from the 
 `loop-query.sh` script when we fetched metrics.
+
+Keep the terminal inside the test tool - we will use it again later.
 
 #### Task: Inject Istio sidecar to sentences services
 
@@ -201,8 +202,11 @@ Annotations:  prometheus.io/path: /metrics
               prometheus.istio.io/merge-metrics: false
 ```
 
-So there is no change in how Prometheus will scrape POD metrics. It will still
-use port `8000` which is handled by the sentences application container.
+So there is no change in how Prometheus will scrape POD metrics. It
+will still use port `8000` which is handled by the sentences
+application container. Also, if we re-run the curl command from
+previously, we will still only see the `sentence_requests_total`
+metric.
 
 #### Task: Merge Istio and application metrics to one scrape point
 
@@ -219,6 +223,8 @@ Re-deploy the sentences application service with this annotation removed as well
 
 ```console
 cat 07-istio-metrics-tour/start/sentences.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
+cat 07-istio-metrics-tour/start/name.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
+cat 07-istio-metrics-tour/start/age.yaml |egrep -v 'inject|merge-metrics' | kubectl apply -f -
 ```
 
 > :bulb: It may take a few seconds for the old PODs to terminate.
@@ -240,17 +246,11 @@ ___
 Now that we have a single merged scrape endpoint for the application metrics 
 and the Istio metrics we can fetch them both. 
 
-First, list PODs to get the cluster IP of the sentences application service as 
-it has changed when we changed the prometheus annotation.
+Re-run the `curl` command inside the test-tool as we did previously,
+but this time use the update scrape endpoint information:
 
 ```console
-kubectl get pods -o wide
-```
-
-Then run the curl command as before but use the new **merged** scrape endpoint.
-
-```console
-curl -s <SENTENCES POD IP>:15020/stats/prometheus | grep requests_total
+curl -s <POD IP>:15020/stats/prometheus | grep requests_total
 ```
 
 The result of which should look somewhat like the following for e.g. 
@@ -355,4 +355,5 @@ For an overview of the standard Istio **service-level** metrics see this
 
 ```console
 kubectl delete -f 07-istio-metrics-tour/start/
+kubectl delete -f 07-istio-metrics-tour/multitool
 ```
