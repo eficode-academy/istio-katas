@@ -229,6 +229,7 @@ cat 07-istio-metrics-tour/start/age.yaml |egrep -v 'inject|merge-metrics' | kube
 ```
 
 > :bulb: It may take a few seconds for the old PODs to terminate.
+> Wait for this before you continue.
 
 If we now inspect the POD annotations as above, we see the metrics scrape 
 endpoint has moved from the application to the sidecar.
