@@ -420,9 +420,15 @@ In the above example we define a traffic distribution percentage with
 the `weight` fields on the destinations of the HTTPRoute. The `v1`
 workload of `my-service` destination will receive 90% of **all**
 traffic while the `v2` workload of `my-service` will receive 10% of
-**all** traffic.  The `weight` field is not percentages and
-distribution is relative to the sum of weights, which may be different
-from 100.
+**all** traffic. 
+
+> NB: Before `v1.13` of Istio, `weight` were thought to be percentages, 
+> and the sum of the `weight` fields across the
+> destinations of a single route `SHOULD BE == 100`.
+>
+> With Istio `v1.13` weights specify relative proportions, and
+> distribution is relative to the sum of weights, which may be different
+> from 100. A destination will receive `weight/(sum of all weights)` requests.
 
 ### Overview
 
