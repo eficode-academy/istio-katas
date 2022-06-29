@@ -264,7 +264,7 @@ external traffic through it to the sentences service.
 First create a file called `sentences-ingress-gw.yaml` in the directory 
 `08-distributed-tracing/start/`.
 
-> :bulb: Edit the hosts field with **your** namespace.
+> :bulb: Edit the hosts field with **your** namespace. (With `envsubst` in the commands below.)
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
