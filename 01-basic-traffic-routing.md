@@ -81,7 +81,8 @@ You could use it for consolidating routes to all services for an application.
 rule and **must** exist. In kubernetes this is a **service** and generally 
 takes a form like `reviews`, `ratings`, etc.
     
-- The **weight** field can be used to specify the distribution of traffic.
+- The **weight** field can be used to specify the distribution of traffic,
+    Within a single route.
 
 - The `mesh` field in the gateways block is a reserved keyword used to imply 
 **all** sidecars in the mesh.
