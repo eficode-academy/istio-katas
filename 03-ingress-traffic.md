@@ -336,6 +336,8 @@ It may take a little bit before the graph updates but, eventually, you
 should see that the request duration is trending towards five seconds.
 
 Similarly, the versioned graph view can show the 95th percentile of response times:
+    
+> ❗ NB: only some versions of Kiali show the fault-injection response times.
 
 ![Sentences delay](images/kiali-sentences-fixed-delay-versioned-graph.png)
 
