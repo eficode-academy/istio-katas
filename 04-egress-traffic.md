@@ -180,7 +180,7 @@ istio-egressgateway-8679c48588-2p8vw    istio-proxy
 
 </details>
 
-In order to route the traffic we, of course, use a virtual service. The GateWay 
+In order to route the traffic we, of course, use a virtual service. The gateway 
 just defines the **exit point** and we still need to define the route.
 
 > **Expand the example below for more details.**
