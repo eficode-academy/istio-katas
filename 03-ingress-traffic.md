@@ -353,7 +353,7 @@ of the sentence service.
 
 Istio's default installation provide it's own configuration model (Gateway) 
 for ingress traffic while also supporting Kubernetes ingress. The Istio  
-gateway consists a deployment, a service and a **standalone** envoy proxy.
+gateway consists of a deployment, a service and a **standalone** envoy proxy.
 
 > The ingress gateway we used in our training environment is located in the 
 > `istio-ingress` namespace.
@@ -361,11 +361,11 @@ gateway consists a deployment, a service and a **standalone** envoy proxy.
 The main takeaways are:
 
 * When you defined the gateway CRD for your namespace you configured an entry 
-point in the stand alone envoy proxy
+point in the standalone envoy proxy
 
 * If traffic is not flowing through the mesh, e.g through the envoy sidecars, 
 then you cannot leverage Istio features, e.g. the traffic between the gateway 
-and your front end service
+and your frontend service
 
 # Cleanup
 
