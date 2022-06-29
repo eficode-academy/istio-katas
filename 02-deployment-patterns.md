@@ -359,7 +359,8 @@ services in the application tree.
 
 As the header is **not** propagated to the name service the default route is hit. 
 > You would need to modify the sentence service to propagate the header onwards 
-> so the virtual service could match on it.
+> so the virtual service could match on it. If you look in the code for the
+> application, you can see which headers are currently forwarded.
 
 ![Bad Header](images/kiali-bad-header.png)
 
