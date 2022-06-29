@@ -647,7 +647,7 @@ percentage of the **overall** traffic change to look more like the 90/10 weight.
 ___
 
 
-Stop sending traffic to `v3` with `./scripts/loop-query.sh.
+Stop sending traffic to `v3` with `./scripts/loop-query.sh -h 'x-test: use-v3'`.
 
 Remove the `name-v1` subset from `name-dr.yaml` file.
 
