@@ -334,6 +334,9 @@ ___
 Browse to Jaeger and select the options as shown below and hit find traces.
 
 You should be able to see the request flowing through the ingress gateway now.
+    
+> NB: it might take a minute or two for the traces to show up,
+> so don't get worried if you can't see them right away!
 
 ![Jaeger Ingress Search](images/jaeger-ingress-search.png)
 
