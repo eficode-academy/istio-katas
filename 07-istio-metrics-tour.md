@@ -206,7 +206,7 @@ Annotations:  prometheus.io/path: /metrics
 So there is no change in how Prometheus will scrape POD metrics. It
 will still use port `8000` which is handled by the sentences
 application container. Also, if we re-run the curl command from
-previously, we will still only see the `sentence_requests_total`
+previously (with the new pod IP,) we will still only see the `sentence_requests_total`
 metric.
 
 #### Task: Merge Istio and application metrics to one scrape point
