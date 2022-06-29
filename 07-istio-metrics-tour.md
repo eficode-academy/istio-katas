@@ -186,6 +186,7 @@ If we run `kubectl get pods` now, we will see that we have two containers per
 POD. 
 
 > :bulb: It may take a few seconds for the old PODs to terminate.
+> Wait for this before you continue.
 
 Next, observe the values of the Prometheus annotations:
 
