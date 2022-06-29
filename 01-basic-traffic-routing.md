@@ -50,7 +50,7 @@ metadata:
   name: myservice-route
 spec:
   hosts:
-  - myservice               # Apply these rules for trafic to this host
+  - myservice               # Apply these rules for traffic to this host
   gateways:
   - mesh
   http:
