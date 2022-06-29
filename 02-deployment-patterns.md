@@ -525,6 +525,9 @@ spec:
 
 > Again, notice the indentation. `name-v3` will only be hit if the header 
 > match is true. The other two routes are evaluated top down.
+  
+> ❗ If you just did the blue/green exercise, 
+> make sure your routes to `name-v1` and `name-v2` are like above.
 
 ```console
 kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
