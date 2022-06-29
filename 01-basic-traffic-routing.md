@@ -58,11 +58,6 @@ spec:
     - destination:
         host: myservice     # Send to this Kubernetes Service
         subset: v1          # but only this subset of the Service
-      weight: 25
-    - destination:
-        host: myservice
-        subset: v2
-      weight: 75
 ```
 
 - The **http** block is an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute) 
