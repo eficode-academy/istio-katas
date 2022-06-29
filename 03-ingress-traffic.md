@@ -251,7 +251,7 @@ Substitute the environment variable(s) and apply the output with kubectl.
 envsubst < 03-ingress-traffic/start/sentences-ingress-vs.yaml | kubectl apply -f -
 ```
 
-> :bulb: If want or need to do an environment substitution on multiple files 
+> :bulb: If you want or need to do an environment substitution on multiple files 
 > you can use a for loop to do so.
 > `for file in 03-ingress-traffic/start/*.yaml; do envsubst < $file | kubectl apply -f -; done`
 
