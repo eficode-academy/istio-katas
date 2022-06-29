@@ -255,10 +255,10 @@ ___
 
 The traffic flow in our sentences application is pretty simple with low 
 complexity. But in much more complex system with a much more complicated 
-traffic flow and many more service the ability of the envoy proxy to provide 
+traffic flow and many more services, the ability of the envoy proxy to provide 
 traces without changes required at the application level is quite powerful.
 
-As an example you will create an ingress gateway and virtual service to route 
+As an example you will create an IngressGateway and VirtualService to route 
 external traffic through it to the sentences service.
 
 First create a file called `sentences-ingress-gw.yaml` in the directory 
