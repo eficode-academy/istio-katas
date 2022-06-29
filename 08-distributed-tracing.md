@@ -48,7 +48,7 @@ the immediate one from which you are observing a delay. In fact, it might
 be deep in the application tree.
 
 Distributed traces with spans provide a view of the life of a request as it 
-travels across multiple hosts and service.
+travels across multiple hosts and services.
 
 > The “span” is the primary building block of a distributed trace, representing 
 > an individual unit of work done in a distributed system. Each component of the 
