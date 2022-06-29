@@ -58,9 +58,11 @@ spec:
     - destination:
         host: myservice     # Send to this Kubernetes Service
         subset: v1          # but only this subset of the Service
+      weight: 25
     - destination:
         host: myservice
         subset: v2
+      weight: 75
 ```
 
 - The **http** block is an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute) 
@@ -78,6 +80,8 @@ You could use it for consolidating routes to all services for an application.
 - The **destination** field specifies the **actual** destination of the routing 
 rule and **must** exist. In kubernetes this is a **service** and generally 
 takes a form like `reviews`, `ratings`, etc.
+    
+- The **weight** field can be used to specify the distribution of traffic.
 
 - The `mesh` field in the gateways block is a reserved keyword used to imply 
 **all** sidecars in the mesh.
