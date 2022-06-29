@@ -643,7 +643,9 @@ ___
 Go to Graph menu item and select the **Versioned app graph** from the drop 
 down menu. Select the checkboxes as shown in the below image.
 
-Now we see a missing padlock on the traffic towards `v1` of the name service.
+Now we see a missing padlock on the traffic towards `v1` of the name service. 
+(It might take a second to update, but if you select the connection,
+you may already be able to see the "percentage of mTLS" traffic decreasing.)
 
 ![No mTLS towards v1](images/kiali-mtls-destrule-anno.png)
 
