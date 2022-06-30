@@ -396,7 +396,7 @@ Main takeaways are:
 * A virtual services **hosts** field is a user addressable destination and can 
 be virtual.
 
-* A virtual services **destination** must exist exist. In Kubernetes this will 
+* A virtual services **destination** must exist. In Kubernetes this will 
 be a Kubernetes Service.
 
 * A destination rule defines traffic policies that apply for the intended 
