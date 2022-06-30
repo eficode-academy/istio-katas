@@ -903,7 +903,7 @@ The main takeaways are:
 
 - Peer authentication policies only apply to workloads with a sidecar
 
-- Peer authentication policies apply to the **all** workloads within the 
+- Peer authentication policies apply to **all** the workloads within the 
 mesh if **not** namespaced
 
 - The `STRICT` policy means strict and a `PERMISSIVE` policy is a good way to get started
