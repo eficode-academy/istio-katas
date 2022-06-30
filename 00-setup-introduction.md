@@ -423,7 +423,8 @@ has more features like the Istio Wizards feature which lets you create and
 delete istio configuration on the fly. It can do validation on the most common 
 Istio objects and more. 
 
-See the [documentation](https://kiali.io/documentation/latest/features/) 
+    
+See the [documentation](https://kiali.io/docs/features/) 
 for a more complete overview.
 
 Main takeaways are:
