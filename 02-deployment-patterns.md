@@ -253,7 +253,7 @@ route was used.
 ___
 
 
-In the `name-vs-yaml` file remove the default route and apply the changes.
+In the `name-vs.yaml` file remove the default route and apply the changes.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
