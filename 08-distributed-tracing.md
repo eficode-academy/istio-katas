@@ -337,6 +337,17 @@ You should be able to see the request flowing through the ingress gateway now.
     
 > NB: it might take a minute or two for the traces to show up,
 > so don't get worried if you can't see them right away!
+>
+> :bulb: For demonstrating purposes, the Jaeger and Istio deployed during 
+> a training has been configured to collect **all** traces;
+> their default settings is to only keep between 0.1-1% of the traces.
+>
+> For performance: In a production-system with thousands or even millions of requests each second,
+> collecting everything would be infeasible, but the `loop-query`-script,
+> only sends a couple of requests each second.
+>
+> For practicalities: Storing everything means we won't have to "get lucky" (in terms of this exercise) 
+> when the system chooses which traces to keep or discard.
 
 ![Jaeger Ingress Search](images/jaeger-ingress-search.png)
 
