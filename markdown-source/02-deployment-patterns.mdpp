@@ -252,7 +252,7 @@ route was used.
 ___
 
 
-In the `name-vs-yaml` file remove the default route and apply the changes.
+In the `name-vs.yaml` file remove the default route and apply the changes.
 
 ```yaml
 apiVersion: networking.istio.io/v1beta1
@@ -358,7 +358,8 @@ services in the application tree.
 
 As the header is **not** propagated to the name service the default route is hit.
 > You would need to modify the sentence service to propagate the header onwards
-> so the virtual service could match on it.
+> so the virtual service could match on it. If you look in the code for the
+> application, you can see which headers are currently forwarded.
 
 ![Bad Header](images/kiali-bad-header.png)
 
@@ -418,9 +419,15 @@ In the above example we define a traffic distribution percentage with
 the `weight` fields on the destinations of the HTTPRoute. The `v1`
 workload of `my-service` destination will receive 90% of **all**
 traffic while the `v2` workload of `my-service` will receive 10% of
-**all** traffic.  The `weight` field is not percentages and
-distribution is relative to the sum of weights, which may be different
-from 100.
+**all** traffic.
+
+> NB: Before `v1.13` of Istio, `weight` were thought to be percentages,
+> and the sum of the `weight` fields across the
+> destinations of a single route `SHOULD BE == 100`.
+>
+> With Istio `v1.13` weights specify relative proportions, and
+> distribution is relative to the sum of weights, which may be different
+> from 100. A destination will receive `weight/(sum of all weights)` requests.
 
 ### Overview
 
@@ -517,6 +524,9 @@ spec:
 
 > Again, notice the indentation. `name-v3` will only be hit if the header
 > match is true. The other two routes are evaluated top down.
+
+> ❗ If you just did the blue/green exercise,
+> make sure your routes to `name-v1` and `name-v2` are like above.
 
 ```console
 kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
@@ -636,7 +646,7 @@ percentage of the **overall** traffic change to look more like the 90/10 weight.
 ___
 
 
-Stop sending traffic to `v3` with `./scripts/loop-query.sh.
+Stop sending traffic to `v3` with `./scripts/loop-query.sh -h 'x-test: use-v3'`.
 
 Remove the `name-v1` subset from `name-dr.yaml` file.
 
@@ -698,6 +708,16 @@ kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
 > :bulb: You could simply adjust the weight values in the
 > `name-vs.yaml` file. But for the next exercise it will cause
 > less confusion if the subsets and destinations are removed.
+
+> NB: do note that in the above we're removing a subset from the DestinationRule,
+> and changing the VirtualService, but we're applying the DestinationRule first.
+> This means that theoretically the old VirtualService could be routing to a subset
+> that doesn't exist, and drop traffic. This isn't an issue during our exercises.
+>
+> But in "real life" when you're removing subsets, you want to update your VirtualServices first,
+> since you don't want to use a subset that's going to disappear.
+> And when you're adding subsets, you want to update the DestinationRules first,
+> because we want the subsets to be there, before we're updating our VirtualServices.
 
 Finally, delete the `name-v1` workload.
 
@@ -985,6 +1005,8 @@ The main takeaways are:
 * Istio enables you to apply various deployment patterns inside the mesh
 
 * The match field is quite powerful
+
+* The order in which you update DestinationRules and VirtualServices is important
 
 * You should always provide a default route when using a match
 
