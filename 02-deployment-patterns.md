@@ -710,6 +710,16 @@ kubectl apply -f 02-deployment-patterns/start/name-vs.yaml
 > `name-vs.yaml` file. But for the next exercise it will cause 
 > less confusion if the subsets and destinations are removed.
 
+> NB: do note that in the above we're removing a subset from the DestinationRule,
+> and changing the VirtualService, but we're applying the DestinationRule first.
+> This means that theoretically the old VirtualService could be routing to a subset
+> that doesn't exist, and drop traffic. This isn't an issue during our exercises.
+>
+> But in "real life" when you're removing subsets, you want to update your VirtualServices first,
+> since you don't want to use a subset that's going to disappear.
+> And when you're adding subsets, you want to update the DestinationRules first,
+> because we want the subsets to be there, before we're updating our VirtualServices.
+
 Finally, delete the `name-v1` workload. 
 
 ```console
