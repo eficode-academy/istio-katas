@@ -643,6 +643,8 @@ Go to Graph menu item and select the **Versioned app graph** from the drop
 down menu. Select the checkboxes as shown in the below image.
 
 Now we see a missing padlock on the traffic towards `v1` of the name service.
+(It might take a second to update, but if you select the connection,
+you may already be able to see the "percentage of mTLS" traffic decreasing.)
 
 ![No mTLS towards v1](images/kiali-mtls-destrule-anno.png)
 
@@ -900,7 +902,7 @@ The main takeaways are:
 
 - Peer authentication policies only apply to workloads with a sidecar
 
-- Peer authentication policies apply to the **all** workloads within the
+- Peer authentication policies apply to **all** the workloads within the
 mesh if **not** namespaced
 
 - The `STRICT` policy means strict and a `PERMISSIVE` policy is a good way to get started
