@@ -55,11 +55,8 @@ spec:
   http:
   - route:
     - destination:
-        host: myservice     # Send to this Kubernetes Service
-        subset: v1          # but only this subset of the Service
-    - destination:
-        host: myservice
-        subset: v2
+        host: myservice     # Send to this Kubernetes Deployment
+        subset: v1          # but only this subset of the Deployment
 ```
 
 - The **http** block is an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute)
@@ -77,6 +74,9 @@ You could use it for consolidating routes to all services for an application.
 - The **destination** field specifies the **actual** destination of the routing
 rule and **must** exist. In kubernetes this is a **service** and generally
 takes a form like `reviews`, `ratings`, etc.
+
+- The **weight** field can be used to specify the distribution of traffic,
+    Within a single route.
 
 - The `mesh` field in the gateways block is a reserved keyword used to imply
 **all** sidecars in the mesh.
@@ -115,7 +115,7 @@ spec:
   subsets:
   - name: v1           # Define a named subset 'v1'
     labels:
-      version: v1      # Labels on 'host', e.g. labels on the Kubernetes Service
+      version: v1      # Labels on 'host', e.g. labels on the Kubernetes Deployment
   - name: v2
     labels:
       version: v2
