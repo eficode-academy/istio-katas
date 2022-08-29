@@ -185,6 +185,7 @@ If we run `kubectl get pods` now, we will see that we have two containers per
 POD.
 
 > :bulb: It may take a few seconds for the old PODs to terminate.
+> Wait for this before you continue.
 
 Next, observe the values of the Prometheus annotations:
 
@@ -204,7 +205,7 @@ Annotations:  prometheus.io/path: /metrics
 So there is no change in how Prometheus will scrape POD metrics. It
 will still use port `8000` which is handled by the sentences
 application container. Also, if we re-run the curl command from
-previously, we will still only see the `sentence_requests_total`
+previously (with the new pod IP,) we will still only see the `sentence_requests_total`
 metric.
 
 #### Task: Merge Istio and application metrics to one scrape point
@@ -227,6 +228,7 @@ cat 07-istio-metrics-tour/start/age.yaml |egrep -v 'inject|merge-metrics' | kube
 ```
 
 > :bulb: It may take a few seconds for the old PODs to terminate.
+> Wait for this before you continue.
 
 If we now inspect the POD annotations as above, we see the metrics scrape
 endpoint has moved from the application to the sidecar.
