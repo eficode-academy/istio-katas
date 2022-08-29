@@ -1007,6 +1007,8 @@ The main takeaways are:
 
 * The match field is quite powerful
 
+* The order in which you update DestinationRules and VirtualServices is important
+
 * You should always provide a default route when using a match
 
 * The **application** MUST propagate the headers in order for the virtual 
