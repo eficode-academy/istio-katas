@@ -14,31 +14,31 @@ These exercises will demonstrate how to use mutual TLS inside the mesh between
 PODs with the Istio sidecar injected and also from mesh-external services
 accessing the mesh through an ingress gateway.
 
-You will be using several Istio custom resource 
-definitions([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)) 
+You will be using several Istio custom resource
+definitions([CRD's](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/))
 for this.
 
-- [PeerAuthentication](https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication-MutualTLS) - 
+- [PeerAuthentication](https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication-MutualTLS) -
 Applies to requests that a service **receives**
 
-- [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/#DestinationRule) - 
+- [DestinationRule](https://istio.io/latest/docs/reference/config/networking/destination-rule/#DestinationRule) -
 What type of TLS sidecar **sends**
 
-- [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings) - 
+- [Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings) -
 Specify TLS settings for external service
 
-Istio provides two types of authentication policies of which *peer 
-authentication* is one of them. 
+Istio provides two types of authentication policies of which *peer
+authentication* is one of them.
 
-Peer authentication is used for **service-to-service** authentication 
-to verify the client making the connection and secure the 
-service-to-service communication. Istio uses 
-[mutual TLS](https://en.wikipedia.org/wiki/Mutual_authentication)(mTLS) 
-for transport authentication. 
+Peer authentication is used for **service-to-service** authentication
+to verify the client making the connection and secure the
+service-to-service communication. Istio uses
+[mutual TLS](https://en.wikipedia.org/wiki/Mutual_authentication)(mTLS)
+for transport authentication.
 
-This provides a **strong identity** for each workload. 
+This provides a **strong identity** for each workload.
 
-> Istio has it's own certificate authority(CA) and securely provisions strong 
+> Istio has it's own certificate authority(CA) and securely provisions strong
 > identities to every workload with X.509 certificates.
 
 <details>
@@ -48,30 +48,30 @@ Istio provisions keys and certificates through the following flow:
 
 - istiod offers a gRPC service to take certificate signing requests (CSRs).
 
-- When started, the Istio agent creates the private key and CSR, and then 
+- When started, the Istio agent creates the private key and CSR, and then
 sends the CSR with its credentials to istiod for signing.
 
-- The CA in istiod validates the credentials carried in the CSR. Upon 
+- The CA in istiod validates the credentials carried in the CSR. Upon
 successful validation, it signs the CSR to generate the certificate.
 
-- When a workload is started, Envoy requests the certificate and key from 
-the Istio agent in the same container via the Envoy secret discovery 
+- When a workload is started, Envoy requests the certificate and key from
+the Istio agent in the same container via the Envoy secret discovery
 service (SDS) API.
 
-- The Istio agent sends the certificates received from istiod and the private 
+- The Istio agent sends the certificates received from istiod and the private
 key to Envoy via the Envoy SDS API.
 
-- Istio agent monitors the expiration of the workload certificate. 
+- Istio agent monitors the expiration of the workload certificate.
 
 > The above process repeats periodically for certificate and key rotation.
 
 </details>
 
-Peer authentication is normally enabled at the `mesh` level, as in our 
-training infrastructure, which means traffic is secured by **default** 
-for all services in the cluster **without** requiring code changes. 
+Peer authentication is normally enabled at the `mesh` level, as in our
+training infrastructure, which means traffic is secured by **default**
+for all services in the cluster **without** requiring code changes.
 
-There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`, 
+There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`,
 `PERMISSIVE` and `STRICT`.
 
 <details>
@@ -79,7 +79,7 @@ There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`,
 
 - `UNSET` - Modes is inherited from parent, defaults to PERMISSIVE
 
-- `DISABLE` - Connection is **not** tunneled 
+- `DISABLE` - Connection is **not** tunneled
 
 - `PERMISSIVE` - Connection can be either plaintext or mTLS tunnel
 
@@ -89,21 +89,21 @@ There are four modes that can be set for mTLS. They are `UNSET`, `DISABLE`,
 
 </details>
 
-> :bulb: If you have not completed exercise 
-> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
+> :bulb: If you have not completed exercise
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label
 > your namespace with `istio-injection=enabled`.
 
 ## Exercise: Mutual TLS Inside the Mesh
 
-You will deploy all the services for the sentences application to observe 
-the affects of mTLS configuration. You will first observe that the default 
-mesh wide configuration will be inherited by your namespace. Afterwards you 
-will apply mTLS configuration to **your** namespace and observe the affects 
+You will deploy all the services for the sentences application to observe
+the affects of mTLS configuration. You will first observe that the default
+mesh wide configuration will be inherited by your namespace. Afterwards you
+will apply mTLS configuration to **your** namespace and observe the affects
 of STRICT and PERMISSIVE policies.
 
 ### PeerAuthentication
 
-The PeerAuthentication CRD is used to specify the mTLS settings for a workloads 
+The PeerAuthentication CRD is used to specify the mTLS settings for a workloads
 **requests**.
 
 An example of a peer authentication policy is seen below:
@@ -131,30 +131,30 @@ spec:
     mode: STRICT
 ```
 
-The above policy says to allow **both** plain-text and mTLS traffic for **all** 
-workloads in the `foo` namespace but **require** mTLS for the workload `myapp` 
+The above policy says to allow **both** plain-text and mTLS traffic for **all**
+workloads in the `foo` namespace but **require** mTLS for the workload `myapp`
 in the `foo` namespace.
 
 - The `namespace` definition scopes the policy to the defined namespace.
-If a policy is **not** namespace scoped it applies to **all** workloads 
+If a policy is **not** namespace scoped it applies to **all** workloads
 within the mesh.
 
-> There can be only one **mesh-wide** peer authentication policy, and only one 
-> **namespace-wide** peer authentication policy per namespace. If you configure 
+> There can be only one **mesh-wide** peer authentication policy, and only one
+> **namespace-wide** peer authentication policy per namespace. If you configure
 > more then Istio will **ignore the newer policies**.
 
 - The `selector` determines the workload to apply the PeerAuthentication to.
 
-> You can also specify the mTLS mode at the **port** level **if** you specify 
-a `selector`. 
+> You can also specify the mTLS mode at the **port** level **if** you specify
+a `selector`.
 
 ### DestinationRule
 
-The DestinationRule CRD is used to specify the TLS settings for upstream 
-connections. E.g. traffic the workload sends. These settings are common for 
-both HTTP and TCP connections. 
+The DestinationRule CRD is used to specify the TLS settings for upstream
+connections. E.g. traffic the workload sends. These settings are common for
+both HTTP and TCP connections.
 
-In a destination rule you use the `tls` keyword instead of the `mtls` keyword 
+In a destination rule you use the `tls` keyword instead of the `mtls` keyword
 under `spec.trafficPolicy`.
 
 ```yaml
@@ -172,8 +172,8 @@ spec:
       caCertificates: /etc/certs/rootcacerts.pem
 ```
 
-The modes are `DISABLE`, `SIMPLE`, `MUTUAL` and `ISTIO_MUTUAL`. For services 
-within the mesh `ISTIO_MUTUAL` is the natural choice as it uses Istio's 
+The modes are `DISABLE`, `SIMPLE`, `MUTUAL` and `ISTIO_MUTUAL`. For services
+within the mesh `ISTIO_MUTUAL` is the natural choice as it uses Istio's
 generated certs and they do not need to be specified in the destination rule.
 
 <details>
@@ -183,12 +183,12 @@ generated certs and they do not need to be specified in the destination rule.
 
 - `SIMPLE` - Originate a TLS connection to the upstream endpoint.
 
-- `MUTUAL` - Secure connections to the upstream using **mutual** TLS by 
+- `MUTUAL` - Secure connections to the upstream using **mutual** TLS by
 presenting client certificates for authentication.
 
 > You **must** specify the certificates when modes is set to MUTUAL.
 
-- `ISTIO_MUTUAL` - Same as MUTUAL except you do **not** specify the 
+- `ISTIO_MUTUAL` - Same as MUTUAL except you do **not** specify the
 client certificates as the certs generated for mTLS by Istio are used.
 
 </details>
@@ -199,7 +199,7 @@ A general overview of what you will be doing in the **Step By Step** section.
 
 - Deploy the sentences application services and see the effect of mesh wide mTLS config
 
-- Apply a STRICT and PERMISSIVE mTLS policy to **your** namespace and observe 
+- Apply a STRICT and PERMISSIVE mTLS policy to **your** namespace and observe
 the affects
 
 - Observe the affects on a service without a sidecar
@@ -218,18 +218,18 @@ Expand the **Tasks** section below to do the exercise.
 ___
 
 
-Run a for loop to substitute placeholders for environment variables and deploy 
-the services along with an ingress gateway and virtual service for routing 
+Run a for loop to substitute placeholders for environment variables and deploy
+the services along with an ingress gateway and virtual service for routing
 inbound traffic.
 
 ```console
 for file in 05-securing-with-mtls/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
-Observe that the services are ready and we have a sidecar container per POD and 
+Observe that the services are ready and we have a sidecar container per POD and
 the sentences service is exposed with NodePort.
 
-> :bulb: We have also configured an entry point with a Gateway and VirtualService 
+> :bulb: We have also configured an entry point with a Gateway and VirtualService
 > but are also exposing it as a NodePort to demonstrate the effects of the policies.
 
 ```console
@@ -256,7 +256,7 @@ service/sentences   NodePort    172.20.92.234    <none>        5000:30962/TCP   
 ___
 
 
-Run the loop-query.sh script without parameters to reach the service over the 
+Run the loop-query.sh script without parameters to reach the service over the
 NodePort.
 
 ```console
@@ -267,18 +267,18 @@ NodePort.
 
 ___
 
-Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. 
+Go to Graph menu item and select the **Versioned app graph** from the drop
+down menu.
 
-Check the display options as shown in the image below. Especially the **Security** 
-checkbox. 
+Check the display options as shown in the image below. Especially the **Security**
+checkbox.
 
-Notice the lock icons, which indicate whether the traffic is encrypted between 
+Notice the lock icons, which indicate whether the traffic is encrypted between
 the services.
 
-Select one of the **arrows** with a lock icon. You will be able to see on the 
-sidebar that the traffic is mTLS secured. Notice that traffic from the 
-`loop-query.sh` script(unknown) to the sentences frontend service is plain text 
+Select one of the **arrows** with a lock icon. You will be able to see on the
+sidebar that the traffic is mTLS secured. Notice that traffic from the
+`loop-query.sh` script(unknown) to the sentences frontend service is plain text
 HTTP traffic as we are using a NodePort to access it.
 
 ![Kiali default mTLS](images/kiali-mtls-default.png)
@@ -287,7 +287,7 @@ HTTP traffic as we are using a NodePort to access it.
 
 ___
 
-Create a file called `peer-authentication.yaml` in 
+Create a file called `peer-authentication.yaml` in
 `05-securing-with-mtls/start/`.
 
 Paste the following yaml into the file.
@@ -303,11 +303,11 @@ spec:
     mode: STRICT
 ```
 
-> :bulb: Note `$STUDENT_NS` in the above yaml. It is important that the 
-> PeerAuthentication CRD is scoped to **your individual** namespace. There can 
+> :bulb: Note `$STUDENT_NS` in the above yaml. It is important that the
+> PeerAuthentication CRD is scoped to **your individual** namespace. There can
 > only be one mesh wide and one namespace wide policy at a time.
 
-Substitute the placeholder with the value of the environment variable and apply 
+Substitute the placeholder with the value of the environment variable and apply
 the output with kubectl.
 
 ```console
@@ -323,11 +323,11 @@ Aramis (v2) is 35 years.
 curl: (56) Recv failure: Connection reset by peer
 ```
 
-You just applied a STRICT policy **requiring** all traffic to be over mTLS but 
-are accessing the frontend service directly over a NodePort and the traffic is 
+You just applied a STRICT policy **requiring** all traffic to be over mTLS but
+are accessing the frontend service directly over a NodePort and the traffic is
 plain-text over HTTP.
 
-Change the mode to `PERMISSIVE` in the `peer-authentication.yaml` file you just 
+Change the mode to `PERMISSIVE` in the `peer-authentication.yaml` file you just
 created.
 
 ```yaml
@@ -351,20 +351,20 @@ envsubst < 05-securing-with-mtls/start/peer-authentication.yaml | kubectl apply 
 
 ___
 
-Re-run the `loop-query.sh` script as before so we access the sentences frontend 
+Re-run the `loop-query.sh` script as before so we access the sentences frontend
 service over the NodePort as before.
 
 ```console
 ./scripts/loop-query.sh
 ```
 
-Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. 
+Go to Graph menu item and select the **Versioned app graph** from the drop
+down menu.
 
-Check the display options as shown in the image below. Especially the 
-**Security** checkbox. 
+Check the display options as shown in the image below. Especially the
+**Security** checkbox.
 
-Notice that traffic is plain text HTTP traffic and is now allowed as 
+Notice that traffic is plain text HTTP traffic and is now allowed as
 `PERMISSIVE` mode allows both plain-text and mTLS.
 
 ![Kiali default mTLS](images/kiali-mtls-default.png)
@@ -386,23 +386,23 @@ loop-query.sh script with the option -g.
 
 ___
 
-Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. 
+Go to Graph menu item and select the **Versioned app graph** from the drop
+down menu.
 
 Select the `istio-ingress` namespace along with your namespace and select the
 display checkboxes as shown below.
 
 ![Kiali with no sidecars](images/kiali-mtls-gw.png)
 
-We can now see that all the traffic within the mesh is mTLS. As the traffic is 
-now being routed through the ingress gateway it is being secured over mTLS by 
-the gateways standalone envoy proxy towards the sentences frontend service. 
+We can now see that all the traffic within the mesh is mTLS. As the traffic is
+now being routed through the ingress gateway it is being secured over mTLS by
+the gateways standalone envoy proxy towards the sentences frontend service.
 
-When `PERMISSIVE` mode is enabled both plain-text traffic and mTLS traffic are 
-allowed but mTLS **will be applied where possible**. 
+When `PERMISSIVE` mode is enabled both plain-text traffic and mTLS traffic are
+allowed but mTLS **will be applied where possible**.
 
-There is no real reason, besides for demonstration purposes, to expose the 
-sentences frontend service as a NodePort. Change the sentences service type to 
+There is no real reason, besides for demonstration purposes, to expose the
+sentences frontend service as a NodePort. Change the sentences service type to
 `ClusterIP` in the `sentences.yaml` file in `05-securing-with-mtls/start` folder.
 
 ```yaml
@@ -433,8 +433,8 @@ spec:
 
 ___
 
-As all of the traffic is now going through the ingress gateway you can apply 
-`STRICT` mode to your policy now. Change it in the `peer-authentication.yaml` 
+As all of the traffic is now going through the ingress gateway you can apply
+`STRICT` mode to your policy now. Change it in the `peer-authentication.yaml`
 file you created.
 
 Apply your changes.
@@ -443,8 +443,8 @@ Apply your changes.
 for file in 05-securing-with-mtls/start/*.yaml; do envsubst < $file | kubectl apply -f -; done
 ```
 
-> While migrating an application to full mTLS, it may be useful to start with 
-> a `PERMISSIVE` mTLS mode which allow a mix of mTLS and un-encrypted and 
+> While migrating an application to full mTLS, it may be useful to start with
+> a `PERMISSIVE` mTLS mode which allow a mix of mTLS and un-encrypted and
 > un-authenticated traffic.
 
 #### Task: Disable sidecar for the age service
@@ -453,7 +453,7 @@ ___
 
 What do you think will happen if a service has **no sidecar**?
 
-Modify the age service so it has no sidecar by adding an annotation to the file 
+Modify the age service so it has no sidecar by adding an annotation to the file
 `age.yaml` in `05-securing-with-mtls/start` folder to disable sidecar injection.
 
 The deployment section of the file should look like.
@@ -511,7 +511,7 @@ pod/age-v1-54fc4584d6-k94zk         1/1     Running       0          13s
 pod/age-v1-6d5946d477-f7fdp         2/2     Terminating   0          57m
 ```
 
-You really shouldn't see any interruptions from the `loop-query.sh` script 
+You really shouldn't see any interruptions from the `loop-query.sh` script
 running in the terminal.
 
 If a POD has no sidecar then the PeerAuthentication policy **cannot be applied**.
@@ -521,14 +521,14 @@ If a POD has no sidecar then the PeerAuthentication policy **cannot be applied**
 ___
 
 
-Go to Graph menu item and select the **Versioned app graph** from the drop 
-down menu. 
+Go to Graph menu item and select the **Versioned app graph** from the drop
+down menu.
 
 Select the `istio-ingress` namespace along with your namespace and select the
 display checkboxes as shown below.
 
-As the age service has no sidecar you will, **eventually**, not be able to see 
-traffic flowing to the age service in the graph even though it is still flowing 
+As the age service has no sidecar you will, **eventually**, not be able to see
+traffic flowing to the age service in the graph even though it is still flowing
 over HTTP.
 
 ![Kiali mTLS no age sidecar](images/kiali-mtls-no-age-service.png)
@@ -546,11 +546,11 @@ ___
 
 To show how we can control upstream mTLS settings with a DestinationRule, we
 create one that uses mTLS towards `v2` of the `name` service and no mTLS for
-`v1`. 
+`v1`.
 
 > :bulb: Note that we now need to use a `PERMISSIVE` Policy.
 
-Modify the `peer-authentication.yaml` in `05-securing-with-mtls/start/` 
+Modify the `peer-authentication.yaml` in `05-securing-with-mtls/start/`
 to use `PERMISSIVE` mode.
 
 ```yaml
@@ -564,7 +564,7 @@ spec:
     mode: PERMISSIVE
 ```
 
-Substitute the placeholder with the value of the environment variable and apply 
+Substitute the placeholder with the value of the environment variable and apply
 the output with kubectl.
 
 ```console
@@ -572,10 +572,10 @@ envsubst < 05-securing-with-mtls/start/peer-authentication.yaml | kubectl apply 
 ```
 
 Note, that a DestinationRule *will not* take effect until a route rule
-explicitly sends traffic to a subset. So you need both a virtual 
-service and a destination rule. 
+explicitly sends traffic to a subset. So you need both a virtual
+service and a destination rule.
 
-Create a file called `name-vs-dr.yaml` in `05-securing-with-mtls/start/` 
+Create a file called `name-vs-dr.yaml` in `05-securing-with-mtls/start/`
 directory.
 
 ```yaml
@@ -639,7 +639,7 @@ kubectl apply -f 05-securing-with-mtls/start/name-vs-dr.yaml
 ___
 
 
-Go to Graph menu item and select the **Versioned app graph** from the drop 
+Go to Graph menu item and select the **Versioned app graph** from the drop
 down menu. Select the checkboxes as shown in the below image.
 
 Now we see a missing padlock on the traffic towards `v1` of the name service.
@@ -650,15 +650,15 @@ Now we see a missing padlock on the traffic towards `v1` of the name service.
 
 ## Exercise: Mutual TLS From External Clients
 
-This exercise extends what we have done so far to demonstrate a common 
-use case of configuring mTLS with a service **external** to the mesh. A 
-service running in a different mesh for example. 
+This exercise extends what we have done so far to demonstrate a common
+use case of configuring mTLS with a service **external** to the mesh. A
+service running in a different mesh for example.
 
-In order to do this we will create a Certificate authority and certificates 
+In order to do this we will create a Certificate authority and certificates
 to enable strong workload identity.
 
-The TLS settings to control this will be defined in the 
-[Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway) 
+The TLS settings to control this will be defined in the
+[Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/#Gateway)
 CRD.
 
 ```yaml
@@ -684,24 +684,24 @@ spec:
 
 ```
 
-- The port and tls blocks define the protocol and TLS mode to apply the 
-configuration to. In this exercise you will be using the `SIMPLE` and 
-the `MUTUAL` TLS modes. See this link for more information about 
+- The port and tls blocks define the protocol and TLS mode to apply the
+configuration to. In this exercise you will be using the `SIMPLE` and
+the `MUTUAL` TLS modes. See this link for more information about
 [Server TLS modes](https://istio.io/latest/docs/reference/config/networking/gateway/#ServerTLSSettings-TLSmode).
 
-- The credentialName represents a kubernetes secret containing the server side 
+- The credentialName represents a kubernetes secret containing the server side
 certificate.
 
-> :bulb: The secret **must** be in the **same** namespace as the ingress gateway 
-> controller. The gateway must be **namespaced** to be in the same namespace as 
-> the kubernetes secret. So **both** must be in the `istio-ingress` namespace in 
+> :bulb: The secret **must** be in the **same** namespace as the ingress gateway
+> controller. The gateway must be **namespaced** to be in the same namespace as
+> the kubernetes secret. So **both** must be in the `istio-ingress` namespace in
 > the above example and the gateway **must** be unique for this exercise.
 
 ### Overview
 
 A general overview of what you will be doing in the **Step By Step** section.
 
-- Generate needed certificate authority(CA) and certificates 
+- Generate needed certificate authority(CA) and certificates
 
 - Require `MUTUAL` TLS for port `443`
 
@@ -720,7 +720,7 @@ Expand the **Tasks** section below to do the exercise.
 
 ___
 
-Ensure that the gateway and virtual service for the `sentences` 
+Ensure that the gateway and virtual service for the `sentences`
 service from the first exercise is removed.
 
 ```console
@@ -738,10 +738,10 @@ Execute the `generate-certs.sh`script.
 ```console
 ./scripts/generate-certs.sh
 ```
-You should see namespace specific certs for both the server side and 
+You should see namespace specific certs for both the server side and
 client side in your workspace.
 
-There should also be a kubernetes secret in the `istio-ingress` namespace. 
+There should also be a kubernetes secret in the `istio-ingress` namespace.
 
 ```console
 kubectl get secrets -n istio-ingress
@@ -760,8 +760,8 @@ student1-sentences-tls-secret        Opaque    3      112m
 ___
 
 
-Modify the file `05-securing-with-mtls/start/sentences-ingress-gw.yaml` so 
-that it will be namespaced to the `istio-ingress` namespace and configure it 
+Modify the file `05-securing-with-mtls/start/sentences-ingress-gw.yaml` so
+that it will be namespaced to the `istio-ingress` namespace and configure it
 for `MUTUAL` TLS on port 443.
 
 ```yaml
@@ -791,7 +791,7 @@ spec:
 ___
 
 
-The gateway is now namespaced to the `istio-ingress` namespace so you need 
+The gateway is now namespaced to the `istio-ingress` namespace so you need
 to tell the virtual service which namespace the gateway is located in.
 
 Modify the file `05-securing-with-mtls/start/sentences-ingress-vs.yaml`.
@@ -817,7 +817,7 @@ spec:
 ___
 
 
-Once you have done the modifications to the gateway and virtual service, 
+Once you have done the modifications to the gateway and virtual service,
 substitute the placeholders with environment variable(s) and apply with kubectl.
 
 ```console
@@ -830,17 +830,17 @@ envsubst < 05-securing-with-mtls/start/sentences-ingress-vs.yaml | kubectl apply
 ___
 
 
-The `loop-query-mtls.sh` script uses the `client` certificates that were 
-generated for the mtls connection. 
+The `loop-query-mtls.sh` script uses the `client` certificates that were
+generated for the mtls connection.
 
 ```console
 scripts/loop-query-mtls.sh https+mtls
 ```
 
-Note the curl options printed when the script starts. The certificate 
+Note the curl options printed when the script starts. The certificate
 authority **and** the client cert, which is required for mTLS, are specified.
 
-It will look *something* like below but with the CA and client certs that can 
+It will look *something* like below but with the CA and client certs that can
 be found in your workspace as the below has been edited for simplicity.
 
 ```
@@ -860,9 +860,9 @@ ___
 scripts/loop-query-mtls.sh https
 ```
 
-**You should see an OpenSSL error**! Note the curl options printed when the 
-script starts. **Only** the **certificate authority** is passed as simple TLS 
-only requires server side authentication. But we have configured our gateway 
+**You should see an OpenSSL error**! Note the curl options printed when the
+script starts. **Only** the **certificate authority** is passed as simple TLS
+only requires server side authentication. But we have configured our gateway
 to use `MUTUAL` TLS. E.g.both client and server side authenticate.
 
 ```
@@ -878,10 +878,10 @@ Change the TLS mode to `SIMPLE` and apply the change.
 envsubst < 05-securing-with-mtls/start/sentences-ingress-gw.yaml | kubectl apply -f -
 ```
 
-Plain `https` will now work. 
+Plain `https` will now work.
 
-> You can still pass the `https+mtls` argument to the script and a connection 
-> will be made. Only server side authentication will be done. E.g. Istio will 
+> You can still pass the `https+mtls` argument to the script and a connection
+> will be made. Only server side authentication will be done. E.g. Istio will
 > simply **ignore** the client certs passed through the curl options.
 
 </details>
@@ -900,14 +900,14 @@ The main takeaways are:
 
 - Peer authentication policies only apply to workloads with a sidecar
 
-- Peer authentication policies apply to the **all** workloads within the 
+- Peer authentication policies apply to the **all** workloads within the
 mesh if **not** namespaced
 
 - The `STRICT` policy means strict and a `PERMISSIVE` policy is a good way to get started
 
 - Destination rules configure TLS for a workloads upstream traffic
 
-- When securing external traffic through ingress gateways you need to 
+- When securing external traffic through ingress gateways you need to
 consider namespaces in relation to kubernetes secrets and gateway controllers.
 
 ## Cleanup
