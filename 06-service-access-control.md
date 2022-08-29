@@ -16,17 +16,17 @@ This exercise will demonstrate how to authorize access between components of our
 application such that services only have the access they need, not more. This is
 the *least privilege security principle*.
 
-First you will control service to service access with native kubernetes 
-network policies to understand what is possible and what is not. 
+First you will control service to service access with native kubernetes
+network policies to understand what is possible and what is not.
 
-Then you will use a Istio custom resource 
-definition([CRD](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)) 
-to understand what Istio functionality can be used to control service 
-to service access. The Istio CRD for this is the 
+Then you will use a Istio custom resource
+definition([CRD](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/))
+to understand what Istio functionality can be used to control service
+to service access. The Istio CRD for this is the
 [AuthorizationPolicy](https://istio.io/latest/docs/reference/config/security/authorization-policy/).
 
-> :bulb: If you have not completed exercise 
-> [00-setup-introduction](00-setup-introduction.md) you **need** to label 
+> :bulb: If you have not completed exercise
+> [00-setup-introduction](00-setup-introduction.md) you **need** to label
 > your namespace with `istio-injection=enabled`.
 
 ## Exercise
@@ -76,12 +76,12 @@ scripts/loop-query.sh
 ___
 
 
-The sentences application is now deployed without any restrictions between 
+The sentences application is now deployed without any restrictions between
 components.
 
 To demonstrate that there are no restrictions between services, we access the
 `name` service from the `age` service - an access that is **not necessary** for the
-functioning of the sentences application. 
+functioning of the sentences application.
 
 Export `age` services POD name to an environment variable.
 
@@ -89,7 +89,7 @@ Export `age` services POD name to an environment variable.
 export AGE_POD=$(kubectl get pod -l app=sentences -l mode=age -o jsonpath="{.items[0].metadata.name}")
 ```
 
-First we access the primary endpoint of the `name` service. Run the following 
+First we access the primary endpoint of the `name` service. Run the following
 command.
 
 ```console
@@ -125,8 +125,8 @@ kubectl delete -f 06-service-access-control/start/
 ___
 
 
-To restrict inter-service access to only what is necessary create a file 
-called `name-network-policy.yaml` in the directory 
+To restrict inter-service access to only what is necessary create a file
+called `name-network-policy.yaml` in the directory
 `06-service-access-control/start/`.
 
 Paste in the following yaml.
@@ -156,7 +156,7 @@ spec:
 
 ```
 
-> Note: Not all Kubernetes Network types implements NetworkPolicy. 
+> Note: Not all Kubernetes Network types implements NetworkPolicy.
 > E.g. the *Flannel* network does not, whereas *Calico* and *WeaveNet* does.
 
 This policy applies to the `name` service PODs due to the labels given in
@@ -167,8 +167,8 @@ labels and port given in `spec.ingress`.
 
 ___
 
-Now that you have a network policy redeploy the sentences application services 
-along with the policy by substituting the placeholders with environment variable(s) 
+Now that you have a network policy redeploy the sentences application services
+along with the policy by substituting the placeholders with environment variable(s)
 and applying with kubectl.
 
 ```console
@@ -232,7 +232,7 @@ ___
 
 
 The `sentences` service still has access to the `name` service, which we can
-test by executing a curl command from the container in the `sentences` 
+test by executing a curl command from the container in the `sentences`
 service as you have done for the age container.
 
 Export `sentences` services POD name to an environment variable.
@@ -241,7 +241,7 @@ Export `sentences` services POD name to an environment variable.
 export SENTENCES_POD=$(kubectl get pod -l app=sentences -l mode=sentence -o jsonpath="{.items[0].metadata.name}")
 ```
 
-Access the primary endpoint of the `name` service. by running the following 
+Access the primary endpoint of the `name` service. by running the following
 command.
 
 ```console
@@ -253,7 +253,7 @@ port 5000 will work. The NetworkPolicy **did not allow access to port 8000**.
 So access the to the `name:8000/metrics` endpoint is no longer allowed.
 
 The `sentences` service can still access the `name:5000/choices` URL even though
-this is not needed by the `sentences` service. 
+this is not needed by the `sentences` service.
 
 Execute the following command.
 
@@ -261,8 +261,8 @@ Execute the following command.
 kubectl exec $SENTENCES_POD -c sentences -- curl --silent name:5000/choices; echo "";
 ```
 
-With a Kubernetes NetworkPolicy we cannot specify policies on URLs since these 
-policies are operating at L3/L4 (IP addresses, L4 protocols and ports). For this 
+With a Kubernetes NetworkPolicy we cannot specify policies on URLs since these
+policies are operating at L3/L4 (IP addresses, L4 protocols and ports). For this
 we need an Istio
 [AuthorizationPolicy](https://istio.io/latest/docs/reference/config/security/authorization-policy/)
 which understands L7 (HTTP).
@@ -276,23 +276,23 @@ A feature of Istio is strong workload identities. Istio implements the
 [SPIFFE](https://spiffe.io) standard and provides cryptographic verifiable
 identities to workloads within the mesh.
 
-> These identities are the foundation for authorization and mTLS between 
+> These identities are the foundation for authorization and mTLS between
 > services.
 
-Istio bootstraps trust through Kubernetes service accounts since these can 
-be validated through the Kubernetes certificate authority. **This also means 
-that there is a 1:1 link between Kubernetes service accounts and workload 
-identities in Istio.** 
+Istio bootstraps trust through Kubernetes service accounts since these can
+be validated through the Kubernetes certificate authority. **This also means
+that there is a 1:1 link between Kubernetes service accounts and workload
+identities in Istio.**
 
-PODs in Kubernetes sharing a service account share a workload identity. 
-It is therefore **essential**, that services to which we want to apply 
-different policies are assigned different service accounts. For this 
-purpose, the sentences application we deployed created **three** 
+PODs in Kubernetes sharing a service account share a workload identity.
+It is therefore **essential**, that services to which we want to apply
+different policies are assigned different service accounts. For this
+purpose, the sentences application we deployed created **three**
 different service accounts, one for each of the `sentences`, `age` and
 `name` service.
 
-With different identities assigned to the three services, 
-we can create an `ALLOW` Istio 
+With different identities assigned to the three services,
+we can create an `ALLOW` Istio
 [AuthorizationPolicy](https://istio.io/latest/docs/reference/config/security/authorization-policy/)
 that applies to the `name` service (due to the label selector in
 `spec.selector.matchLabels`).
@@ -320,7 +320,7 @@ spec:
 ```
 
 Note how the policy allows traffic from a workload identified as
-`cluster.local/ns/$STUDENT_NS/sa/sentences`. This identifier should be 
+`cluster.local/ns/$STUDENT_NS/sa/sentences`. This identifier should be
 interpreted like:
 
 ```
@@ -352,10 +352,10 @@ kubectl get po -l mode=sentence -o jsonpath='{.items[*].spec.serviceAccount}'
 
 To allow for running this exercise in different environments, the namespace name
 has been made configurable. To inspect the resulting AuthorizationPolicy use the
-following commands and change the value of `STUDENT_NS` to `<YOUR_NAMESPACE>`, e.g 
+following commands and change the value of `STUDENT_NS` to `<YOUR_NAMESPACE>`, e.g
 student1, student2, etc.
 
-Examine the substitution of the placeholder with the environment variable. 
+Examine the substitution of the placeholder with the environment variable.
 
 ```console
 cat 06-service-access-control/examples/authz-policy.yaml | envsubst
@@ -370,9 +370,9 @@ cat 06-service-access-control/examples/authz-policy.yaml | envsubst | kubectl ap
 If we retry the curl commands from previously from both the `age` and
 `sentences` service, we will see:
 
-- That the only access that is now possible is the `sentences` service accessing the 
+- That the only access that is now possible is the `sentences` service accessing the
 primary `name` endpoint.
-- The `name:5000/choices` endpoint cannot be accessed either. This correlates with the 
+- The `name:5000/choices` endpoint cannot be accessed either. This correlates with the
 AuthorizationPolicy only allowing `GET` towards `/`.
 
 > :bulb: Note that it might take a few seconds for the policy to properly register.
@@ -391,8 +391,8 @@ The main takeaways from this exercise are.
 
 - Istio AuthorizationPolicy's understand L7 networking layer
 
-- Istio bootstraps trust through Kubernetes service accounts. This  means 
-that there is a 1:1 link between Kubernetes service accounts and workload 
+- Istio bootstraps trust through Kubernetes service accounts. This  means
+that there is a 1:1 link between Kubernetes service accounts and workload
 identities in Istio.
 
 Istio AuthorizationPolicy also allows assigning conditions to policies. This
