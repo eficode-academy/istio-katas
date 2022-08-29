@@ -56,8 +56,8 @@ spec:
   http:
   - route:
     - destination:
-        host: myservice     # Send to this Kubernetes Service
-        subset: v1          # but only this subset of the Service
+        host: myservice     # Send to this Kubernetes Deployment
+        subset: v1          # but only this subset of the Deployment
 ```
 
 - The **http** block is an [HTTPRoute](https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute) 
@@ -116,7 +116,7 @@ spec:
   subsets:
   - name: v1           # Define a named subset 'v1'
     labels:
-      version: v1      # Labels on 'host', e.g. labels on the Kubernetes Service
+      version: v1      # Labels on 'host', e.g. labels on the Kubernetes Deployment
   - name: v2
     labels:
       version: v2
