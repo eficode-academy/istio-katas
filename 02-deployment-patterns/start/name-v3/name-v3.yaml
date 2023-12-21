@@ -30,3 +30,10 @@ spec:
           value: "name"
         - name: "SENTENCE_NAMES"
           value: "Athos (v3),Porthos (v3),Aramis (v3),d'Artagnan (v3)"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
