@@ -25,6 +25,9 @@ These are the [VirtualService](https://istio.io/latest/docs/reference/config/net
 > :bulb: If you have not completed exercise
 > [00-setup-introduction](00-setup-introduction.md) you **need** to label
 > your namespace with `istio-injection=enabled`.
+> ```console
+>kubectl label namespace $STUDENT_NS istio-injection=enabled
+>```
 
 ### VirtualService
 
